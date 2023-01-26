@@ -13,7 +13,7 @@ export default function Home({}) {
       </Head>
 
       <main>
-        <div className="w-96 h-96">
+        <div className="absolute top-0 left-0 w-full h-full">
           <DynamicMap />
         </div>
       </main>

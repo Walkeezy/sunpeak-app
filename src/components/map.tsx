@@ -1,16 +1,24 @@
+import { defaults as defaultControls, ScaleLine } from "ol/control";
 import TileLayer from "ol/layer/Tile";
 import Map from "ol/Map";
 import XYZ from "ol/source/XYZ";
 import View from "ol/View";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const SunpeakMap = function () {
+  const [map, setMap] = useState<Map>(undefined);
   const mapElement = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map>();
+  mapRef.current = map;
 
-  if (mapElement.current && !mapRef.current) {
-    mapRef.current = new Map({
-      target: mapElement.current ?? undefined,
+  useEffect(() => {
+    const initialMap = new Map({
+      target: mapElement.current,
+      controls: defaultControls().extend([
+        new ScaleLine({
+          units: "metric",
+        }),
+      ]),
       layers: [
         new TileLayer({
           source: new XYZ({
@@ -19,23 +27,19 @@ export const SunpeakMap = function () {
         }),
       ],
       view: new View({
-        projection: "EPSG:3857",
-        center: [46.84986, 9.53287],
-        zoom: 2,
+        center: [1050000, 5900000],
+        zoom: 10,
       }),
     });
-  }
+    setMap(initialMap);
+  }, []);
 
   return (
-    <>
-      <h1>Sunpeak Map:</h1>
-      <div
-        id="map"
-        ref={mapElement}
-        style={{ height: "100%", width: "100%" }}
-        className="border border-red-500"
-      ></div>
-    </>
+    <div
+      id="map"
+      ref={mapElement}
+      style={{ height: "100%", width: "100%" }}
+    ></div>
   );
 };
 
