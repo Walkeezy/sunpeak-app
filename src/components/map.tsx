@@ -23,9 +23,9 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
       } else if (zoom <= 11) {
         setSize(56);
       } else if (zoom <= 12) {
-        setSize(72);
+        setSize(64);
       } else if (zoom > 12) {
-        setSize(128);
+        setSize(72);
       }
     }
   };
@@ -46,9 +46,7 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
       <RControl.RScaleLine />
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
       <RLayerVector zIndex={10}>
-        <RStyle.RStyle>
-          <RStyle.RIcon src="./arrow.svg" />
-        </RStyle.RStyle>
+        <RStyle.RStyle></RStyle.RStyle>
         {webcamData.map((webcam) => (
           <Cam
             key={webcam.name}
