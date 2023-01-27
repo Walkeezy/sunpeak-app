@@ -1,16 +1,17 @@
 import { fromLonLat } from "ol/proj.js";
-import React from "react";
+import { createRef, RefObject, useState } from "react";
 import { RControl, RLayerTile, RLayerVector, RMap, RStyle } from "rlayers";
-import { WebcamData } from "../services/sheet";
-import SunpeakCam from "./cam";
+import { Webcam, WebcamData } from "../services/sheet";
+import Cam from "./cam";
 
 type Props = {
   webcamData: WebcamData;
+  togglePeek: (cam: Webcam) => void;
 };
 
-export default function SunpeakMap({ webcamData }: Props): JSX.Element {
-  const map = React.createRef() as React.RefObject<RMap>;
-  const [size, setSize] = React.useState(48);
+export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
+  const map = createRef() as RefObject<RMap>;
+  const [size, setSize] = useState<number>(48);
 
   const calculateSize = () => {
     const zoom = map.current?.ol.getView().getZoom();
@@ -48,8 +49,13 @@ export default function SunpeakMap({ webcamData }: Props): JSX.Element {
         <RStyle.RStyle>
           <RStyle.RIcon src="./arrow.svg" />
         </RStyle.RStyle>
-        {webcamData.map((cam) => (
-          <SunpeakCam cam={cam} size={size} />
+        {webcamData.map((webcam) => (
+          <Cam
+            key={webcam.name}
+            webcam={webcam}
+            size={size}
+            togglePeek={() => togglePeek(webcam)}
+          />
         ))}
       </RLayerVector>
     </RMap>

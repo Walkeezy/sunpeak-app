@@ -5,6 +5,7 @@ module.exports = {
       // Define animation class
       animation: {
         "move-background": "move-bg 120s linear infinite",
+        "move-background-faster": "move-bg 60s linear infinite",
       },
       // Define keyframes
       keyframes: {
