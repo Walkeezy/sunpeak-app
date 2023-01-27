@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useState } from "react";
@@ -24,7 +24,11 @@ export default function Home({ webcamData }: Props) {
     }
   };
 
-  console.log("cam to peek at", peek);
+  const handleClosePeek = () => {
+    if (peek) {
+      setPeek(undefined);
+    }
+  };
 
   return (
     <>
@@ -33,17 +37,18 @@ export default function Home({ webcamData }: Props) {
       </Head>
 
       <main>
-        <div className="absolute top-0 left-0 w-full h-full">
+        <div
+          className={`absolute top-0 left-0 w-full h-full ${
+            peek ? "cursor-pointer" : ""
+          }`}
+          onClick={handleClosePeek}
+        >
           <DynamicMap
             webcamData={webcamData}
             togglePeek={(cam) => togglePeek(cam)}
           />
 
-          <AnimatePresence>
-            {peek && (
-              <Peek webcam={peek} closePeek={() => setPeek(undefined)} />
-            )}
-          </AnimatePresence>
+          <AnimatePresence>{peek && <Peek webcam={peek} />}</AnimatePresence>
         </div>
       </main>
     </>

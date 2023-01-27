@@ -8,7 +8,8 @@ export type Webcam = {
   region: string;
   latitude: number;
   longitude: number;
-  url: string;
+  thumbnail: string;
+  fullsize: string;
   link: string;
   panorama: boolean;
 };
@@ -30,24 +31,25 @@ export async function getWebcamData(): Promise<WebcamData> {
     });
 
     const rows = response.data.values;
-    const data = [];
+    const data: WebcamData = [];
 
     if (rows.length) {
       rows.shift(); // remove header row
       rows.forEach((row) => {
         const latitude = parseFloat(row[3]);
         const longitude = parseFloat(row[4]);
-        const url = row[5];
-        if (latitude && longitude && url) {
+        const fullsize = row[6];
+        if (latitude && longitude && fullsize) {
           data.push({
             name: row[0],
             city: row[1],
             region: row[2],
             latitude,
             longitude,
-            url,
-            link: row[6] === "" ? url : row[6],
-            panorama: row[7] === "TRUE",
+            thumbnail: row[5] === "" ? fullsize : row[5],
+            fullsize,
+            link: row[7] === "" ? fullsize : row[7],
+            panorama: row[8] === "TRUE",
           });
         }
       });

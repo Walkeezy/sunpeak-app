@@ -19,11 +19,11 @@ export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
         <motion.div
           layoutId={webcam.name}
           onClick={togglePeek}
-          className={`border-[3px] border-white rounded-xl shadow-md ${
+          className={`cursor-pointer border-[3px] border-white bg-white rounded-xl shadow-md ${
             webcam.panorama ? "animate-move-background" : ""
           }`}
           style={{
-            background: `url(${webcam.url})`,
+            background: `url(${webcam.thumbnail})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             width: `${size}px`,
