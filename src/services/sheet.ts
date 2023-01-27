@@ -1,6 +1,15 @@
 import { google } from "googleapis";
 
-export type WebcamData = any[];
+export type WebcamData = {
+  name: string;
+  city: string;
+  region: string;
+  latitude: number;
+  longitude: number;
+  url: string;
+  link: string;
+  panorama: boolean;
+}[];
 
 export async function getWebcamData(): Promise<WebcamData> {
   try {
@@ -19,12 +28,30 @@ export async function getWebcamData(): Promise<WebcamData> {
     });
 
     const rows = response.data.values;
+    const data = [];
 
     if (rows.length) {
       rows.shift(); // remove header row
+      rows.forEach((row) => {
+        const latitude = parseFloat(row[3]);
+        const longitude = parseFloat(row[4]);
+        const url = row[5];
+        if (latitude && longitude && url) {
+          data.push({
+            name: row[0],
+            city: row[1],
+            region: row[2],
+            latitude,
+            longitude,
+            url,
+            link: row[6] ?? url,
+            panorama: row[7] === "TRUE",
+          });
+        }
+      });
     }
 
-    return rows;
+    return data;
   } catch (err) {
     console.log(err);
   }

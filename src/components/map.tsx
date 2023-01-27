@@ -10,26 +10,29 @@ import {
   ROverlay,
   RStyle,
 } from "rlayers";
+import { WebcamData } from "../services/sheet";
 
-export default function SunpeakMap({ webcamData }): JSX.Element {
+type Props = {
+  webcamData: WebcamData;
+};
+
+export default function SunpeakMap({ webcamData }: Props): JSX.Element {
   const map = React.createRef() as React.RefObject<RMap>;
-  const [size, setSize] = React.useState(96);
+  const [size, setSize] = React.useState(84);
 
   const calculateSize = () => {
     const zoom = map.current?.ol.getView().getZoom();
     if (zoom) {
-      if (zoom < 9) {
+      if (zoom <= 9) {
+        setSize(36);
+      } else if (zoom <= 10) {
         setSize(48);
-      } else if (zoom < 10) {
+      } else if (zoom <= 11) {
         setSize(56);
-      } else if (zoom < 11) {
+      } else if (zoom <= 12) {
+        setSize(72);
+      } else if (zoom > 12) {
         setSize(96);
-      } else if (zoom < 12) {
-        setSize(128);
-      } else if (zoom < 13) {
-        setSize(148);
-      } else {
-        setSize(196);
       }
     }
   };
@@ -50,25 +53,29 @@ export default function SunpeakMap({ webcamData }): JSX.Element {
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
       <RLayerVector zIndex={10}>
         <RStyle.RStyle>
-          <RStyle.RIcon src="./arrow.svg" anchor={[0.5, 0.1]} />
+          <RStyle.RIcon src="./arrow.svg" />
         </RStyle.RStyle>
         {webcamData.map((cam) => (
           <RFeature
-            key={cam[0]}
-            geometry={new Point(fromLonLat([cam[2], cam[1]]))}
+            key={cam.name}
+            geometry={new Point(fromLonLat([cam.longitude, cam.latitude]))}
           >
             <ROverlay>
               <a
-                href={cam[4] ?? cam[3]}
+                href={cam.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`block border-2 border-white rounded-md animate-move-background shadow`}
+                className={`block border-2 border-white rounded-md shadow ${
+                  cam.panorama ? "animate-move-background" : ""
+                }`}
                 style={{
-                  transform: `translate(-${size / 2}px, -${size}px)`,
-                  background: `url(${cam[3]})`,
+                  background: `url(${cam.url})`,
                   backgroundSize: "cover",
+                  backgroundPosition: "center",
                   width: `${size}px`,
                   height: `${size}px`,
+                  marginTop: "4px",
+                  marginLeft: `-${size / 2}px`,
                 }}
               ></a>
             </ROverlay>
