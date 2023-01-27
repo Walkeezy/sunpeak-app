@@ -4,12 +4,16 @@ import Map from "ol/Map";
 import XYZ from "ol/source/XYZ";
 import View from "ol/View";
 import { useEffect, useRef, useState } from "react";
+import { fromLonLat } from "ol/proj.js";
 
 export const SunpeakMap = function () {
   const [map, setMap] = useState<Map>(undefined);
   const mapElement = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map>();
   mapRef.current = map;
+
+  const chur = [9.533333, 46.85];
+  const churWebMercator = fromLonLat(chur);
 
   useEffect(() => {
     const initialMap = new Map({
@@ -27,8 +31,11 @@ export const SunpeakMap = function () {
         }),
       ],
       view: new View({
-        center: [1050000, 5900000],
-        zoom: 10,
+        center: churWebMercator,
+        zoom: 11,
+        minZoom: 9,
+        maxZoom: 13,
+        enableRotation: false,
       }),
     });
     setMap(initialMap);
