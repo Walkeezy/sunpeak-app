@@ -1,19 +1,10 @@
 import { Point } from "ol/geom";
 import "ol/ol.css";
 import { fromLonLat } from "ol/proj.js";
-import {
-  RFeature,
-  RLayerTile,
-  RLayerVector,
-  RMap,
-  ROSM,
-  ROverlay,
-} from "rlayers";
-import cams from "../data/cams.json";
+import { RFeature, RLayerTile, RLayerVector, RMap, ROverlay } from "rlayers";
 
-export default function SunpeakMap(): JSX.Element {
-  console.log({ cams });
-
+export default function SunpeakMap({ webcamData }): JSX.Element {
+  console.log({ webcamData });
   return (
     <RMap
       className="h-full w-full"
@@ -27,15 +18,22 @@ export default function SunpeakMap(): JSX.Element {
     >
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
       <RLayerVector zIndex={10}>
-        {cams.map((cam) => (
+        {webcamData.map((cam) => (
           <RFeature
-            key={cam.id}
-            geometry={
-              new Point(fromLonLat([cam.location.lng, cam.location.lat]))
-            }
+            key={cam[0]}
+            geometry={new Point(fromLonLat([cam[2], cam[1]]))}
           >
-            <ROverlay className="bg-white p-1 rounded">
-              <img src={cam.url} width="120" alt={cam.name}></img>
+            <ROverlay>
+              <a
+                href={cam[4] ?? cam[3]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-white p-1 rounded-md w-32 h-32 animate-move-background"
+                style={{
+                  background: `url(${cam[3]})`,
+                  backgroundSize: "cover",
+                }}
+              ></a>
             </ROverlay>
           </RFeature>
         ))}
