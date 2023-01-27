@@ -1,6 +1,8 @@
 import { google } from "googleapis";
 
-export type WebcamData = {
+export type WebcamData = Webcam[];
+
+export type Webcam = {
   name: string;
   city: string;
   region: string;
@@ -9,7 +11,7 @@ export type WebcamData = {
   url: string;
   link: string;
   panorama: boolean;
-}[];
+};
 
 export async function getWebcamData(): Promise<WebcamData> {
   try {

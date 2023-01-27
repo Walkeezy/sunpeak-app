@@ -1,17 +1,8 @@
-import { Point } from "ol/geom";
-import "ol/ol.css";
 import { fromLonLat } from "ol/proj.js";
 import React from "react";
-import {
-  RControl,
-  RFeature,
-  RLayerTile,
-  RLayerVector,
-  RMap,
-  ROverlay,
-  RStyle,
-} from "rlayers";
+import { RControl, RLayerTile, RLayerVector, RMap, RStyle } from "rlayers";
 import { WebcamData } from "../services/sheet";
+import SunpeakCam from "./cam";
 
 type Props = {
   webcamData: WebcamData;
@@ -19,7 +10,7 @@ type Props = {
 
 export default function SunpeakMap({ webcamData }: Props): JSX.Element {
   const map = React.createRef() as React.RefObject<RMap>;
-  const [size, setSize] = React.useState(84);
+  const [size, setSize] = React.useState(48);
 
   const calculateSize = () => {
     const zoom = map.current?.ol.getView().getZoom();
@@ -33,7 +24,7 @@ export default function SunpeakMap({ webcamData }: Props): JSX.Element {
       } else if (zoom <= 12) {
         setSize(72);
       } else if (zoom > 12) {
-        setSize(96);
+        setSize(128);
       }
     }
   };
@@ -58,30 +49,7 @@ export default function SunpeakMap({ webcamData }: Props): JSX.Element {
           <RStyle.RIcon src="./arrow.svg" />
         </RStyle.RStyle>
         {webcamData.map((cam) => (
-          <RFeature
-            key={cam.name}
-            geometry={new Point(fromLonLat([cam.longitude, cam.latitude]))}
-          >
-            <ROverlay>
-              <a
-                href={cam.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`block border-2 border-white rounded-md shadow ${
-                  cam.panorama ? "animate-move-background" : ""
-                }`}
-                style={{
-                  background: `url(${cam.url})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  marginTop: "4px",
-                  marginLeft: `-${size / 2}px`,
-                }}
-              ></a>
-            </ROverlay>
-          </RFeature>
+          <SunpeakCam cam={cam} size={size} />
         ))}
       </RLayerVector>
     </RMap>
