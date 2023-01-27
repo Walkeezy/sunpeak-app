@@ -44,7 +44,7 @@ export async function getWebcamData(): Promise<WebcamData> {
             latitude,
             longitude,
             url,
-            link: row[6] ?? url,
+            link: row[6] === "" ? url : row[6],
             panorama: row[7] === "TRUE",
           });
         }

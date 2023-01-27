@@ -3,6 +3,7 @@ import "ol/ol.css";
 import { fromLonLat } from "ol/proj.js";
 import React from "react";
 import {
+  RControl,
   RFeature,
   RLayerTile,
   RLayerVector,
@@ -50,6 +51,7 @@ export default function SunpeakMap({ webcamData }: Props): JSX.Element {
       maxZoom={13}
       onPostRender={calculateSize}
     >
+      <RControl.RScaleLine />
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
       <RLayerVector zIndex={10}>
         <RStyle.RStyle>
