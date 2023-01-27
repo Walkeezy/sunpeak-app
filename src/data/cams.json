@@ -1,0 +1,51 @@
+[
+  {
+    "id": "1",
+    "name": "Chur",
+    "location": {
+      "lat": 46.861134,
+      "lng": 9.541719
+    },
+    "url": "https://backend.roundshot.com/cams/151/thumbnail",
+    "link": "https://churtourismus.roundshot.com/"
+  },
+  {
+    "id": "2",
+    "name": "Brambrüesch",
+    "location": {
+      "lat": 46.81233,
+      "lng": 9.50279
+    },
+    "url": "https://backend.roundshot.com/cams/587/thumbnail",
+    "link": "https://brambruesch.roundshot.com/"
+  },
+  {
+    "id": "3",
+    "name": "Lenzerheide Urdenfürggli",
+    "location": {
+      "lat": 46.769676,
+      "lng": 9.595082
+    },
+    "url": "https://backend.roundshot.com/cams/53/thumbnail",
+    "link": "https://lenzerheide.roundshot.com/urdenfuerggli/"
+  },
+  {
+    "id": "4",
+    "name": "Lenzerheide Scalottas",
+    "location": {
+      "lat": 46.721888,
+      "lng": 9.511115
+    },
+    "url": "https://backend.roundshot.com/cams/54/thumbnail",
+    "link": "https://lenzerheide.roundshot.com/pizscalottas/"
+  },
+  {
+    "id": "5",
+    "name": "Juf",
+    "location": {
+      "lat": 46.44545030894693,
+      "lng": 9.580163889133507
+    },
+    "url": "https://webcam.jufferien.ch/current_links.jpg"
+  }
+]
