@@ -11,6 +11,9 @@ type Props = {
 };
 
 export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
+  const imgUrl = webcam.forceReload
+    ? webcam.thumbnail + "?" + Date.now()
+    : webcam.thumbnail;
   return (
     <RFeature
       geometry={new Point(fromLonLat([webcam.longitude, webcam.latitude]))}
@@ -24,7 +27,7 @@ export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
               webcam.panorama ? "animate-move-background" : ""
             }`}
             style={{
-              background: `url(${webcam.thumbnail})`,
+              backgroundImage: `url(${imgUrl})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               width: `${size}px`,

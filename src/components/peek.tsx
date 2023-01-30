@@ -6,6 +6,9 @@ type Props = {
 };
 
 export default function Peek({ webcam }: Props): JSX.Element {
+  const imgUrl = webcam.forceReload
+    ? webcam.fullsize + "?" + Date.now()
+    : webcam.fullsize;
   return (
     <motion.div
       layoutId={webcam.name}
@@ -13,9 +16,9 @@ export default function Peek({ webcam }: Props): JSX.Element {
         webcam.panorama ? "animate-move-background-faster" : ""
       }`}
       style={{
-        backgroundImage: `url(${webcam.fullsize})`,
+        backgroundImage: `url(${imgUrl})`,
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "center center",
         width: "95vw",
         height: "40vh",
         top: "28vh",
