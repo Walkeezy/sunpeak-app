@@ -2,6 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useState } from "react";
+import Logo from "../components/icons/logo";
 import Peek from "../components/peek";
 import { getWebcamData, Webcam, WebcamData } from "../services/sheet";
 
@@ -36,11 +37,14 @@ export default function Home({ webcamData }: Props) {
         <title>Sunpeak App</title>
       </Head>
 
-      <main>
-        <div
-          className={`absolute top-0 left-0 w-full h-full ${
-            peek ? "cursor-pointer" : ""
-          }`}
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col">
+        <header className="grow-0 h-12 bg-slate-700 text-sunpeak-yellow flex items-center justify-center gap-2 justify-items-stretch">
+          <Logo />
+          <h1>Sunpeak</h1>
+        </header>
+
+        <main
+          className={`grow ${peek ? "cursor-pointer" : ""}`}
           onClick={handleClosePeek}
         >
           <DynamicMap
@@ -49,8 +53,8 @@ export default function Home({ webcamData }: Props) {
           />
 
           <AnimatePresence>{peek && <Peek webcam={peek} />}</AnimatePresence>
-        </div>
-      </main>
+        </main>
+      </div>
     </>
   );
 }

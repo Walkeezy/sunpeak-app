@@ -2,6 +2,12 @@ module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      colors: {
+        "sunpeak-yellow": "#FBB829",
+      },
+      fontFamily: {
+        sans: ['"Lexend"', "sans-serif"],
+      },
       // Define animation class
       animation: {
         "move-background": "move-bg 120s linear infinite",
