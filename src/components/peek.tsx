@@ -1,16 +1,19 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Webcam } from "../services/sheet";
+import { joinClassNames } from "../utils/joinClassnames";
 import Caption from "./caption";
+import Loading from "./icons/loading";
 
 type Props = {
   webcam: Webcam;
 };
 
 export default function Peek({ webcam }: Props): JSX.Element {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [pauseAnimation, setPauseAnimation] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [pauseAnimation, setPauseAnimation] = useState(false);
 
   const imgUrl = webcam.forceReload
     ? webcam.fullsize + "?" + Date.now()
@@ -43,10 +46,20 @@ export default function Peek({ webcam }: Props): JSX.Element {
           onTouchStart={() => setPauseAnimation(true)}
           className="w-[95vw] h-[38vh] lg:h-[80vh] overflow-auto rounded-xl"
         >
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Loading size={56} />
+            </div>
+          )}
           <img
             ref={imageRef}
             src={imgUrl}
-            className="w-auto h-full max-w-none"
+            className={joinClassNames([
+              "w-auto h-full max-w-none",
+              loading && "opacity-0",
+            ])}
+            loading="lazy"
+            onLoad={() => setLoading(false)}
           />
         </div>
         <Caption name={webcam.name} link={webcam.link} />

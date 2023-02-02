@@ -25,6 +25,7 @@ export default class CustomDocument extends Document {
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
           <meta name="msapplication-TileColor" content="#da532c" />
+          <link rel="manifest" href="/manifest.json" />
           <meta name="theme-color" content="#334155" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link

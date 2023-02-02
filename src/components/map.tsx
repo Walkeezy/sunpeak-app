@@ -92,7 +92,7 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
       <RControl.RCustom className="absolute bottom-0 right-0 m-4">
         <button title="Locate me" onClick={locateUser}>
           <div className="flex justify-center">
-            {loadingLocation ? <Loading /> : <Arrow />}
+            {loadingLocation ? <Loading color="#666" /> : <Arrow />}
           </div>
         </button>
       </RControl.RCustom>

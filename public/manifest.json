@@ -1,0 +1,10 @@
+{
+  "name": "Sunpeak",
+  "short_name": "Sunpeak",
+  "theme_color": "#2196f3",
+  "background_color": "#334155",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/"
+}

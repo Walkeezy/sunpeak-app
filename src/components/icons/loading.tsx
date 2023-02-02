@@ -1,11 +1,19 @@
-export default function Loading() {
+type Props = {
+  size?: number;
+  color?: string;
+};
+
+export default function Loading({
+  size = 24,
+  color = "#FFFFFF",
+}: Props): JSX.Element {
   return (
     <svg
-      width={18}
-      height={18}
+      width={size}
+      height={size}
       viewBox="0 0 44 44"
       xmlns="http://www.w3.org/2000/svg"
-      stroke="#666"
+      stroke={color}
     >
       <g fill="none" fillRule="evenodd" strokeWidth={2}>
         <circle cx={22} cy={22} r={1}>

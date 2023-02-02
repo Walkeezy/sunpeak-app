@@ -8,12 +8,6 @@ module.exports = {
       fontFamily: {
         sans: ['"Lexend"', "sans-serif"],
       },
-      backgroundImage: {
-        "loading-spinner": "url('/loading.svg')",
-      },
-      backgroundSize: {
-        "50%": "50%",
-      },
       animation: {
         "move-background": "move-bg 120s linear infinite",
         "move-background-faster": "move-bg 60s linear infinite",
