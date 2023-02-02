@@ -36,7 +36,7 @@ export default function Peek({ webcam }: Props): JSX.Element {
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
       <motion.div
         layoutId={webcam.name}
-        className="relative border-[3px] border-white bg-white rounded-xl shadow-2xl"
+        className="relative border-[3px] border-white bg-slate-700 bg-loading-spinner bg-center bg-50% bg-no-repeat rounded-xl shadow-2xl"
       >
         <div
           ref={wrapperRef}

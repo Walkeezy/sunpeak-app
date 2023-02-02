@@ -1,46 +1,57 @@
 export default function Loading() {
   return (
     <svg
-      width="16"
-      height="16"
-      viewBox="0 0 38 38"
+      width={18}
+      height={18}
+      viewBox="0 0 44 44"
       xmlns="http://www.w3.org/2000/svg"
+      stroke="#666"
     >
-      <defs>
-        <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
-          <stop stopColor="#666666" stopOpacity="0" offset="0%" />
-          <stop stopColor="#666666" stopOpacity=".631" offset="63.146%" />
-          <stop stopColor="#666666" offset="100%" />
-        </linearGradient>
-      </defs>
-      <g fill="none" fillRule="evenodd">
-        <g transform="translate(1 1)">
-          <path
-            d="M36 18c0-9.94-8.06-18-18-18"
-            id="Oval-2"
-            stroke="url(#a)"
-            strokeWidth="2"
-          >
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="0 18 18"
-              to="360 18 18"
-              dur="0.9s"
-              repeatCount="indefinite"
-            />
-          </path>
-          <circle fill="#666666" cx="36" cy="18" r="1">
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="0 18 18"
-              to="360 18 18"
-              dur="0.9s"
-              repeatCount="indefinite"
-            />
-          </circle>
-        </g>
+      <g fill="none" fillRule="evenodd" strokeWidth={2}>
+        <circle cx={22} cy={22} r={1}>
+          <animate
+            attributeName="r"
+            begin="0s"
+            dur="1.8s"
+            values="1; 20"
+            calcMode="spline"
+            keyTimes="0; 1"
+            keySplines="0.165, 0.84, 0.44, 1"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="stroke-opacity"
+            begin="0s"
+            dur="1.8s"
+            values="1; 0"
+            calcMode="spline"
+            keyTimes="0; 1"
+            keySplines="0.3, 0.61, 0.355, 1"
+            repeatCount="indefinite"
+          />
+        </circle>
+        <circle cx={22} cy={22} r={1}>
+          <animate
+            attributeName="r"
+            begin="-0.9s"
+            dur="1.8s"
+            values="1; 20"
+            calcMode="spline"
+            keyTimes="0; 1"
+            keySplines="0.165, 0.84, 0.44, 1"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="stroke-opacity"
+            begin="-0.9s"
+            dur="1.8s"
+            values="1; 0"
+            calcMode="spline"
+            keyTimes="0; 1"
+            keySplines="0.3, 0.61, 0.355, 1"
+            repeatCount="indefinite"
+          />
+        </circle>
       </g>
     </svg>
   );

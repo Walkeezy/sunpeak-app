@@ -1,6 +1,15 @@
+import { boundingExtent } from "ol/extent";
+import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj.js";
 import { createRef, RefObject, useEffect, useState } from "react";
-import { RControl, RLayerTile, RLayerVector, RMap, RStyle } from "rlayers";
+import {
+  RControl,
+  RFeature,
+  RLayerTile,
+  RLayerVector,
+  RMap,
+  RStyle,
+} from "rlayers";
 import { Webcam, WebcamData } from "../services/sheet";
 import Cam from "./cam";
 import Arrow from "./icons/arrow";
@@ -15,7 +24,7 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
   const [size, setSize] = useState<number>(48);
   const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
-  const [location, setLocation] = useState<[number, number]>([0, 0]);
+  const [location, setLocation] = useState<[number, number]>(undefined);
 
   const calculateSize = () => {
     const zoom = mapRef.current?.ol.getView().getZoom();
@@ -41,20 +50,29 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
         setLoadingLocation(false);
         setLocation([position.coords.longitude, position.coords.latitude]);
       },
-      console.error,
+      (error) => {
+        setLoadingLocation(false);
+        console.error(error.message);
+      },
       { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
     );
   };
 
   useEffect(() => {
-    if (location[0] !== 0 && location[1] !== 0) {
+    if (location) {
       mapRef.current?.ol.getView().animate({
         center: fromLonLat(location),
-        zoom: 12,
+        zoom: 14,
         duration: 500,
       });
     }
   }, [location]);
+
+  // limit extent to Switzerland
+  const extent = boundingExtent([
+    fromLonLat([5.7, 45.6]),
+    fromLonLat([10.8, 48]),
+  ]);
 
   return (
     <RMap
@@ -64,9 +82,10 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
         center: fromLonLat([9.533333, 46.85]),
         zoom: 10,
       }}
+      extent={extent}
       enableRotation={false}
       minZoom={8}
-      maxZoom={13}
+      maxZoom={14}
       onPostRender={calculateSize}
     >
       <RControl.RScaleLine />
@@ -89,6 +108,15 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
           />
         ))}
       </RLayerVector>
+      {location && (
+        <RLayerVector zIndex={10}>
+          <RFeature geometry={new Point(fromLonLat(location))}>
+            <RStyle.RStyle>
+              <RStyle.RIcon src={"./current-userlocation.svg"} />
+            </RStyle.RStyle>
+          </RFeature>
+        </RLayerVector>
+      )}
     </RMap>
   );
 }
