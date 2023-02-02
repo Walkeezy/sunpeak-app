@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Webcam } from "../services/sheet";
-import { joinClassNames } from "../utils/joinClassnames";
 import Caption from "./caption";
 
 type Props = {
@@ -37,12 +36,12 @@ export default function Peek({ webcam }: Props): JSX.Element {
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
       <motion.div
         layoutId={webcam.name}
-        className="relative border-[3px] border-white bg-white rounded-xl shadow-2xl w-[95vw] h-[38vh] lg:h-[80vh]"
+        className="relative border-[3px] border-white bg-white rounded-xl shadow-2xl"
       >
         <div
           ref={wrapperRef}
           onTouchStart={() => setPauseAnimation(true)}
-          className="flex items-center justify-center w-full h-full overflow-auto rounded-xl"
+          className="w-[95vw] h-[38vh] lg:h-[80vh] overflow-auto rounded-xl"
         >
           <img
             ref={imageRef}
