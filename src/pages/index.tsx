@@ -38,7 +38,7 @@ export default function Home({ webcamData }: Props) {
       </Head>
 
       <div className="absolute top-0 left-0 w-full h-full flex flex-col">
-        <header className="grow-0 h-12 bg-slate-700 text-sunpeak-yellow flex items-center justify-center gap-2 justify-items-stretch">
+        <header className="grow-0 h-12 bg-slate-700 text-sunpeak-yellow flex items-center justify-center gap-2">
           <Logo />
           <h1>Sunpeak</h1>
         </header>
