@@ -23,15 +23,21 @@ export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
           <motion.div
             layoutId={webcam.name}
             onClick={togglePeek}
-            className="relative z-10 cursor-pointer border-2 border-white bg-slate-700 rounded-xl shadow-md bg-cover bg-center"
+            className="relative z-10 cursor-pointer border-2 border-white bg-slate-700 bg-loading-spinner bg-center bg-50% bg-no-repeat rounded-xl shadow-md mt-1 overflow-hidden"
             style={{
-              backgroundImage: `url(${imgUrl})`,
               width: `${size}px`,
               height: `${size}px`,
-              marginTop: "4px",
               marginLeft: `-${size / 2}px`,
             }}
-          />
+          >
+            <img
+              src={imgUrl}
+              width={size}
+              height={size}
+              className="object-cover w-full h-full"
+              loading="lazy"
+            />
+          </motion.div>
           <div className="absolute -top-1 -left-1 w-2 h-2 rotate-45 bg-white z-0"></div>
         </div>
       </ROverlay>
