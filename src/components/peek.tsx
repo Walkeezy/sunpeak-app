@@ -15,10 +15,6 @@ export default function Peek({ webcam }: Props): JSX.Element {
   const imageRef = useRef<HTMLImageElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const imgUrl = webcam.forceReload
-    ? webcam.fullsize + "?" + Date.now()
-    : webcam.fullsize;
-
   useEffect(() => {
     if (webcam.panorama && imageRef.current && wrapperRef.current) {
       const interval = setInterval(() => {
@@ -53,7 +49,7 @@ export default function Peek({ webcam }: Props): JSX.Element {
           )}
           <img
             ref={imageRef}
-            src={imgUrl}
+            src={webcam.fullsize + "?" + Date.now()}
             className={joinClassNames([
               "w-auto h-full max-w-none",
               loading && "opacity-0",
