@@ -49,7 +49,11 @@ export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
               alt={webcam.name}
             />
           </motion.div>
-          <div className="absolute -top-1 -left-1 w-2 h-2 rotate-45 bg-white z-0"></div>
+          {size === 36 ? (
+            <div className="absolute -top-0.5 -left-0.5 w-1 h-1 rotate-45 bg-white z-0"></div>
+          ) : (
+            <div className="absolute -top-1 -left-1 w-2 h-2 rotate-45 bg-white z-0"></div>
+          )}
         </div>
       </ROverlay>
     </RFeature>

@@ -1,10 +1,25 @@
 {
   "name": "Sunpeak",
   "short_name": "Sunpeak",
-  "theme_color": "#2196f3",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#334155",
   "background_color": "#334155",
-  "display": "standalone",
-  "orientation": "portrait",
-  "scope": "/",
-  "start_url": "/"
+  "display": "fullscreen",
+  "description": "This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current weather conditions and helping you plan your next outdoor adventure. So why wait? Let's find out where the sun is shining today!",
+  "start_url": "/",
+  "dir": "ltr",
+  "orientation": "portrait-primary",
+  "scope": "https://sunpeak.app",
+  "categories": ["sports", "travel", "utilities", "weather"]
 }

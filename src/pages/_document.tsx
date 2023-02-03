@@ -13,7 +13,7 @@ export default class CustomDocument extends Document {
           />
           <meta
             name="description"
-            content="Schweizer Webcams direkt auf einer Karte dargestellt."
+            content="This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current weather conditions and helping you plan your next outdoor adventure. So why wait? Let's find out where the sun is shining today!"
           />
           <link
             rel="apple-touch-icon"
@@ -32,7 +32,6 @@ export default class CustomDocument extends Document {
             sizes="16x16"
             href="/favicon-16x16.png"
           />
-          <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
           <meta name="msapplication-TileColor" content="#da532c" />
           <link rel="manifest" href="/manifest.json" />
