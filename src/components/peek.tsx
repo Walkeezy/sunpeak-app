@@ -60,6 +60,7 @@ export default function Peek({ webcam }: Props): JSX.Element {
             ])}
             loading="lazy"
             onLoad={() => setLoading(false)}
+            alt={webcam.name}
           />
         </div>
         <Caption name={webcam.name} link={webcam.link} />

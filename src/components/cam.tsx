@@ -15,9 +15,6 @@ type Props = {
 
 export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
-  const imgUrl = webcam.forceReload
-    ? webcam.thumbnail + "?" + Date.now()
-    : webcam.thumbnail;
   return (
     <RFeature
       geometry={new Point(fromLonLat([webcam.longitude, webcam.latitude]))}
@@ -40,7 +37,7 @@ export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
               </div>
             )}
             <img
-              src={imgUrl}
+              src={webcam.thumbnail + "?" + Date.now()}
               width={size}
               height={size}
               className={joinClassNames([
@@ -49,6 +46,7 @@ export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
               ])}
               loading="lazy"
               onLoad={() => setLoading(false)}
+              alt={webcam.name}
             />
           </motion.div>
           <div className="absolute -top-1 -left-1 w-2 h-2 rotate-45 bg-white z-0"></div>
