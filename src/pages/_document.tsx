@@ -1,4 +1,5 @@
 import Document, { Head, Html, Main, NextScript } from "next/document";
+import SplashScreens from "../components/splashScreens";
 
 export default class CustomDocument extends Document {
   render() {
@@ -7,10 +8,6 @@ export default class CustomDocument extends Document {
         <Head>
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
-          />
           <meta
             name="description"
             content="This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current weather conditions and helping you plan your next outdoor adventure. So why wait? Let's find out where the sun is shining today!"
@@ -46,6 +43,7 @@ export default class CustomDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Lexend&display=swap"
             rel="stylesheet"
           />
+          <SplashScreens />
         </Head>
         <body>
           <Main />
