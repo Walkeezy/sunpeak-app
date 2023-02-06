@@ -5,6 +5,7 @@ import { useState } from "react";
 import { RFeature, ROverlay } from "rlayers";
 import { Webcam } from "../services/sheet";
 import { joinClassNames } from "../utils/joinClassnames";
+import { getRefreshString } from "../utils/getRefreshString";
 import Loading from "./icons/loading";
 
 type Props = {
@@ -37,7 +38,7 @@ export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
               </div>
             )}
             <img
-              src={webcam.thumbnail + "?" + Date.now()}
+              src={webcam.thumbnail + "?" + getRefreshString()}
               width={size}
               height={size}
               className={joinClassNames([

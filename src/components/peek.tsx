@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Webcam } from "../services/sheet";
+import { getRefreshString } from "../utils/getRefreshString";
 import { joinClassNames } from "../utils/joinClassnames";
 import Caption from "./caption";
 import Loading from "./icons/loading";
@@ -49,7 +50,7 @@ export default function Peek({ webcam }: Props): JSX.Element {
           )}
           <img
             ref={imageRef}
-            src={webcam.fullsize + "?" + Date.now()}
+            src={webcam.fullsize + "?" + getRefreshString()}
             className={joinClassNames([
               "w-auto h-full max-w-none",
               loading && "opacity-0",

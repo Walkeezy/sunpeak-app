@@ -12,7 +12,6 @@ export type Webcam = {
   fullsize: string;
   link: string;
   panorama: boolean;
-  forceReload: boolean;
 };
 
 export async function getWebcamData(): Promise<WebcamData> {
@@ -51,7 +50,6 @@ export async function getWebcamData(): Promise<WebcamData> {
             fullsize,
             link: row[7] === "" ? fullsize : row[7],
             panorama: row[8] === "TRUE",
-            forceReload: row[9] === "TRUE",
           });
         }
       });
