@@ -1,4 +1,4 @@
-export default function Arrow() {
+export default function ArrowIcon() {
   return (
     <svg
       width="16"

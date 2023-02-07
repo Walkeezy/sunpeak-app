@@ -3,7 +3,7 @@ type Props = {
   color?: string;
 };
 
-export default function Loading({
+export default function LoadingIcon({
   size = 24,
   color = "#FFFFFF",
 }: Props): JSX.Element {

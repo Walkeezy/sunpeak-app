@@ -1,4 +1,4 @@
-import Link from "./icons/link";
+import LinkIcon from "./icons/link";
 
 type Props = {
   name: string;
@@ -13,7 +13,7 @@ export default function Caption({ name, link }: Props): JSX.Element {
       </span>
       <span className="bg-white px-2 py-1 rounded text-sm shadow-md flex justify-center items-center">
         <a href={link} target="_blank" rel="noopener noreferrer">
-          <Link />
+          <LinkIcon />
         </a>
       </span>
     </span>

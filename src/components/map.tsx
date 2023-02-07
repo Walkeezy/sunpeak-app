@@ -12,15 +12,20 @@ import {
 } from "rlayers";
 import { Webcam, WebcamData } from "../services/sheet";
 import Cam from "./cam";
-import Arrow from "./icons/arrow";
-import Loading from "./icons/loading";
+import ArrowIcon from "./icons/arrow";
+import LoadingIcon from "./icons/loading";
 
 type Props = {
   webcamData: WebcamData;
+  refreshQuery: string;
   togglePeek: (cam: Webcam) => void;
 };
 
-export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
+export default function Map({
+  webcamData,
+  refreshQuery,
+  togglePeek,
+}: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
   const [size, setSize] = useState<number>(48);
   const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
@@ -92,7 +97,7 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
       <RControl.RCustom className="absolute bottom-0 right-0 m-4">
         <button title="Locate me" onClick={locateUser}>
           <div className="flex justify-center">
-            {loadingLocation ? <Loading color="#666" /> : <Arrow />}
+            {loadingLocation ? <LoadingIcon color="#666" /> : <ArrowIcon />}
           </div>
         </button>
       </RControl.RCustom>
@@ -103,6 +108,7 @@ export default function Map({ webcamData, togglePeek }: Props): JSX.Element {
           <Cam
             key={webcam.name}
             webcam={webcam}
+            refreshQuery={refreshQuery}
             size={size}
             togglePeek={() => togglePeek(webcam)}
           />

@@ -5,16 +5,21 @@ import { useState } from "react";
 import { RFeature, ROverlay } from "rlayers";
 import { Webcam } from "../services/sheet";
 import { joinClassNames } from "../utils/joinClassnames";
-import { getRefreshString } from "../utils/getRefreshString";
-import Loading from "./icons/loading";
+import LoadingIcon from "./icons/loading";
 
 type Props = {
   webcam: Webcam;
+  refreshQuery: string;
   size: number;
   togglePeek: () => void;
 };
 
-export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
+export default function Cam({
+  webcam,
+  refreshQuery,
+  size,
+  togglePeek,
+}: Props): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
   return (
     <RFeature
@@ -34,11 +39,11 @@ export default function Cam({ webcam, size, togglePeek }: Props): JSX.Element {
           >
             {loading && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <Loading />
+                <LoadingIcon />
               </div>
             )}
             <img
-              src={webcam.thumbnail + "?" + getRefreshString()}
+              src={webcam.thumbnail + "?" + refreshQuery}
               width={size}
               height={size}
               className={joinClassNames([

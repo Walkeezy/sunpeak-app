@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Webcam } from "../services/sheet";
-import { getRefreshString } from "../utils/getRefreshString";
+import { generateRefreshQuery } from "../utils/generateRefreshQuery";
 import { joinClassNames } from "../utils/joinClassnames";
 import Caption from "./caption";
-import Loading from "./icons/loading";
+import LoadingIcon from "./icons/loading";
 
 type Props = {
   webcam: Webcam;
@@ -45,12 +45,12 @@ export default function Peek({ webcam }: Props): JSX.Element {
         >
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <Loading size={56} />
+              <LoadingIcon size={56} />
             </div>
           )}
           <img
             ref={imageRef}
-            src={webcam.fullsize + "?" + getRefreshString()}
+            src={webcam.fullsize + "?" + generateRefreshQuery()}
             className={joinClassNames([
               "w-auto h-full max-w-none",
               loading && "opacity-0",
