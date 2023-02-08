@@ -27,6 +27,17 @@ export default function InfoPage() {
           out where the sun is shining today!
         </p>
         <p>
+          Build with a{" "}
+          <Link
+            href="https://www.geo.admin.ch/en/geo-services/geo-services/portrayal-services-web-mapping/web-map-tiling-services-wmts.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-700 hover:text-slate-400 transition-colors underline underline-offset-4"
+          >
+            WMTS map from Swisstopo.
+          </Link>
+        </p>
+        <p>
           Contact:{" "}
           <Link
             href="mailto:mail@kevinwalker.ch"
