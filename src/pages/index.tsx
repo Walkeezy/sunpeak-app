@@ -1,8 +1,11 @@
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import Link from "next/link";
 import { useState } from "react";
-import Logo from "../components/icons/logo";
+import Header from "../components/header";
+import InfoIcon from "../components/icons/info";
+import Logo from "../components/logo";
 import Peek from "../components/peek";
 import Refresh from "../components/refresh";
 import { getWebcamData, Webcam, WebcamData } from "../services/sheet";
@@ -61,11 +64,13 @@ export default function Home({ webcamData }: Props) {
       </Head>
 
       <div className="absolute top-0 left-0 w-full h-full flex flex-col">
-        <header className="relative grow-0 h-12 bg-slate-700 text-sunpeak-yellow flex items-center justify-center gap-2">
+        <Header>
+          <Link href="/info">
+            <InfoIcon />
+          </Link>
           <Logo />
-          <h1>Sunpeak</h1>
           <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
-        </header>
+        </Header>
 
         <main
           className={`grow ${peek ? "cursor-pointer" : ""}`}

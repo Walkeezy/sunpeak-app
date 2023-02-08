@@ -11,13 +11,7 @@ export default function Refresh({
   isRefreshing,
 }: Props): JSX.Element {
   return (
-    <button
-      className={joinClassNames([
-        "absolute right-4",
-        isRefreshing && "animate-spin",
-      ])}
-      onClick={reloadData}
-    >
+    <button className={isRefreshing && "animate-spin"} onClick={reloadData}>
       <RefreshIcon />
     </button>
   );

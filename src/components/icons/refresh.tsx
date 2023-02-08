@@ -1,12 +1,9 @@
-type Props = {
-  size?: number;
-  color?: string;
-};
+import { IconProps } from "../../utils/types";
 
 export default function RefreshIcon({
   size = 18,
   color = "#FFFFFF",
-}: Props): JSX.Element {
+}: IconProps): JSX.Element {
   return (
     <svg
       width={size}
