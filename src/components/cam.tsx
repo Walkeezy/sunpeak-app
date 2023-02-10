@@ -29,6 +29,7 @@ export default function Cam({
         <div className="relative">
           <motion.div
             layoutId={webcam.name}
+            initial={false}
             onClick={togglePeek}
             className="relative z-10 cursor-pointer border-2 border-white bg-slate-700 rounded-xl shadow-md mt-1 overflow-hidden"
             style={{
