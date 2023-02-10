@@ -1,12 +1,13 @@
 import { boundingExtent } from "ol/extent";
 import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj.js";
-import { createRef, RefObject, useEffect, useMemo, useState } from "react";
+import { createRef, RefObject, useEffect, useState } from "react";
 import {
   RControl,
   RFeature,
   RLayerTile,
   RLayerVector,
+  RLayerVectorImage,
   RMap,
   RStyle,
 } from "rlayers";
@@ -102,7 +103,7 @@ export default function Map({
         </button>
       </RControl.RCustom>
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
-      <RLayerVector zIndex={10}>
+      <RLayerVectorImage zIndex={10}>
         <RStyle.RStyle></RStyle.RStyle>
         {webcamData.map((webcam) => (
           <Cam
@@ -113,7 +114,7 @@ export default function Map({
             togglePeek={() => togglePeek(webcam)}
           />
         ))}
-      </RLayerVector>
+      </RLayerVectorImage>
       {location && (
         <RLayerVector zIndex={10}>
           <RFeature geometry={new Point(fromLonLat(location))}>
