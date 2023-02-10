@@ -1,7 +1,7 @@
 import { boundingExtent } from "ol/extent";
 import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj.js";
-import { createRef, RefObject, useEffect, useState } from "react";
+import { createRef, RefObject, useEffect, useMemo, useState } from "react";
 import {
   RControl,
   RFeature,
@@ -35,15 +35,15 @@ export default function Map({
     const zoom = mapRef.current?.ol.getView().getZoom();
     if (zoom) {
       if (zoom <= 9) {
-        setSize(36);
+        setSize(30);
       } else if (zoom <= 10) {
-        setSize(48);
+        setSize(40);
       } else if (zoom <= 11) {
-        setSize(56);
+        setSize(50);
       } else if (zoom <= 12) {
-        setSize(64);
+        setSize(60);
       } else if (zoom > 12) {
-        setSize(72);
+        setSize(70);
       }
     }
   };
@@ -104,15 +104,22 @@ export default function Map({
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
       <RLayerVector zIndex={10}>
         <RStyle.RStyle></RStyle.RStyle>
-        {webcamData.map((webcam) => (
-          <Cam
-            key={webcam.name}
-            webcam={webcam}
-            refreshQuery={refreshQuery}
-            size={size}
-            togglePeek={() => togglePeek(webcam)}
-          />
-        ))}
+        {useMemo(
+          () => (
+            <>
+              {webcamData.map((webcam) => (
+                <Cam
+                  key={webcam.name}
+                  webcam={webcam}
+                  refreshQuery={refreshQuery}
+                  size={size}
+                  togglePeek={() => togglePeek(webcam)}
+                />
+              ))}
+            </>
+          ),
+          [webcamData, togglePeek]
+        )}
       </RLayerVector>
       {location && (
         <RLayerVector zIndex={10}>

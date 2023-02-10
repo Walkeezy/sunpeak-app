@@ -1,23 +1,23 @@
 import { IconProps } from "../../utils/types";
 
 export default function InfoIcon({
-  size = 24,
+  size = 20,
   color = "#FFFFFF",
 }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="0 0 514 514"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M12 8V8.5M12 12V16M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+        d="M257 152.975V165.978M257 257V361.025M257 491.057C386.267 491.057 491.057 386.267 491.057 257C491.057 127.734 386.267 22.9429 257 22.9429C127.734 22.9429 22.9429 127.734 22.9429 257C22.9429 386.267 127.734 491.057 257 491.057Z"
         stroke={color}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="45"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
