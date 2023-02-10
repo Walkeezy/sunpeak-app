@@ -104,22 +104,15 @@ export default function Map({
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
       <RLayerVector zIndex={10}>
         <RStyle.RStyle></RStyle.RStyle>
-        {useMemo(
-          () => (
-            <>
-              {webcamData.map((webcam) => (
-                <Cam
-                  key={webcam.name}
-                  webcam={webcam}
-                  refreshQuery={refreshQuery}
-                  size={size}
-                  togglePeek={() => togglePeek(webcam)}
-                />
-              ))}
-            </>
-          ),
-          [webcamData, togglePeek]
-        )}
+        {webcamData.map((webcam) => (
+          <Cam
+            key={webcam.name}
+            webcam={webcam}
+            refreshQuery={refreshQuery}
+            size={size}
+            togglePeek={() => togglePeek(webcam)}
+          />
+        ))}
       </RLayerVector>
       {location && (
         <RLayerVector zIndex={10}>
