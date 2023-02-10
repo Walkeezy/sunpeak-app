@@ -41,7 +41,7 @@ export default function Peek({ webcam }: Props): JSX.Element {
         <div
           ref={wrapperRef}
           onTouchStart={() => setPauseAnimation(true)}
-          className="w-[95vw] h-[38vh] lg:h-[80vh] overflow-auto rounded-xl"
+          className="w-[95vw] h-[38vh] lg:h-[80vh] overflow-scroll rounded-xl"
         >
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center">
