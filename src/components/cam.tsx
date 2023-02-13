@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj.js";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RFeature, ROverlay } from "rlayers";
 import { Webcam } from "../services/sheet";
 import { DesignTokens } from "../utils/getDesignTokensByZoom";
@@ -25,10 +25,14 @@ export default function Cam({
 }: Props): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
   const { camSize, borderRadius, arrowSize } = designTokens;
+
+  const getPoint = useMemo(
+    () => new Point(fromLonLat([webcam.longitude, webcam.latitude])),
+    [webcam.longitude, webcam.latitude]
+  );
+
   return (
-    <RFeature
-      geometry={new Point(fromLonLat([webcam.longitude, webcam.latitude]))}
-    >
+    <RFeature geometry={getPoint}>
       <ROverlay>
         <div className="relative">
           <motion.div
