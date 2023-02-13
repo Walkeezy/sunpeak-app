@@ -79,6 +79,7 @@ export default function Home({ webcamData }: Props) {
           <DynamicMap
             webcamData={data}
             refreshQuery={refreshQuery}
+            activeWebcam={peek}
             togglePeek={(cam) => togglePeek(cam)}
           />
           <AnimatePresence>{peek && <Peek webcam={peek} />}</AnimatePresence>

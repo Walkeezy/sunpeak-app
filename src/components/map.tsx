@@ -23,12 +23,14 @@ import LoadingIcon from "./icons/loading";
 type Props = {
   webcamData: WebcamData;
   refreshQuery: string;
+  activeWebcam: Webcam;
   togglePeek: (cam: Webcam) => void;
 };
 
 export default function Map({
   webcamData,
   refreshQuery,
+  activeWebcam,
   togglePeek,
 }: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
@@ -105,6 +107,7 @@ export default function Map({
           <Cam
             key={`${webcam.name}-${webcam.city}`}
             webcam={webcam}
+            isActive={webcam === activeWebcam}
             refreshQuery={refreshQuery}
             designTokens={designTokens}
             togglePeek={() => togglePeek(webcam)}

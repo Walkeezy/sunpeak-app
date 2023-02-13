@@ -10,6 +10,7 @@ import LoadingIcon from "./icons/loading";
 
 type Props = {
   webcam: Webcam;
+  isActive: boolean;
   refreshQuery: string;
   designTokens: DesignTokens;
   togglePeek: () => void;
@@ -17,6 +18,7 @@ type Props = {
 
 export default function Cam({
   webcam,
+  isActive,
   refreshQuery,
   designTokens,
   togglePeek,
@@ -31,6 +33,7 @@ export default function Cam({
         <div className="relative">
           <motion.div
             layoutId={`${webcam.name}-${webcam.city}`}
+            transition={{ type: "spring", duration: 0.5 }}
             initial={false}
             onClick={togglePeek}
             className={joinClassNames([
@@ -61,15 +64,21 @@ export default function Cam({
               alt={webcam.name}
             />
           </motion.div>
-          <div
-            className="absolute rotate-45 bg-white z-0"
-            style={{
-              top: `-${arrowSize / 2}px`,
-              left: `-${arrowSize / 2}px`,
-              width: `${arrowSize}px`,
-              height: `${arrowSize}px`,
-            }}
-          ></div>
+          {!isActive && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              exit={{ opacity: 0 }}
+              className="absolute rotate-45 bg-white z-0"
+              style={{
+                top: `-${arrowSize / 2}px`,
+                left: `-${arrowSize / 2}px`,
+                width: `${arrowSize}px`,
+                height: `${arrowSize}px`,
+              }}
+            ></motion.div>
+          )}
         </div>
       </ROverlay>
     </RFeature>
