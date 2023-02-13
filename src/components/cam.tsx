@@ -4,23 +4,25 @@ import { fromLonLat } from "ol/proj.js";
 import { useState } from "react";
 import { RFeature, ROverlay } from "rlayers";
 import { Webcam } from "../services/sheet";
+import { DesignTokens } from "../utils/getDesignTokensByZoom";
 import { joinClassNames } from "../utils/joinClassnames";
 import LoadingIcon from "./icons/loading";
 
 type Props = {
   webcam: Webcam;
   refreshQuery: string;
-  size: number;
+  designTokens: DesignTokens;
   togglePeek: () => void;
 };
 
 export default function Cam({
   webcam,
   refreshQuery,
-  size,
+  designTokens,
   togglePeek,
 }: Props): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
+  const { camSize, borderRadius, arrowSize } = designTokens;
   return (
     <RFeature
       geometry={new Point(fromLonLat([webcam.longitude, webcam.latitude]))}
@@ -32,13 +34,13 @@ export default function Cam({
             initial={false}
             onClick={togglePeek}
             className={joinClassNames([
-              "relative z-10 cursor-pointer border-2 border-white bg-slate-700 shadow-md overflow-hidden",
-              size === 30 ? "rounded-lg" : "rounded-xl",
+              "relative z-10 cursor-pointer border-2 border-white bg-slate-700 shadow-md mt-1 overflow-hidden",
+              borderRadius,
             ])}
             style={{
-              width: `${size}px`,
-              height: `${size}px`,
-              marginLeft: `-${size / 2}px`,
+              width: `${camSize}px`,
+              height: `${camSize}px`,
+              marginLeft: `-${camSize / 2}px`,
             }}
           >
             {loading && (
@@ -48,8 +50,8 @@ export default function Cam({
             )}
             <img
               src={webcam.thumbnail + "?" + refreshQuery}
-              width={size}
-              height={size}
+              width={camSize}
+              height={camSize}
               className={joinClassNames([
                 "object-cover w-full h-full",
                 loading && "opacity-0",
@@ -59,11 +61,15 @@ export default function Cam({
               alt={webcam.name}
             />
           </motion.div>
-          {size === 36 ? (
-            <div className="absolute -top-0.5 -left-0.5 w-1 h-1 rotate-45 bg-white z-0"></div>
-          ) : (
-            <div className="absolute -top-1 -left-1 w-2 h-2 rotate-45 bg-white z-0"></div>
-          )}
+          <div
+            className="absolute rotate-45 bg-white z-0"
+            style={{
+              top: `-${arrowSize / 2}px`,
+              left: `-${arrowSize / 2}px`,
+              width: `${arrowSize}px`,
+              height: `${arrowSize}px`,
+            }}
+          ></div>
         </div>
       </ROverlay>
     </RFeature>

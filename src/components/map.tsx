@@ -11,7 +11,11 @@ import {
   RStyle,
 } from "rlayers";
 import { Webcam, WebcamData } from "../services/sheet";
-import { getSizeByZoom } from "../utils/getSizeByZoom";
+import {
+  DefaultDesignTokens,
+  DesignTokens,
+  getDesignTokensByZoom,
+} from "../utils/getDesignTokensByZoom";
 import Cam from "./cam";
 import ArrowIcon from "./icons/arrow";
 import LoadingIcon from "./icons/loading";
@@ -28,16 +32,24 @@ export default function Map({
   togglePeek,
 }: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
-  const [size, setSize] = useState<number>(48);
+  const [zoom, setZoom] = useState<number>(undefined);
+  const [designTokens, setDesignTokens] =
+    useState<DesignTokens>(DefaultDesignTokens);
   const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
   const [location, setLocation] = useState<[number, number]>(undefined);
 
-  const calculateSize = () => {
+  const updateZoom = () => {
     const zoom = mapRef.current?.ol.getView().getZoom();
     if (zoom) {
-      setSize(getSizeByZoom(zoom));
+      setZoom(zoom);
     }
   };
+
+  useEffect(() => {
+    if (zoom) {
+      setDesignTokens(getDesignTokensByZoom(zoom));
+    }
+  }, [zoom]);
 
   const locateUser = () => {
     setLoadingLocation(true);
@@ -64,12 +76,6 @@ export default function Map({
     }
   }, [location]);
 
-  // limit extent to Switzerland
-  const extent = boundingExtent([
-    fromLonLat([5.7, 45.6]),
-    fromLonLat([10.8, 48]),
-  ]);
-
   return (
     <RMap
       ref={mapRef}
@@ -78,11 +84,11 @@ export default function Map({
         center: fromLonLat([9.533333, 46.85]),
         zoom: 10,
       }}
-      extent={extent}
+      extent={boundingExtent([fromLonLat([5.7, 45.6]), fromLonLat([10.8, 48])])}
       enableRotation={false}
       minZoom={8}
       maxZoom={14}
-      onPostRender={calculateSize}
+      onPostRender={updateZoom}
     >
       <RControl.RScaleLine />
       <RControl.RCustom className="absolute bottom-0 right-0 m-4">
@@ -100,7 +106,7 @@ export default function Map({
             key={`${webcam.name}-${webcam.city}`}
             webcam={webcam}
             refreshQuery={refreshQuery}
-            size={size}
+            designTokens={designTokens}
             togglePeek={() => togglePeek(webcam)}
           />
         ))}
