@@ -115,7 +115,7 @@ export default function Map({
                 togglePeek={() => togglePeek(webcam)}
               />
             ),
-            [webcam]
+            [webcam, activeWebcam, refreshQuery, designTokens]
           )
         )}
       </RLayerVector>
