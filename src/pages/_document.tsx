@@ -4,7 +4,7 @@ import MetaData from "./metadata";
 export default class CustomDocument extends Document {
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
           <meta

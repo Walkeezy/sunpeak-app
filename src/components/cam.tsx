@@ -28,10 +28,13 @@ export default function Cam({
       <ROverlay>
         <div className="relative">
           <motion.div
-            layoutId={webcam.name}
+            layoutId={`${webcam.name}-${webcam.city}`}
             initial={false}
             onClick={togglePeek}
-            className="relative z-10 cursor-pointer border-2 border-white bg-slate-700 rounded-xl shadow-md mt-1 overflow-hidden"
+            className={joinClassNames([
+              "relative z-10 cursor-pointer border-2 border-white bg-slate-700 shadow-md overflow-hidden",
+              size === 30 ? "rounded-lg" : "rounded-xl",
+            ])}
             style={{
               width: `${size}px`,
               height: `${size}px`,

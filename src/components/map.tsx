@@ -1,7 +1,7 @@
 import { boundingExtent } from "ol/extent";
 import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj.js";
-import { createRef, RefObject, useEffect, useMemo, useState } from "react";
+import { createRef, RefObject, useEffect, useState } from "react";
 import {
   RControl,
   RFeature,
@@ -11,6 +11,7 @@ import {
   RStyle,
 } from "rlayers";
 import { Webcam, WebcamData } from "../services/sheet";
+import { getSizeByZoom } from "../utils/getSizeByZoom";
 import Cam from "./cam";
 import ArrowIcon from "./icons/arrow";
 import LoadingIcon from "./icons/loading";
@@ -34,17 +35,7 @@ export default function Map({
   const calculateSize = () => {
     const zoom = mapRef.current?.ol.getView().getZoom();
     if (zoom) {
-      if (zoom <= 9) {
-        setSize(30);
-      } else if (zoom <= 10) {
-        setSize(40);
-      } else if (zoom <= 11) {
-        setSize(50);
-      } else if (zoom <= 12) {
-        setSize(60);
-      } else if (zoom > 12) {
-        setSize(70);
-      }
+      setSize(getSizeByZoom(zoom));
     }
   };
 
@@ -67,7 +58,7 @@ export default function Map({
     if (location) {
       mapRef.current?.ol.getView().animate({
         center: fromLonLat(location),
-        zoom: 14,
+        zoom: 12,
         duration: 500,
       });
     }
@@ -106,7 +97,7 @@ export default function Map({
         <RStyle.RStyle></RStyle.RStyle>
         {webcamData.map((webcam) => (
           <Cam
-            key={webcam.name}
+            key={`${webcam.name}-${webcam.city}`}
             webcam={webcam}
             refreshQuery={refreshQuery}
             size={size}

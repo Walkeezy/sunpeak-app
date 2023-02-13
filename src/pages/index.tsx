@@ -65,7 +65,7 @@ export default function Home({ webcamData }: Props) {
 
       <div className="absolute top-0 left-0 w-full h-full flex flex-col">
         <Header>
-          <Link href="/info">
+          <Link href="/info" title="Go to info page">
             <InfoIcon />
           </Link>
           <Logo />

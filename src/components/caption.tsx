@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import LinkIcon from "./icons/link";
 
 type Props = {
@@ -7,7 +8,12 @@ type Props = {
 
 export default function Caption({ name, link }: Props): JSX.Element {
   return (
-    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-1">
+    <motion.span
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-1"
+    >
       <span className="bg-white px-2 py-1 rounded text-base shadow-md whitespace-nowrap">
         {name}
       </span>
@@ -16,6 +22,6 @@ export default function Caption({ name, link }: Props): JSX.Element {
           <LinkIcon />
         </a>
       </span>
-    </span>
+    </motion.span>
   );
 }
