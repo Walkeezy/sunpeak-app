@@ -12,7 +12,7 @@ export default function Caption({ name, link }: Props): JSX.Element {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ type: "spring", duration: 0.5, delay: 0.3 }}
+      transition={{ type: "spring", duration: 0.5 }}
       className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-1"
     >
       <span className="bg-white px-2 py-1 rounded text-base shadow-md whitespace-nowrap">
