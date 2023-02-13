@@ -41,9 +41,9 @@ export default function Map({
   const [location, setLocation] = useState<[number, number]>(undefined);
 
   const updateZoom = () => {
-    const zoom = mapRef.current?.ol.getView().getZoom();
-    if (zoom) {
-      setZoom(zoom);
+    const currentZoom = mapRef.current?.ol.getView().getZoom();
+    if (currentZoom && currentZoom !== zoom) {
+      setZoom(currentZoom);
     }
   };
 
@@ -90,7 +90,7 @@ export default function Map({
       enableRotation={false}
       minZoom={8}
       maxZoom={14}
-      onPostRender={updateZoom}
+      onRenderComplete={updateZoom}
     >
       <RControl.RScaleLine />
       <RControl.RCustom className="absolute bottom-0 right-0 m-4">
