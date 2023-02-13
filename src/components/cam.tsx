@@ -33,7 +33,7 @@ export default function Cam({
         <div className="relative">
           <motion.div
             layoutId={`${webcam.name}-${webcam.city}`}
-            transition={{ type: "spring", duration: 0.5 }}
+            transition={{ type: "spring", bounce: 0.1, duration: 0.5 }}
             initial={false}
             onClick={togglePeek}
             className={joinClassNames([
