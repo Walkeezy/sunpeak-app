@@ -33,7 +33,7 @@ export default function Peek({ webcam }: Props): JSX.Element {
   }, [pauseAnimation]);
 
   return (
-    <div className="fixed w-[95vw] h-[42vh] lg:h-[80vh] top-[30vh] left-[2.5vw]">
+    <div className="fixed w-[95vw] h-[42vh] lg:h-[80vh] top-[28vh] left-[2.5vw]">
       <motion.div
         layoutId={`${webcam.name}-${webcam.city}`}
         transition={{ type: "spring", bounce: 0.2, duration: 0.7 }}
