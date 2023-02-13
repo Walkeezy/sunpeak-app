@@ -7,11 +7,15 @@ import {
   RFeature,
   RLayerTile,
   RLayerVector,
-  RLayerVectorImage,
   RMap,
   RStyle,
 } from "rlayers";
 import { Webcam, WebcamData } from "../services/sheet";
+import {
+  DefaultDesignTokens,
+  DesignTokens,
+  getDesignTokensByZoom,
+} from "../utils/getDesignTokensByZoom";
 import Cam from "./cam";
 import ArrowIcon from "./icons/arrow";
 import LoadingIcon from "./icons/loading";
@@ -19,35 +23,35 @@ import LoadingIcon from "./icons/loading";
 type Props = {
   webcamData: WebcamData;
   refreshQuery: string;
+  activeWebcam: Webcam;
   togglePeek: (cam: Webcam) => void;
 };
 
 export default function Map({
   webcamData,
   refreshQuery,
+  activeWebcam,
   togglePeek,
 }: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
-  const [size, setSize] = useState<number>(48);
+  const [zoom, setZoom] = useState<number>(undefined);
+  const [designTokens, setDesignTokens] =
+    useState<DesignTokens>(DefaultDesignTokens);
   const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
   const [location, setLocation] = useState<[number, number]>(undefined);
 
-  const calculateSize = () => {
+  const updateZoom = () => {
     const zoom = mapRef.current?.ol.getView().getZoom();
     if (zoom) {
-      if (zoom <= 9) {
-        setSize(30);
-      } else if (zoom <= 10) {
-        setSize(40);
-      } else if (zoom <= 11) {
-        setSize(50);
-      } else if (zoom <= 12) {
-        setSize(60);
-      } else if (zoom > 12) {
-        setSize(70);
-      }
+      setZoom(zoom);
     }
   };
+
+  useEffect(() => {
+    if (zoom) {
+      setDesignTokens(getDesignTokensByZoom(zoom));
+    }
+  }, [zoom]);
 
   const locateUser = () => {
     setLoadingLocation(true);
@@ -68,17 +72,11 @@ export default function Map({
     if (location) {
       mapRef.current?.ol.getView().animate({
         center: fromLonLat(location),
-        zoom: 14,
+        zoom: 12,
         duration: 500,
       });
     }
   }, [location]);
-
-  // limit extent to Switzerland
-  const extent = boundingExtent([
-    fromLonLat([5.7, 45.6]),
-    fromLonLat([10.8, 48]),
-  ]);
 
   return (
     <RMap
@@ -88,11 +86,11 @@ export default function Map({
         center: fromLonLat([9.533333, 46.85]),
         zoom: 10,
       }}
-      extent={extent}
+      extent={boundingExtent([fromLonLat([5.7, 45.6]), fromLonLat([10.8, 48])])}
       enableRotation={false}
       minZoom={8}
       maxZoom={14}
-      onPostRender={calculateSize}
+      onPostRender={updateZoom}
     >
       <RControl.RScaleLine />
       <RControl.RCustom className="absolute bottom-0 right-0 m-4">
@@ -103,18 +101,19 @@ export default function Map({
         </button>
       </RControl.RCustom>
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
-      <RLayerVectorImage zIndex={10}>
+      <RLayerVector zIndex={10}>
         <RStyle.RStyle></RStyle.RStyle>
         {webcamData.map((webcam) => (
           <Cam
-            key={webcam.name}
+            key={`${webcam.name}-${webcam.city}`}
             webcam={webcam}
+            isActive={webcam === activeWebcam}
             refreshQuery={refreshQuery}
-            size={size}
+            designTokens={designTokens}
             togglePeek={() => togglePeek(webcam)}
           />
         ))}
-      </RLayerVectorImage>
+      </RLayerVector>
       {location && (
         <RLayerVector zIndex={10}>
           <RFeature geometry={new Point(fromLonLat(location))}>

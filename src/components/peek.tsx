@@ -33,15 +33,16 @@ export default function Peek({ webcam }: Props): JSX.Element {
   }, [pauseAnimation]);
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+    <div className="fixed w-[95vw] h-[42vh] lg:h-[80vh] top-[28vh] left-[2.5vw]">
       <motion.div
-        layoutId={webcam.name}
-        className="relative border-[3px] border-white bg-slate-700 bg-loading-spinner bg-center bg-50% bg-no-repeat rounded-xl shadow-2xl"
+        layoutId={`${webcam.name}-${webcam.city}`}
+        transition={{ type: "spring", bounce: 0.2, duration: 0.7 }}
+        className="relative w-full h-full border-[3px] border-white bg-slate-700 bg-loading-spinner bg-center bg-50% bg-no-repeat rounded-xl overflow-hidden shadow-2xl"
       >
         <div
           ref={wrapperRef}
           onTouchStart={() => setPauseAnimation(true)}
-          className="w-[95vw] h-[38vh] lg:h-[80vh] overflow-scroll rounded-xl"
+          className="w-full h-full overflow-scroll"
         >
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -60,8 +61,8 @@ export default function Peek({ webcam }: Props): JSX.Element {
             alt={webcam.name}
           />
         </div>
-        <Caption name={webcam.name} link={webcam.link} />
       </motion.div>
+      <Caption name={webcam.name} link={webcam.link} />
     </div>
   );
 }

@@ -14,6 +14,7 @@ export default function Refresh({
     <button
       className={joinClassNames([isRefreshing && "animate-spin"])}
       onClick={reloadData}
+      title="Refresh webcam data"
     >
       <RefreshIcon />
     </button>

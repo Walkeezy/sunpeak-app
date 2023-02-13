@@ -13,7 +13,7 @@ export default function InfoPage() {
       </Head>
 
       <Header>
-        <Link href="/">
+        <Link href="/" title="Go to back to home page">
           <BackIcon />
         </Link>
         <Logo />
@@ -27,14 +27,15 @@ export default function InfoPage() {
           helping you plan your next outdoor adventure.
         </p>
         <p>
-          Map build with{" "}
+          All webcams are manually collected and directly loaded from public
+          URLs.
+        </p>
+        <p>
+          The map is build with{" "}
           <ExternalLink href="https://www.geo.admin.ch/en/geo-services/geo-services/portrayal-services-web-mapping/web-map-tiling-services-wmts.html">
             Swisstopo WMTS
           </ExternalLink>
           .
-        </p>
-        <p>
-          Webcams are manually collected and directly loaded from public URLs.
         </p>
         <p>
           This app is open source and{" "}
