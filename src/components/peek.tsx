@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Webcam } from "../services/sheet";
+import { convertToLargeRoundshotUrl } from "../utils/convertToLargeRoundshotUrl";
 import { generateRefreshQuery } from "../utils/generateRefreshQuery";
 import { joinClassNames } from "../utils/joinClassnames";
 import Caption from "./caption";
@@ -30,7 +31,13 @@ export default function Peek({ webcam }: Props): JSX.Element {
 
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pauseAnimation]);
+
+  const isDesktop = window.innerWidth > 1024;
+  const webcamSrc = isDesktop
+    ? convertToLargeRoundshotUrl(webcam.fullsize)
+    : webcam.fullsize;
 
   return (
     <div className="fixed w-[95vw] h-[42vh] lg:h-[80vh] top-[28vh] lg:top-[10vh] left-[2.5vw]">
@@ -49,17 +56,19 @@ export default function Peek({ webcam }: Props): JSX.Element {
               <LoadingIcon size={56} />
             </div>
           )}
-          <img
-            ref={imageRef}
-            src={webcam.fullsize + "?" + generateRefreshQuery()}
-            className={joinClassNames([
-              "w-auto h-full max-w-none",
-              loading && "opacity-0",
-            ])}
-            loading="lazy"
-            onLoad={() => setLoading(false)}
-            alt={webcam.name}
-          />
+          <picture>
+            <img
+              ref={imageRef}
+              src={webcamSrc + "?" + generateRefreshQuery()}
+              className={joinClassNames([
+                "w-auto h-full max-w-none",
+                loading && "opacity-0",
+              ])}
+              loading="lazy"
+              onLoad={() => setLoading(false)}
+              alt={webcam.name}
+            />
+          </picture>
         </div>
       </motion.div>
       <Caption name={webcam.name} link={webcam.link} />

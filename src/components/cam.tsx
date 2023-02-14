@@ -55,18 +55,20 @@ export default function Cam({
                 <LoadingIcon />
               </div>
             )}
-            <img
-              src={webcam.thumbnail + "?" + refreshQuery}
-              width={camSize}
-              height={camSize}
-              className={joinClassNames([
-                "object-cover w-full h-full",
-                loading && "opacity-0",
-              ])}
-              loading="lazy"
-              onLoad={() => setLoading(false)}
-              alt={webcam.name}
-            />
+            <picture>
+              <img
+                src={webcam.thumbnail + "?" + refreshQuery}
+                width={camSize}
+                height={camSize}
+                className={joinClassNames([
+                  "object-cover w-full h-full",
+                  loading && "opacity-0",
+                ])}
+                loading="lazy"
+                onLoad={() => setLoading(false)}
+                alt={webcam.name}
+              />
+            </picture>
           </motion.div>
           {!isActive && (
             <motion.div
