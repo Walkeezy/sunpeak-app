@@ -76,7 +76,7 @@ export default function Map({
         duration: 500,
       });
     }
-  }, [location]);
+  }, [mapRef, location]);
 
   return (
     <RMap
@@ -93,7 +93,7 @@ export default function Map({
       onRenderComplete={updateZoom}
     >
       <RControl.RScaleLine />
-      <RControl.RCustom className="absolute bottom-0 right-0 m-4">
+      <RControl.RCustom className="absolute bottom-[0.5em] right-[0.5em]">
         <button title="Locate me" onClick={locateUser}>
           <div className="flex justify-center">
             {loadingLocation ? <LoadingIcon color="#666" /> : <ArrowIcon />}
@@ -103,21 +103,16 @@ export default function Map({
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
       <RLayerVector zIndex={10}>
         <RStyle.RStyle></RStyle.RStyle>
-        {webcamData.map((webcam) =>
-          useMemo(
-            () => (
-              <Cam
-                key={`${webcam.name}-${webcam.city}`}
-                webcam={webcam}
-                isActive={webcam === activeWebcam}
-                refreshQuery={refreshQuery}
-                designTokens={designTokens}
-                togglePeek={() => togglePeek(webcam)}
-              />
-            ),
-            [webcam, activeWebcam, refreshQuery, designTokens]
-          )
-        )}
+        {webcamData.map((webcam) => (
+          <Cam
+            key={`${webcam.name}-${webcam.city}`}
+            webcam={webcam}
+            isActive={webcam === activeWebcam}
+            refreshQuery={refreshQuery}
+            designTokens={designTokens}
+            togglePeek={() => togglePeek(webcam)}
+          />
+        ))}
       </RLayerVector>
       {location && (
         <RLayerVector zIndex={10}>
