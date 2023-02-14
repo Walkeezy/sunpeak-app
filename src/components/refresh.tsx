@@ -1,4 +1,4 @@
-import { joinClassNames } from "../utils/joinClassnames";
+import { joinClasses } from "../utils/joinClasses";
 import RefreshIcon from "./icons/refresh";
 
 type Props = {
@@ -12,7 +12,7 @@ export default function Refresh({
 }: Props): JSX.Element {
   return (
     <button
-      className={joinClassNames([isRefreshing && "animate-spin"])}
+      className={joinClasses([isRefreshing && "animate-spin"])}
       onClick={reloadData}
       title="Refresh webcam data"
     >

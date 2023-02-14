@@ -2,15 +2,26 @@ name: CI lint & tests
 
 on: [push, pull_request]
 
+env:
+    NODE_VERSION: 16
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Test using Node.js
-        uses: actions/setup-node@v1
+      - name: Checkout current commit
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
         with:
-          node-version: "19"
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run test
+            node-version: ${{ env.NODE_VERSION }}
+            
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run lint
+        run: npm run lint
+        
+      - name: Run tests
+        run: npm run test

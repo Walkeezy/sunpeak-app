@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Webcam } from "../services/sheet";
 import { convertToLargeRoundshotUrl } from "../utils/convertToLargeRoundshotUrl";
 import { generateRefreshQuery } from "../utils/generateRefreshQuery";
-import { joinClassNames } from "../utils/joinClassnames";
+import { joinClasses } from "../utils/joinClasses";
 import Caption from "./caption";
 import LoadingIcon from "./icons/loading";
 
@@ -60,7 +60,7 @@ export default function Peek({ webcam }: Props): JSX.Element {
             <img
               ref={imageRef}
               src={webcamSrc + "?" + generateRefreshQuery()}
-              className={joinClassNames([
+              className={joinClasses([
                 "w-auto h-full max-w-none",
                 loading && "opacity-0",
               ])}
