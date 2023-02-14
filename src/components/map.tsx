@@ -78,6 +78,21 @@ export default function Map({
     }
   }, [mapRef, location]);
 
+  const allWebcams = useMemo(
+    () =>
+      webcamData.map((webcam) => (
+        <Cam
+          key={`${webcam.name}-${webcam.city}`}
+          webcam={webcam}
+          isActive={webcam === activeWebcam}
+          refreshQuery={refreshQuery}
+          designTokens={designTokens}
+          togglePeek={() => togglePeek(webcam)}
+        />
+      )),
+    [webcamData, activeWebcam, refreshQuery, designTokens, togglePeek]
+  );
+
   return (
     <RMap
       ref={mapRef}
@@ -103,16 +118,7 @@ export default function Map({
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
       <RLayerVector zIndex={10}>
         <RStyle.RStyle></RStyle.RStyle>
-        {webcamData.map((webcam) => (
-          <Cam
-            key={`${webcam.name}-${webcam.city}`}
-            webcam={webcam}
-            isActive={webcam === activeWebcam}
-            refreshQuery={refreshQuery}
-            designTokens={designTokens}
-            togglePeek={() => togglePeek(webcam)}
-          />
-        ))}
+        {allWebcams}
       </RLayerVector>
       {location && (
         <RLayerVector zIndex={10}>

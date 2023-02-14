@@ -1,4 +1,4 @@
-import { joinClassNames } from "../utils/joinClassnames";
+import { joinClassNames } from "../utils/joinClassNames";
 import RefreshIcon from "./icons/refresh";
 
 type Props = {

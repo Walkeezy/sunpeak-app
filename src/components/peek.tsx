@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Webcam } from "../services/sheet";
 import { convertToLargeRoundshotUrl } from "../utils/convertToLargeRoundshotUrl";
 import { generateRefreshQuery } from "../utils/generateRefreshQuery";
-import { joinClassNames } from "../utils/joinClassnames";
+import { joinClassNames } from "../utils/joinClassNames";
 import Caption from "./caption";
 import LoadingIcon from "./icons/loading";
 
