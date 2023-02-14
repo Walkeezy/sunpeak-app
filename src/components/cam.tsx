@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { RFeature, ROverlay } from "rlayers";
 import { Webcam } from "../services/sheet";
 import { DesignTokens } from "../utils/getDesignTokensByZoom";
-import { joinClassNames } from "../utils/joinClassNames";
+import { joinClasses } from "../utils/joinClasses";
 import LoadingIcon from "./icons/loading";
 
 type Props = {
@@ -39,7 +39,7 @@ export default function Cam({
           transition={{ type: "spring", bounce: 0.1, duration: 0.5 }}
           initial={false}
           onClick={togglePeek}
-          className={joinClassNames([
+          className={joinClasses([
             "relative z-10 cursor-pointer border-2 border-white bg-slate-700 shadow-md mt-1 overflow-hidden",
             borderRadius,
           ])}
@@ -59,7 +59,7 @@ export default function Cam({
               src={webcam.thumbnail + "?" + refreshQuery}
               width={camSize}
               height={camSize}
-              className={joinClassNames([
+              className={joinClasses([
                 "object-cover w-full h-full",
                 loading && "opacity-0",
               ])}
