@@ -36,21 +36,24 @@ export async function getWebcamData(): Promise<WebcamData> {
     if (rows.length) {
       rows.shift(); // remove header row
       rows.forEach((row) => {
-        const latitude = parseFloat(row[3]);
-        const longitude = parseFloat(row[4]);
-        const fullsize = row[6];
-        if (latitude && longitude && fullsize) {
-          data.push({
-            name: row[0],
-            city: row[1],
-            region: row[2],
-            latitude,
-            longitude,
-            thumbnail: row[5] === "" ? fullsize : row[5],
-            fullsize,
-            link: row[7] === "" ? fullsize : row[7],
-            panorama: row[8] === "TRUE",
-          });
+        const isActive = row[9] === "TRUE";
+        if (isActive) {
+          const latitude = parseFloat(row[3]);
+          const longitude = parseFloat(row[4]);
+          const fullsize = row[6];
+          if (latitude && longitude && fullsize) {
+            data.push({
+              name: row[0],
+              city: row[1],
+              region: row[2],
+              latitude,
+              longitude,
+              thumbnail: row[5] === "" ? fullsize : row[5],
+              fullsize,
+              link: row[7] === "" ? fullsize : row[7],
+              panorama: row[8] === "TRUE",
+            });
+          }
         }
       });
     }
