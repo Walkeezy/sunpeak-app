@@ -11,8 +11,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "19"
-      - run: npm install
-      - run: npm test:ci
+      - run: npm ci
+      - run: npm lint
+      - run: npm test
 
       - name: Tests ✅
         if: ${{ success() }}
