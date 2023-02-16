@@ -1,9 +1,7 @@
-describe('Navigation', () => {
-  it('should navigate to the info page', () => {
+describe('Map', () => {
+  it('should display the basic map', () => {
     cy.visit('/');
-    cy.get('a[href*="info"]').click();
-    cy.url().should('include', '/info');
-    cy.get('p').contains('This interactive map displays webcams from all over Switzerland');
+    cy.get('div[class*="ol-viewport"]').should('be.visible');
   });
 });
 
