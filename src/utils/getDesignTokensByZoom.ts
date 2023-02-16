@@ -1,7 +1,7 @@
 export const DefaultDesignTokens = {
-  camSize: 48,
-  arrowSize: 4,
-  borderRadius: "rounded-xl",
+  camSize: 40,
+  arrowSize: 6,
+  borderRadius: 'rounded-xl',
 };
 
 export type DesignTokens = {
@@ -19,7 +19,7 @@ const getSize = (zoom: number): number => {
     return 50;
   } else if (zoom <= 12) {
     return 60;
-  } else if (zoom > 12) {
+  } else {
     return 70;
   }
 };
@@ -38,9 +38,9 @@ const getArrowSize = (zoom: number): number => {
 
 const getBorderRadius = (zoom: number): string => {
   if (zoom <= 9) {
-    return "rounded-lg";
+    return 'rounded-lg';
   } else {
-    return "rounded-xl";
+    return 'rounded-xl';
   }
 };
 
