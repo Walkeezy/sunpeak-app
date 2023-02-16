@@ -14,7 +14,7 @@ export type Webcam = {
   panorama: boolean;
 };
 
-export async function getWebcamData(): Promise<WebcamData | null> {
+export async function getWebcamData(): Promise<WebcamData | []> {
   try {
     const target = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
     const jwt = new google.auth.JWT(
@@ -61,6 +61,6 @@ export async function getWebcamData(): Promise<WebcamData | null> {
     return data;
   } catch (err) {
     console.log(err);
-    return null;
+    return [];
   }
 }
