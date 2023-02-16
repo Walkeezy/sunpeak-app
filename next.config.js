@@ -1,4 +1,3 @@
 module.exports = {
-  experimental: { esmExternals: "loose" },
-  transpilePackages: ["ol", "rlayers"],
+  transpilePackages: ['ol', 'rlayers'],
 };

@@ -1,11 +1,11 @@
-import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import { Webcam } from "../services/sheet";
-import { convertToLargeRoundshotUrl } from "../utils/convertToLargeRoundshotUrl";
-import { generateRefreshQuery } from "../utils/generateRefreshQuery";
-import { joinClasses } from "../utils/joinClasses";
-import Caption from "./caption";
-import LoadingIcon from "./icons/loading";
+import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { Webcam } from '../services/sheet';
+import { convertToLargeRoundshotUrl } from '../utils/convertToLargeRoundshotUrl';
+import { generateRefreshQuery } from '../utils/generateRefreshQuery';
+import { joinClasses } from '../utils/joinClasses';
+import Caption from './caption';
+import LoadingIcon from './icons/loading';
 
 type Props = {
   webcam: Webcam;
@@ -35,22 +35,16 @@ export default function Peek({ webcam }: Props): JSX.Element {
   }, [pauseAnimation]);
 
   const isDesktop = window.innerWidth > 1024;
-  const webcamSrc = isDesktop
-    ? convertToLargeRoundshotUrl(webcam.fullsize)
-    : webcam.fullsize;
+  const webcamSrc = isDesktop ? convertToLargeRoundshotUrl(webcam.fullsize) : webcam.fullsize;
 
   return (
     <div className="fixed w-[95vw] h-[42vh] lg:h-[80vh] top-[28vh] lg:top-[10vh] left-[2.5vw]">
       <motion.div
         layoutId={`${webcam.name}-${webcam.city}`}
-        transition={{ type: "spring", bounce: 0.2, duration: 0.7 }}
+        transition={{ type: 'spring', bounce: 0.2, duration: 0.7 }}
         className="relative w-full h-full border-[3px] border-white bg-slate-700 bg-loading-spinner bg-center bg-50% bg-no-repeat rounded-xl overflow-hidden shadow-2xl"
       >
-        <div
-          ref={wrapperRef}
-          onTouchStart={() => setPauseAnimation(true)}
-          className="w-full h-full overflow-scroll"
-        >
+        <div ref={wrapperRef} onTouchStart={() => setPauseAnimation(true)} className="w-full h-full overflow-scroll">
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center">
               <LoadingIcon size={56} />
@@ -59,11 +53,8 @@ export default function Peek({ webcam }: Props): JSX.Element {
           <picture>
             <img
               ref={imageRef}
-              src={webcamSrc + "?" + generateRefreshQuery()}
-              className={joinClasses([
-                "w-auto h-full max-w-none",
-                loading && "opacity-0",
-              ])}
+              src={webcamSrc + '?' + generateRefreshQuery()}
+              className={joinClasses(['w-auto h-full max-w-none', loading && 'opacity-0'])}
               loading="lazy"
               onLoad={() => setLoading(false)}
               alt={webcam.name}

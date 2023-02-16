@@ -15,3 +15,6 @@ describe("Navigation", () => {
     );
   });
 });
+
+const asModule = {};
+export default asModule;

@@ -1,5 +1,5 @@
-import Document, { Head, Html, Main, NextScript } from "next/document";
-import MetaData from "./metadata";
+import Document, { Head, Html, Main, NextScript } from 'next/document';
+import MetaData from './metadata';
 
 export default class CustomDocument extends Document {
   render() {
@@ -13,15 +13,8 @@ export default class CustomDocument extends Document {
           />
           <link rel="manifest" href="/manifest.json" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link
-            rel="preconnect"
-            href="https://fonts.gstatic.com"
-            crossOrigin=""
-          />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Lexend&display=swap"
-            rel="stylesheet"
-          />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+          <link href="https://fonts.googleapis.com/css2?family=Lexend&display=swap" rel="stylesheet" />
           <MetaData />
         </Head>
         <body>

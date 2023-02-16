@@ -1,8 +1,11 @@
 export const convertToLargeRoundshotUrl = (url: string): string => {
-  if (!url.includes("roundshot")) {
+  if (!url.includes('roundshot')) {
     return url;
   }
 
-  const number = url.split("/").pop();
-  return url.replace(number, "1000");
+  const number = url.split('/').pop();
+  if (!number) {
+    return url;
+  }
+  return url.replace(number, '1000');
 };

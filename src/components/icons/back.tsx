@@ -1,17 +1,8 @@
-import { IconProps } from "../../types";
+import { IconProps } from '../../types';
 
-export default function BackIcon({
-  size = 20,
-  color = "#FFFFFF",
-}: IconProps): JSX.Element {
+export default function BackIcon({ size = 20, color = '#FFFFFF' }: IconProps): JSX.Element {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 514 514"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width={size} height={size} viewBox="0 0 514 514" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         fill-rule="evenodd"
         clip-rule="evenodd"

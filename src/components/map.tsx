@@ -1,45 +1,28 @@
-import { boundingExtent } from "ol/extent";
-import { Point } from "ol/geom";
-import { fromLonLat } from "ol/proj.js";
-import { createRef, RefObject, useEffect, useMemo, useState } from "react";
-import {
-  RControl,
-  RFeature,
-  RLayerTile,
-  RLayerVector,
-  RMap,
-  RStyle,
-} from "rlayers";
-import { INITIAL_CENTER, INITIAL_ZOOM, MAX_ZOOM, MIN_ZOOM } from "../config";
-import { Webcam, WebcamData } from "../services/sheet";
-import {
-  DefaultDesignTokens,
-  DesignTokens,
-  getDesignTokensByZoom,
-} from "../utils/getDesignTokensByZoom";
-import Cam from "./cam";
-import ArrowIcon from "./icons/arrow";
-import LoadingIcon from "./icons/loading";
+import { boundingExtent } from 'ol/extent';
+import { Point } from 'ol/geom';
+import { fromLonLat } from 'ol/proj.js';
+import { createRef, RefObject, useEffect, useMemo, useState } from 'react';
+import { RControl, RFeature, RLayerTile, RLayerVector, RMap, RStyle } from 'rlayers';
+import { INITIAL_CENTER, INITIAL_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../config';
+import { Webcam, WebcamData } from '../services/sheet';
+import { DefaultDesignTokens, DesignTokens, getDesignTokensByZoom } from '../utils/getDesignTokensByZoom';
+import Cam from './cam';
+import ArrowIcon from './icons/arrow';
+import LoadingIcon from './icons/loading';
 
 type Props = {
   webcamData: WebcamData;
   refreshQuery: string;
-  activeWebcam: Webcam;
+  activeWebcam?: Webcam;
   togglePeek: (cam: Webcam) => void;
 };
 
-export default function Map({
-  webcamData,
-  refreshQuery,
-  activeWebcam,
-  togglePeek,
-}: Props): JSX.Element {
+export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek }: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
   const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
-  const [designTokens, setDesignTokens] =
-    useState<DesignTokens>(DefaultDesignTokens);
+  const [designTokens, setDesignTokens] = useState<DesignTokens>(DefaultDesignTokens);
   const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
-  const [location, setLocation] = useState<[number, number]>(undefined);
+  const [location, setLocation] = useState<[number, number]>();
 
   const updateZoom = () => {
     const currentZoom = mapRef.current?.ol.getView().getZoom();
@@ -111,9 +94,7 @@ export default function Map({
       <RControl.RScaleLine />
       <RControl.RCustom className="absolute top-[0.5em] right-[0.5em]">
         <button title="Locate me" onClick={locateUser}>
-          <div className="flex justify-center">
-            {loadingLocation ? <LoadingIcon color="#666" /> : <ArrowIcon />}
-          </div>
+          <div className="flex justify-center">{loadingLocation ? <LoadingIcon color="#666" /> : <ArrowIcon />}</div>
         </button>
       </RControl.RCustom>
       <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
@@ -125,7 +106,7 @@ export default function Map({
         <RLayerVector zIndex={10}>
           <RFeature geometry={new Point(fromLonLat(location))}>
             <RStyle.RStyle>
-              <RStyle.RIcon src={"./current-userlocation.svg"} />
+              <RStyle.RIcon src={'./current-userlocation.svg'} />
             </RStyle.RStyle>
           </RFeature>
         </RLayerVector>

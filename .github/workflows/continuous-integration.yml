@@ -26,11 +26,11 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Run unit tests (Jest)
+      - name: Run unit tests (Vitest)
         run: npm test
 
       - name: Run e2e tests (Cypress)
         uses: cypress-io/github-action@v5
         with:
           start: npm start
-          wait-on: "http://localhost:3000"
+          wait-on: 'http://localhost:3000'
