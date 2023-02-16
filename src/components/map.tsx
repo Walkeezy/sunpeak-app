@@ -10,6 +10,7 @@ import {
   RMap,
   RStyle,
 } from "rlayers";
+import { INITIAL_CENTER, INITIAL_ZOOM, MAX_ZOOM, MIN_ZOOM } from "../config";
 import { Webcam, WebcamData } from "../services/sheet";
 import {
   DefaultDesignTokens,
@@ -34,7 +35,7 @@ export default function Map({
   togglePeek,
 }: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
-  const [zoom, setZoom] = useState<number>(undefined);
+  const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
   const [designTokens, setDesignTokens] =
     useState<DesignTokens>(DefaultDesignTokens);
   const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
@@ -98,17 +99,17 @@ export default function Map({
       ref={mapRef}
       className="h-full w-full"
       initial={{
-        center: fromLonLat([9.533333, 46.85]),
-        zoom: 10,
+        center: fromLonLat(INITIAL_CENTER),
+        zoom: INITIAL_ZOOM,
       }}
       extent={boundingExtent([fromLonLat([5.7, 45.6]), fromLonLat([10.8, 48])])}
       enableRotation={false}
-      minZoom={8}
-      maxZoom={14}
+      minZoom={MIN_ZOOM}
+      maxZoom={MAX_ZOOM}
       onRenderComplete={updateZoom}
     >
       <RControl.RScaleLine />
-      <RControl.RCustom className="absolute bottom-[0.5em] right-[0.5em]">
+      <RControl.RCustom className="absolute top-[0.5em] right-[0.5em]">
         <button title="Locate me" onClick={locateUser}>
           <div className="flex justify-center">
             {loadingLocation ? <LoadingIcon color="#666" /> : <ArrowIcon />}

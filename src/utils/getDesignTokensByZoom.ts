@@ -1,6 +1,6 @@
 export const DefaultDesignTokens = {
-  camSize: 48,
-  arrowSize: 4,
+  camSize: 40,
+  arrowSize: 6,
   borderRadius: "rounded-xl",
 };
 

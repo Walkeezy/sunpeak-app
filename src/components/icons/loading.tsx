@@ -1,4 +1,4 @@
-import { IconProps } from "../../utils/types";
+import { IconProps } from "../../types";
 
 export default function LoadingIcon({
   size = 24,
