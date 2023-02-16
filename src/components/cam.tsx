@@ -29,6 +29,7 @@ export default function Cam({ webcam, isActive, refreshQuery, designTokens, togg
     <RFeature geometry={getPoint}>
       <ROverlay className="relative">
         <motion.div
+          data-test-id="cam-thumbnail"
           layoutId={`${webcam.name}-${webcam.city}`}
           transition={{ type: 'spring', bounce: 0.1, duration: 0.5 }}
           initial={false}

@@ -19,7 +19,7 @@ type Props = {
   webcamData: WebcamData;
 };
 
-export default function Home({ webcamData }: Props) {
+export default function Home({ webcamData = [] }: Props) {
   const [data, setData] = useState<WebcamData>(webcamData);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [refreshQuery, setRefreshQuery] = useState<string>(generateRefreshQuery());
