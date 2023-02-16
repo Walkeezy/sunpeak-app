@@ -6,10 +6,10 @@ env:
   NODE_VERSION: 18
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout current commit
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -23,15 +23,36 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Build app
-        run: npm run build
+  test-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Run unit tests (Vitest)
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run unit tests
         run: npm run test:unit
 
-      - name: Run e2e tests (Cypress)
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run cypress
         uses: cypress-io/github-action@v5
         with:
+          project: .
           browser: chrome
           build: npm run build
           start: npm start
