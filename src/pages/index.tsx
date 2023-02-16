@@ -70,7 +70,7 @@ export default function Home({ webcamData }: Props) {
           <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
         </Header>
 
-        <main className={`grow ${peek ? 'cursor-pointer' : ''}`} onClick={handleClosePeek}>
+        <main data-test-id="index-page" className={`grow ${peek ? 'cursor-pointer' : ''}`} onClick={handleClosePeek}>
           <DynamicMap
             webcamData={data}
             refreshQuery={refreshQuery}
