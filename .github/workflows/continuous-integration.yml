@@ -24,7 +24,7 @@ jobs:
         run: npm run lint
 
       - name: Build app
-        run: npm build
+        run: npm run build
 
       - name: Run unit tests (Jest)
         run: npm test
