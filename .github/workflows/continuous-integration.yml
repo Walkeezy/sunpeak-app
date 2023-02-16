@@ -60,8 +60,8 @@ jobs:
           project: .
           browser: chrome
           build: npm run build
-          start: npm start
-          wait-on: 'http://localhost:3000'
+          start: npm run start
+          wait-on: http://localhost:3000
         env:
           GOOGLE_SHEETS_PRIVATE_KEY: ${{ secrets.GOOGLE_SHEETS_PRIVATE_KEY }}
           GOOGLE_SHEETS_CLIENT_EMAIL: ${{ secrets.GOOGLE_SHEETS_CLIENT_EMAIL }}
