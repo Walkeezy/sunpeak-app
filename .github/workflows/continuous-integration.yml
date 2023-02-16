@@ -27,7 +27,7 @@ jobs:
         run: npm run build
 
       - name: Run unit tests (Vitest)
-        run: npm test:unit
+        run: npm run test:unit
 
       - name: Run e2e tests (Cypress)
         uses: cypress-io/github-action@v5
