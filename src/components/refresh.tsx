@@ -8,7 +8,12 @@ type Props = {
 
 export default function Refresh({ reloadData, isRefreshing }: Props): JSX.Element {
   return (
-    <button className={joinClasses([isRefreshing && 'animate-spin'])} onClick={reloadData} title="Refresh webcam data">
+    <button
+      data-test-id="refresh-button"
+      className={joinClasses([isRefreshing && 'animate-spin'])}
+      onClick={reloadData}
+      title="Refresh webcam data"
+    >
       <RefreshIcon />
     </button>
   );
