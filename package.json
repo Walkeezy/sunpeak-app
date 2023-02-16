@@ -10,10 +10,8 @@
     "cypress": "cypress open",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
-    "e2e": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
-    "e2e:headless": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\"",
-    "component": "cypress open --component",
-    "component:headless": "cypress run --component"
+    "test:e2e": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
+    "test:component": "cypress open --component"
   },
   "dependencies": {
     "@vercel/analytics": "^0.1.8",
