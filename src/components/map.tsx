@@ -60,7 +60,8 @@ export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek
         duration: 500,
       });
     }
-  }, [mapRef, location]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   const allWebcams = useMemo(
     () =>
