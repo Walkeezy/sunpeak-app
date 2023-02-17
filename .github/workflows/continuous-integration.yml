@@ -1,15 +1,16 @@
 name: Continuous Integration
 
 on:
-  push:
-    branches:
-      - '**'
   pull_request:
     branches:
       - master
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 env:
-  NODE_VERSION: 16
+  NODE_VERSION: 18
 
 jobs:
   lint:
