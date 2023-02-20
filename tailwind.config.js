@@ -24,4 +24,5 @@ module.exports = {
     margin: ['first'],
   },
   plugins: [],
+  darkMode: 'class',
 };
