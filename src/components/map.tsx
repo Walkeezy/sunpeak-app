@@ -1,8 +1,9 @@
 import { boundingExtent } from 'ol/extent';
+import { MVT } from 'ol/format';
 import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj.js';
 import { createRef, RefObject, useEffect, useMemo, useState } from 'react';
-import { RControl, RFeature, RLayerTile, RLayerVector, RMap, RStyle } from 'rlayers';
+import { RControl, RFeature, RLayerVector, RLayerVectorTile, RMap, RStyle } from 'rlayers';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../config';
 import { Webcam, WebcamData } from '../services/sheet';
 import { DefaultDesignTokens, DesignTokens, getDesignTokensByZoom } from '../utils/getDesignTokensByZoom';
@@ -98,7 +99,10 @@ export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek
           <div className="flex justify-center">{loadingLocation ? <LoadingIcon color="#666" /> : <ArrowIcon />}</div>
         </button>
       </RControl.RCustom>
-      <RLayerTile url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg" />
+      <RLayerVectorTile
+        url="https://vectortiles.geo.admin.ch/tiles/ch.swisstopo.leichte-basiskarte.vt/v2.0.0/{z}/{x}/{y}.pbf"
+        format={new MVT()}
+      />
       <RLayerVector zIndex={10}>
         <RStyle.RStyle></RStyle.RStyle>
         {allWebcams}
