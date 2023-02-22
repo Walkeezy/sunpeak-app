@@ -2,7 +2,7 @@ export default function MetaData() {
   return (
     <>
       <meta property="og:title" content="Sunpeak App – Webcams from all over Switzerland" />
-      <meta property="og:image" content="https://sunpeak.app/sunpeak-app-preview.jpg" />
+      <meta property="og:image" content="/sunpeak-open-graph.jpg" />
       <meta
         property="og:description"
         content="This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current weather conditions and helping you plan your next outdoor adventure. So why wait? Let's find out where the sun is shining today!"

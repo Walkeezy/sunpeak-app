@@ -1,5 +1,5 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
-import MetaData from './metadata';
+import MetaData from '../utils/metadata';
 
 export default class CustomDocument extends Document {
   render() {
