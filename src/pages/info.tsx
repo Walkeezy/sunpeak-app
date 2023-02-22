@@ -20,7 +20,7 @@ export default function InfoPage() {
         <div></div>
       </Header>
 
-      <main data-test-id="info-page" className="p-8 space-y-4">
+      <main data-test-id="info-page" className="p-8 space-y-4 max-w-prose my-0 mx-auto">
         <p>
           This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current
           weather conditions and helping you plan your next outdoor adventure.
@@ -29,7 +29,7 @@ export default function InfoPage() {
         <p>
           The map is build with{' '}
           <ExternalLink href="https://www.geo.admin.ch/en/geo-services/geo-services/portrayal-services-web-mapping/web-map-tiling-services-wmts.html">
-            Swisstopo WMTS
+            WMTS from Swisstopo
           </ExternalLink>
           .
         </p>
