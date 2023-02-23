@@ -10,6 +10,9 @@ import { DefaultDesignTokens, DesignTokens, getDesignTokensByZoom } from '../uti
 import Cam from './cam';
 import ArrowIcon from './icons/arrow';
 import LoadingIcon from './icons/loading';
+import { apply, applyStyle } from 'ol-mapbox-style';
+
+import mapStyles from '../styles/mapStyles.json';
 
 type Props = {
   webcamData: WebcamData;
@@ -20,6 +23,7 @@ type Props = {
 
 export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek }: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
+  const layerRef = createRef() as RefObject;
   const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
   const [designTokens, setDesignTokens] = useState<DesignTokens>(DefaultDesignTokens);
   const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
@@ -79,6 +83,10 @@ export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek
     [webcamData, activeWebcam, refreshQuery, designTokens, togglePeek]
   );
 
+  if (!mapRef.current && !layerRef.current) {
+    applyStyle(layerRef.current, mapStyles);
+  }
+
   return (
     <RMap
       ref={mapRef}
@@ -100,6 +108,7 @@ export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek
         </button>
       </RControl.RCustom>
       <RLayerVectorTile
+        ref={layerRef}
         url="https://vectortiles.geo.admin.ch/tiles/ch.swisstopo.leichte-basiskarte.vt/v2.0.0/{z}/{x}/{y}.pbf"
         format={new MVT()}
       />
