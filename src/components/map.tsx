@@ -3,21 +3,24 @@ import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj.js';
 import { createRef, RefObject, useEffect, useMemo, useState } from 'react';
 import { RControl, RFeature, RLayerTile, RLayerVector, RMap, RStyle } from 'rlayers';
+import { TemperatureData } from 'src/services/weatherData';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../config';
-import { Webcam, WebcamData } from '../services/sheet';
+import { Webcam, WebcamData } from '../services/webcamData';
 import { DefaultDesignTokens, DesignTokens, getDesignTokensByZoom } from '../utils/getDesignTokensByZoom';
 import Cam from './cam';
 import ArrowIcon from './icons/arrow';
 import LoadingIcon from './icons/loading';
+import Temperature from './temperature';
 
 type Props = {
   webcamData: WebcamData;
+  temperatureData: TemperatureData;
   refreshQuery: string;
   activeWebcam?: Webcam;
   togglePeek: (cam: Webcam) => void;
 };
 
-export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek }: Props): JSX.Element {
+export default function Map({ webcamData, temperatureData, refreshQuery, activeWebcam, togglePeek }: Props): JSX.Element {
   const mapRef = createRef() as RefObject<RMap>;
   const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
   const [designTokens, setDesignTokens] = useState<DesignTokens>(DefaultDesignTokens);
@@ -78,6 +81,12 @@ export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek
     [webcamData, activeWebcam, refreshQuery, designTokens, togglePeek]
   );
 
+  const allTemperatures = useMemo(
+    () => temperatureData.map((temperature) => <Temperature key={temperature.id} temperature={temperature} />),
+
+    [temperatureData]
+  );
+
   return (
     <RMap
       ref={mapRef}
@@ -103,6 +112,12 @@ export default function Map({ webcamData, refreshQuery, activeWebcam, togglePeek
         <RStyle.RStyle></RStyle.RStyle>
         {allWebcams}
       </RLayerVector>
+      {zoom > 10 && (
+        <RLayerVector zIndex={5}>
+          <RStyle.RStyle></RStyle.RStyle>
+          {allTemperatures}
+        </RLayerVector>
+      )}
       {location && (
         <RLayerVector zIndex={10}>
           <RFeature geometry={new Point(fromLonLat(location))}>
