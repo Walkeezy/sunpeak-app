@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { Webcam } from '../services/sheet';
+import { Webcam } from '../services/webcamData';
 import { convertToLargeRoundshotUrl } from '../utils/convertToLargeRoundshotUrl';
 import { generateRefreshQuery } from '../utils/generateRefreshQuery';
 import { joinClasses } from '../utils/joinClasses';

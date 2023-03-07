@@ -3,12 +3,13 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
+import { getTemperatureData, TemperatureData } from 'src/services/weatherData';
 import Header from '../components/header';
 import InfoIcon from '../components/icons/info';
 import Logo from '../components/logo';
 import Peek from '../components/peek';
 import Refresh from '../components/refresh';
-import { getWebcamData, Webcam, WebcamData } from '../services/sheet';
+import { getWebcamData, Webcam, WebcamData } from '../services/webcamData';
 import { generateRefreshQuery } from '../utils/generateRefreshQuery';
 
 const DynamicMap = dynamic(() => import('../components/map'), {
@@ -17,10 +18,12 @@ const DynamicMap = dynamic(() => import('../components/map'), {
 
 type Props = {
   webcamData: WebcamData;
+  temperatureData: TemperatureData;
 };
 
-export default function Home({ webcamData = [] }: Props) {
-  const [data, setData] = useState<WebcamData>(webcamData);
+export default function Home({ webcamData = [], temperatureData = [] }: Props) {
+  const [camData, setCamData] = useState<WebcamData>(webcamData);
+  const [tempData, setTempData] = useState<TemperatureData>(temperatureData);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [refreshQuery, setRefreshQuery] = useState<string>(generateRefreshQuery());
   const [peek, setPeek] = useState<Webcam | undefined>();
@@ -46,7 +49,8 @@ export default function Home({ webcamData = [] }: Props) {
       fetch('/api/data')
         .then((res) => res.json())
         .then((data) => {
-          setData(data);
+          setCamData(data.webcamData);
+          setTempData(data.temperatureData);
           setDataLoading(false);
         });
     } catch (error) {
@@ -72,7 +76,8 @@ export default function Home({ webcamData = [] }: Props) {
 
         <main data-test-id="index-page" className={`grow ${peek ? 'cursor-pointer' : ''}`} onClick={handleClosePeek}>
           <DynamicMap
-            webcamData={data}
+            webcamData={camData}
+            temperatureData={tempData}
             refreshQuery={refreshQuery}
             activeWebcam={peek}
             togglePeek={(cam) => togglePeek(cam)}
@@ -86,9 +91,11 @@ export default function Home({ webcamData = [] }: Props) {
 
 export async function getStaticProps() {
   const webcamData = await getWebcamData();
+  const temperatureData = await getTemperatureData();
   return {
     props: {
       webcamData,
+      temperatureData,
     },
     revalidate: 300, // In seconds
   };

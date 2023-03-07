@@ -3,7 +3,7 @@ import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj.js';
 import { useMemo, useState } from 'react';
 import { RFeature, ROverlay } from 'rlayers';
-import { Webcam } from '../services/sheet';
+import { Webcam } from '../services/webcamData';
 import { DesignTokens } from '../utils/getDesignTokensByZoom';
 import { joinClasses } from '../utils/joinClasses';
 import LoadingIcon from './icons/loading';
