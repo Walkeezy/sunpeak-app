@@ -10,9 +10,3 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .env.local
-# Tests
-cypress.env.json
-coverage
-cypress/dummy/.env
-cypress/videos
-cypress/screenshots
