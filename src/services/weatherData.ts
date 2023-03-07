@@ -1,5 +1,3 @@
-// https://data.geo.admin.ch/ch.meteoschweiz.messwerte-lufttemperatur-10min/ch.meteoschweiz.messwerte-lufttemperatur-10min_de.json
-
 import proj4 from 'proj4';
 
 export type TemperatureData = Temperature[];
@@ -9,7 +7,6 @@ export type Temperature = {
   latitude: number;
   longitude: number;
   value: number;
-  unit: string;
 };
 
 export async function getTemperatureData(): Promise<TemperatureData | []> {
@@ -26,7 +23,7 @@ export async function getTemperatureData(): Promise<TemperatureData | []> {
 
     if (data && data.features.length) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return data.features.map((feature: any) => {
+      const temperatureData = data.features.map((feature: any) => {
         const convertedCoordiantes = proj4('LV95', 'WGS84', [
           feature.geometry.coordinates[0],
           feature.geometry.coordinates[1],
@@ -36,10 +33,17 @@ export async function getTemperatureData(): Promise<TemperatureData | []> {
           latitude: convertedCoordiantes[1],
           longitude: convertedCoordiantes[0],
           value: feature.properties.value,
-          unit: feature.properties.unit,
         };
       });
+
+      // Filter out temperatures that are don't make sense
+      const filteredTemperatureData = temperatureData.filter(
+        (temperature: Temperature) => temperature.value > -50 && temperature.value < 50
+      );
+
+      return filteredTemperatureData;
     }
+
     return [];
   } catch (err) {
     console.log(err);

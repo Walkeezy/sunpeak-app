@@ -112,7 +112,7 @@ export default function Map({ webcamData, temperatureData, refreshQuery, activeW
         <RStyle.RStyle></RStyle.RStyle>
         {allWebcams}
       </RLayerVector>
-      {zoom > 10 && (
+      {zoom > 9 && (
         <RLayerVector zIndex={5}>
           <RStyle.RStyle></RStyle.RStyle>
           {allTemperatures}
