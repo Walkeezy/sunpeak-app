@@ -35,7 +35,7 @@ export default function Cam({ webcam, isActive, refreshQuery, designTokens, togg
           initial={false}
           onClick={togglePeek}
           className={joinClasses([
-            'relative z-10 cursor-pointer border-2 border-white bg-slate-700 shadow-md mt-1 overflow-hidden user-select-none pointer-events-none',
+            'relative z-10 cursor-pointer border-2 border-white bg-slate-700 shadow-md mt-1 overflow-hidden user-select-none',
             borderRadius,
           ])}
           style={{
