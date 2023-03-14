@@ -16,7 +16,7 @@ export default function Temperature({ temperature }: Props): JSX.Element {
 
   return (
     <RFeature geometry={getPoint}>
-      <ROverlay className="w-8 h-8 rounded-full flex items-center justify-center border border-white bg-slate-700 text-white text-[10px] -translate-x-1/2 -translate-y-1/2 shadow-md">
+      <ROverlay className="w-8 h-8 rounded-full flex items-center justify-center border border-white bg-slate-700 text-white text-[10px] -translate-x-1/2 -translate-y-1/2 shadow-md pointer-events-none select-none">
         <span className="ml-[2px]">{temperature.value}°</span>
       </ROverlay>
     </RFeature>
