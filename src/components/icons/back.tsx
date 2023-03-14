@@ -4,8 +4,8 @@ export default function BackIcon({ size = 20, color = '#FFFFFF' }: IconProps): J
   return (
     <svg width={size} height={size} viewBox="0 0 514 514" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M0.442871 257C0.442871 115.307 115.307 0.442871 257 0.442871C398.694 0.442871 513.557 115.308 513.557 257C513.557 398.694 398.694 513.557 257 513.557C115.308 513.557 0.442871 398.694 0.442871 257ZM257 45.4429C140.16 45.4429 45.4429 140.16 45.4429 257C45.4429 373.841 140.16 468.557 257 468.557C373.841 468.557 468.557 373.841 468.557 257C468.557 140.16 373.841 45.4429 257 45.4429Z"
         fill={color}
       />
