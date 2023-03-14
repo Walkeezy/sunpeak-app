@@ -31,7 +31,8 @@ export default function InfoPage() {
           <ExternalLink href="https://www.geo.admin.ch/en/geo-services/geo-services/portrayal-services-web-mapping/web-map-tiling-services-wmts.html">
             WMTS from Swisstopo
           </ExternalLink>
-          .
+          , temperature data is from{' '}
+          <ExternalLink href="https://www.meteoschweiz.admin.ch/">Bundesamt für Meteorologie und Klimatologie</ExternalLink>.
         </p>
         <p>
           This app is open source and{' '}
