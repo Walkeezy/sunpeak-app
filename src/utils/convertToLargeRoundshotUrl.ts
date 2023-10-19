@@ -7,5 +7,6 @@ export const convertToLargeRoundshotUrl = (url: string): string => {
   if (!number) {
     return url;
   }
+
   return url.replace(number, '1000');
 };

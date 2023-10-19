@@ -21,7 +21,7 @@ export async function getWebcamData(): Promise<WebcamData | []> {
       process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
       undefined,
       (process.env.GOOGLE_SHEETS_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
-      target
+      target,
     );
 
     const sheets = google.sheets({ version: 'v4', auth: jwt });
@@ -60,7 +60,8 @@ export async function getWebcamData(): Promise<WebcamData | []> {
 
     return data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
+
     return [];
   }
 }

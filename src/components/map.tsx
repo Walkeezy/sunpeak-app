@@ -51,7 +51,7 @@ export default function Map({ webcamData, temperatureData, refreshQuery, activeW
         setLoadingLocation(false);
         console.error(error.message);
       },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 },
     );
   };
 
@@ -78,13 +78,13 @@ export default function Map({ webcamData, temperatureData, refreshQuery, activeW
           togglePeek={() => togglePeek(webcam)}
         />
       )),
-    [webcamData, activeWebcam, refreshQuery, designTokens, togglePeek]
+    [webcamData, activeWebcam, refreshQuery, designTokens, togglePeek],
   );
 
   const allTemperatures = useMemo(
     () => temperatureData.map((temperature) => <Temperature key={temperature.id} temperature={temperature} />),
 
-    [temperatureData]
+    [temperatureData],
   );
 
   return (
@@ -102,7 +102,7 @@ export default function Map({ webcamData, temperatureData, refreshQuery, activeW
       onRenderComplete={updateZoom}
     >
       <RControl.RScaleLine />
-      <RControl.RCustom className="absolute top-[0.5em] right-[0.5em]">
+      <RControl.RCustom className="absolute right-[0.5em] top-[0.5em]">
         <button title="Locate me" onClick={locateUser}>
           <div className="flex justify-center">{loadingLocation ? <LoadingIcon color="#666" /> : <ArrowIcon />}</div>
         </button>
