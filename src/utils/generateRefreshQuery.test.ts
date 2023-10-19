@@ -1,4 +1,4 @@
-import { test, describe, expect, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { generateRefreshQuery } from './generateRefreshQuery';
 
 vi.useFakeTimers();

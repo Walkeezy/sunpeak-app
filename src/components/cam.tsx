@@ -22,7 +22,7 @@ export default function Cam({ webcam, isActive, refreshQuery, designTokens, togg
 
   const getPoint = useMemo(
     () => new Point(fromLonLat([webcam.longitude, webcam.latitude])),
-    [webcam.longitude, webcam.latitude]
+    [webcam.longitude, webcam.latitude],
   );
 
   return (
@@ -35,7 +35,7 @@ export default function Cam({ webcam, isActive, refreshQuery, designTokens, togg
           initial={false}
           onClick={togglePeek}
           className={joinClasses([
-            'relative z-10 cursor-pointer border-2 border-white bg-slate-700 shadow-md mt-1 overflow-hidden user-select-none',
+            'user-select-none relative z-10 mt-1 cursor-pointer overflow-hidden border-2 border-white bg-slate-700 shadow-md',
             borderRadius,
           ])}
           style={{
@@ -54,7 +54,7 @@ export default function Cam({ webcam, isActive, refreshQuery, designTokens, togg
               src={webcam.thumbnail + '?' + refreshQuery}
               width={camSize}
               height={camSize}
-              className={joinClasses(['object-cover w-full h-full', loading && 'opacity-0'])}
+              className={joinClasses(['h-full w-full object-cover', loading && 'opacity-0'])}
               loading="lazy"
               onLoad={() => setLoading(false)}
               alt={webcam.name}
@@ -67,7 +67,7 @@ export default function Cam({ webcam, isActive, refreshQuery, designTokens, togg
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
             exit={{ opacity: 0 }}
-            className="absolute rotate-45 bg-white z-0"
+            className="absolute z-0 rotate-45 bg-white"
             style={{
               top: `-${arrowSize / 2}px`,
               left: `-${arrowSize / 2}px`,

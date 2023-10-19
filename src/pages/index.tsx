@@ -42,17 +42,15 @@ export default function Home({ webcamData = [], temperatureData = [] }: Props) {
     }
   };
 
-  const handleReloadData = () => {
+  const handleReloadData = async () => {
     try {
       setDataLoading(true);
       setRefreshQuery(new Date().getTime().toString());
-      fetch('/api/data')
-        .then((res) => res.json())
-        .then((data) => {
-          setCamData(data.webcamData);
-          setTempData(data.temperatureData);
-          setDataLoading(false);
-        });
+      const response = await fetch('/api/data');
+      const data = await response.json();
+      setCamData(data.webcamData);
+      setTempData(data.temperatureData);
+      setDataLoading(false);
     } catch (error) {
       console.error(error);
       setDataLoading(false);
@@ -65,7 +63,7 @@ export default function Home({ webcamData = [], temperatureData = [] }: Props) {
         <title>Sunpeak App</title>
       </Head>
 
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col">
+      <div className="absolute left-0 top-0 flex h-full w-full flex-col">
         <Header>
           <Link href="/info" title="Go to info page">
             <InfoIcon />
@@ -92,6 +90,7 @@ export default function Home({ webcamData = [], temperatureData = [] }: Props) {
 export async function getStaticProps() {
   const webcamData = await getWebcamData();
   const temperatureData = await getTemperatureData();
+
   return {
     props: {
       webcamData,

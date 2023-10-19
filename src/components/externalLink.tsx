@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import NextLink from 'next/link';
 
 type Props = {
   href: string;
@@ -7,13 +7,13 @@ type Props = {
 
 export default function ExternalLink({ href, children }: Props): JSX.Element {
   return (
-    <Link
+    <NextLink
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-slate-700 hover:text-slate-400 transition-colors underline underline-offset-4"
+      className="text-slate-700 underline underline-offset-4 transition-colors hover:text-slate-400"
     >
       {children}
-    </Link>
+    </NextLink>
   );
 }

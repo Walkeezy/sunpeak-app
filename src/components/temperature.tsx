@@ -11,12 +11,12 @@ type Props = {
 export default function Temperature({ temperature }: Props): JSX.Element {
   const getPoint = useMemo(
     () => new Point(fromLonLat([temperature.longitude, temperature.latitude])),
-    [temperature.longitude, temperature.latitude]
+    [temperature.longitude, temperature.latitude],
   );
 
   return (
     <RFeature geometry={getPoint}>
-      <ROverlay className="w-8 h-8 rounded-full flex items-center justify-center border border-white bg-slate-700 text-white text-[10px] -translate-x-1/2 -translate-y-1/2 shadow-md pointer-events-none select-none">
+      <ROverlay className="pointer-events-none flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 select-none items-center justify-center rounded-full border border-white bg-slate-700 text-[10px] text-white shadow-md">
         <span className="ml-[2px]">{temperature.value}°</span>
       </ROverlay>
     </RFeature>
