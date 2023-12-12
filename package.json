@@ -13,7 +13,7 @@
   "dependencies": {
     "@vercel/analytics": "^1.1.1",
     "framer-motion": "^10.16.4",
-    "next": "^13.5.6",
+    "next": "^14.0.4",
     "ol": "^8.1.0",
     "proj4": "^2.9.1",
     "react": "^18.2.0",
@@ -33,16 +33,16 @@
     "@vitejs/plugin-react": "^4.1.0",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.51.0",
-    "eslint-config-next": "^13.5.6",
+    "eslint-config-next": "^14.0.4",
     "eslint-config-prettier": "^9.0.0",
-    "googleapis": "^118.0.0",
-    "jsdom": "^22.1.0",
+    "googleapis": "^129.0.0",
+    "jsdom": "^23.0.1",
     "postcss": "^8.4.21",
     "postcss-import": "^15.1.0",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.6",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.2.2",
-    "vitest": "^0.31.4"
+    "vitest": "^1.0.4"
   }
 }
