@@ -1,7 +1,7 @@
 import { boundingExtent } from 'ol/extent';
 import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj.js';
-import { createRef, RefObject, useEffect, useMemo, useState } from 'react';
+import { RefObject, createRef, useEffect, useMemo, useState } from 'react';
 import { RControl, RFeature, RLayerTile, RLayerVector, RMap, RStyle } from 'rlayers';
 import { TemperatureData } from 'src/services/weatherData';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../config';
