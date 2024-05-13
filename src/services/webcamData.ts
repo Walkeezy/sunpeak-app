@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { google } from 'googleapis';
 
 export type WebcamData = Webcam[];
@@ -20,7 +24,7 @@ export async function getWebcamData(): Promise<WebcamData | []> {
     const jwt = new google.auth.JWT(
       process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
       undefined,
-      (process.env.GOOGLE_SHEETS_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+      (process.env.GOOGLE_SHEETS_PRIVATE_KEY ?? '').replace(/\\n/g, '\n'),
       target,
     );
 
@@ -33,13 +37,13 @@ export async function getWebcamData(): Promise<WebcamData | []> {
     const rows = response.data.values;
     const data: WebcamData = [];
 
-    if (rows && rows.length) {
+    if (rows?.length) {
       rows.shift(); // remove header row
       rows.forEach((row) => {
         const isActive = row[9] === 'TRUE';
         if (isActive) {
-          const latitude = parseFloat(row[3]);
-          const longitude = parseFloat(row[4]);
+          const latitude = parseFloat(row[3].toString());
+          const longitude = parseFloat(row[4].toString());
           const fullsize = row[6];
           if (latitude && longitude && fullsize) {
             data.push({

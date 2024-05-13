@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import proj4 from 'proj4';
 
 export type TemperatureData = Temperature[];
@@ -21,7 +26,7 @@ export async function getTemperatureData(): Promise<TemperatureData | []> {
     );
     const data = await response.json();
 
-    if (data && data.features.length) {
+    if (data?.features.length) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const temperatureData = data.features.map((feature: any) => {
         const convertedCoordiantes = proj4('LV95', 'WGS84', [
