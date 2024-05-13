@@ -1,7 +1,7 @@
 import { boundingExtent } from 'ol/extent';
 import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj.js';
-import { RefObject, createRef, useEffect, useMemo, useState } from 'react';
+import { createRef, useEffect, useMemo, useState } from 'react';
 import { RControl, RFeature, RLayerTile, RLayerVector, RMap, RStyle } from 'rlayers';
 import { TemperatureData } from 'src/services/weatherData';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../config';
@@ -21,7 +21,7 @@ type Props = {
 };
 
 export default function Map({ webcamData, temperatureData, refreshQuery, activeWebcam, togglePeek }: Props): JSX.Element {
-  const mapRef = createRef() as RefObject<RMap>;
+  const mapRef = createRef<RMap>();
   const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
   const [designTokens, setDesignTokens] = useState<DesignTokens>(DefaultDesignTokens);
   const [loadingLocation, setLoadingLocation] = useState<boolean>(false);

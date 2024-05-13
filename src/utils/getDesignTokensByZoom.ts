@@ -19,9 +19,9 @@ const getSize = (zoom: number): number => {
     return 50;
   } else if (zoom <= 12) {
     return 60;
-  } else {
-    return 70;
   }
+
+  return 70;
 };
 
 const getArrowSize = (zoom: number): number => {
@@ -31,17 +31,17 @@ const getArrowSize = (zoom: number): number => {
     return 6;
   } else if (zoom <= 11) {
     return 8;
-  } else {
-    return 10;
   }
+
+  return 10;
 };
 
 const getBorderRadius = (zoom: number): string => {
   if (zoom <= 9) {
     return 'rounded-lg';
-  } else {
-    return 'rounded-xl';
   }
+
+  return 'rounded-xl';
 };
 
 export const getDesignTokensByZoom = (zoom: number): DesignTokens => {

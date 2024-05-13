@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -47,7 +49,7 @@ export default function Home({ webcamData = [], temperatureData = [] }: Props) {
       setDataLoading(true);
       setRefreshQuery(new Date().getTime().toString());
       const response = await fetch('/api/data');
-      const data = await response.json();
+      const data: { webcamData: WebcamData; temperatureData: TemperatureData } = await response.json();
       setCamData(data.webcamData);
       setTempData(data.temperatureData);
       setDataLoading(false);
