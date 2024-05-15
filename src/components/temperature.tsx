@@ -2,7 +2,7 @@ import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj.js';
 import { useMemo } from 'react';
 import { RFeature, ROverlay } from 'rlayers';
-import { Temperature as TemperatureType } from 'src/services/weatherData';
+import { Temperature as TemperatureType } from '../services/weatherData';
 
 type Props = {
   temperature: TemperatureType;

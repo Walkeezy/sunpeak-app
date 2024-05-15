@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
+'use client';
+
 import { AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
 import Link from 'next/link';
-import { useState } from 'react';
-import { getTemperatureData, TemperatureData } from 'src/services/weatherData';
+import { FC, useState } from 'react';
 import Header from '../components/header';
 import InfoIcon from '../components/icons/info';
 import Logo from '../components/logo';
 import Peek from '../components/peek';
 import Refresh from '../components/refresh';
-import { getWebcamData, Webcam, WebcamData } from '../services/webcamData';
+import { TemperatureData } from '../services/weatherData';
+import { Webcam, WebcamData } from '../services/webcamData';
 import { generateRefreshQuery } from '../utils/generateRefreshQuery';
 
 const DynamicMap = dynamic(() => import('../components/map'), {
@@ -23,7 +24,7 @@ type Props = {
   temperatureData: TemperatureData;
 };
 
-export default function Home({ webcamData = [], temperatureData = [] }: Props) {
+export const SunpeakApp: FC<Props> = ({ webcamData, temperatureData }) => {
   const [camData, setCamData] = useState<WebcamData>(webcamData);
   const [tempData, setTempData] = useState<TemperatureData>(temperatureData);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
@@ -60,44 +61,25 @@ export default function Home({ webcamData = [], temperatureData = [] }: Props) {
   };
 
   return (
-    <>
-      <Head>
-        <title>Sunpeak App</title>
-      </Head>
+    <div className="absolute left-0 top-0 flex h-full w-full flex-col">
+      <Header>
+        <Link href="/info" title="Go to info page">
+          <InfoIcon />
+        </Link>
+        <Logo />
+        <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
+      </Header>
 
-      <div className="absolute left-0 top-0 flex h-full w-full flex-col">
-        <Header>
-          <Link href="/info" title="Go to info page">
-            <InfoIcon />
-          </Link>
-          <Logo />
-          <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
-        </Header>
-
-        <main data-test-id="index-page" className={`grow ${peek ? 'cursor-pointer' : ''}`} onClick={handleClosePeek}>
-          <DynamicMap
-            webcamData={camData}
-            temperatureData={tempData}
-            refreshQuery={refreshQuery}
-            activeWebcam={peek}
-            togglePeek={(cam) => togglePeek(cam)}
-          />
-          <AnimatePresence>{peek && <Peek webcam={peek} />}</AnimatePresence>
-        </main>
-      </div>
-    </>
+      <main data-test-id="index-page" className={`grow ${peek ? 'cursor-pointer' : ''}`} onClick={handleClosePeek}>
+        <DynamicMap
+          webcamData={camData}
+          temperatureData={tempData}
+          refreshQuery={refreshQuery}
+          activeWebcam={peek}
+          togglePeek={(cam) => togglePeek(cam)}
+        />
+        <AnimatePresence>{peek && <Peek webcam={peek} />}</AnimatePresence>
+      </main>
+    </div>
   );
-}
-
-export async function getStaticProps() {
-  const webcamData = await getWebcamData();
-  const temperatureData = await getTemperatureData();
-
-  return {
-    props: {
-      webcamData,
-      temperatureData,
-    },
-    revalidate: 300, // In seconds
-  };
-}
+};
