@@ -1,12 +1,13 @@
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         'sunpeak-yellow': '#FBB829',
       },
       fontFamily: {
-        sans: ['"Lexend"', 'sans-serif'],
+        sans: ['var(--lexend-font)', 'sans-serif'],
       },
       animation: {
         'move-background': 'move-bg 120s linear infinite',
@@ -24,5 +25,4 @@ module.exports = {
     margin: ['first'],
   },
   plugins: [],
-  darkMode: 'class',
 };

@@ -1,9 +1,16 @@
+import { Metadata } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import ExternalLink from '../components/externalLink';
-import Header from '../components/header';
-import BackIcon from '../components/icons/back';
-import Logo from '../components/logo';
+import ExternalLink from '../../components/externalLink';
+import Header from '../../components/header';
+import BackIcon from '../../components/icons/back';
+import Logo from '../../components/logo';
+
+export const metadata: Metadata = {
+  title: 'Info – Sunpeak App — Webcams from all over Switzerland',
+  description:
+    "This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current weather conditions and helping you plan your next outdoor adventure. So why wait? Let's find out where the sun is shining today!",
+};
 
 export default function InfoPage() {
   return (

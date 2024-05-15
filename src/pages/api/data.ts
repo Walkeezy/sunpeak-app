@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getTemperatureData } from 'src/services/weatherData';
+import { getTemperatureData } from '../../services/weatherData';
 import { getWebcamData } from '../../services/webcamData';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
