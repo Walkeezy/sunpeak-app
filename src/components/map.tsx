@@ -95,6 +95,8 @@ export const Map: FC<Props> = ({ mapboxUrl, temperatureData, center }) => {
     >
       <TileLayer attribution='Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>' url={mapboxUrl} />
       <SaveCenter />
+
+      {allTemperatures.map((temperature) => temperature)}
     </MapContainer>
   );
 };
