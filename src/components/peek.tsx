@@ -1,17 +1,19 @@
+'use client';
+
 import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Webcam } from '../services/webcamData';
 import { convertToLargeRoundshotUrl } from '../utils/convertToLargeRoundshotUrl';
 import { generateRefreshQuery } from '../utils/generateRefreshQuery';
 import { joinClasses } from '../utils/joinClasses';
-import Caption from './caption';
-import LoadingIcon from './icons/loading';
+import { Caption } from './caption';
+import { LoadingIcon } from './icons/loading';
 
 type Props = {
   webcam: Webcam;
 };
 
-export default function Peek({ webcam }: Props): JSX.Element {
+export const Peek: FC<Props> = ({ webcam }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [pauseAnimation, setPauseAnimation] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -66,4 +68,4 @@ export default function Peek({ webcam }: Props): JSX.Element {
       <Caption name={webcam.name} link={webcam.link} />
     </div>
   );
-}
+};

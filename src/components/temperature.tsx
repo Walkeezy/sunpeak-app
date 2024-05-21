@@ -1,6 +1,6 @@
 import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj.js';
-import { useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { RFeature, ROverlay } from 'rlayers';
 import { Temperature as TemperatureType } from '../services/weatherData';
 
@@ -8,7 +8,7 @@ type Props = {
   temperature: TemperatureType;
 };
 
-export default function Temperature({ temperature }: Props): JSX.Element {
+export const Temperature: FC<Props> = ({ temperature }) => {
   const getPoint = useMemo(
     () => new Point(fromLonLat([temperature.longitude, temperature.latitude])),
     [temperature.longitude, temperature.latitude],
@@ -21,4 +21,4 @@ export default function Temperature({ temperature }: Props): JSX.Element {
       </ROverlay>
     </RFeature>
   );
-}
+};

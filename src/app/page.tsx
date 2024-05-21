@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 import { Metadata } from 'next';
+import dynamic from 'next/dynamic';
+import NextLink from 'next/link';
+import { Header } from '../components/header';
+import { InfoIcon } from '../components/icons/info';
+import { Logo } from '../components/logo';
 import { getTemperatureData } from '../services/weatherData';
 import { getWebcamData } from '../services/webcamData';
-import { SunpeakApp } from './app';
 
 export const metadata: Metadata = {
   title: 'Sunpeak App — Webcams from all over Switzerland',
@@ -13,5 +19,28 @@ export default async function Page() {
   const webcamData = await getWebcamData();
   const temperatureData = await getTemperatureData();
 
-  return <SunpeakApp webcamData={webcamData} temperatureData={temperatureData} />;
+  const DynamicMap = dynamic(() => import('../components/map').then((mod) => mod.Map), {
+    loading: () => <p>A map is loading</p>,
+    ssr: false,
+  });
+
+  const peek = false; // TODO
+
+  const mapboxUrl = `https://api.mapbox.com/styles/v1/${process.env.MAPBOX_USER_ID}/${process.env.MAPBOX_STYLE_ID}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
+
+  return (
+    <div className="absolute left-0 top-0 flex h-full w-full flex-col">
+      <Header>
+        <NextLink href="/info" title="Go to info page">
+          <InfoIcon />
+        </NextLink>
+        <Logo />
+        {/* <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} /> */}
+      </Header>
+
+      <main data-test-id="index-page" className={`grow ${peek ? 'cursor-pointer' : ''}`}>
+        <DynamicMap webcamData={webcamData} temperatureData={temperatureData} mapboxUrl={mapboxUrl} />
+      </main>
+    </div>
+  );
 }

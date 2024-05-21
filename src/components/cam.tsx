@@ -1,22 +1,22 @@
 import { motion } from 'framer-motion';
 import { Point } from 'ol/geom';
 import { fromLonLat } from 'ol/proj.js';
-import { useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { RFeature, ROverlay } from 'rlayers';
 import { Webcam } from '../services/webcamData';
 import { DesignTokens } from '../utils/getDesignTokensByZoom';
 import { joinClasses } from '../utils/joinClasses';
-import LoadingIcon from './icons/loading';
+import { LoadingIcon } from './icons/loading';
 
 type Props = {
   webcam: Webcam;
   isActive: boolean;
   refreshQuery: string;
   designTokens: DesignTokens;
-  togglePeek: () => void;
+  // togglePeek: () => void;
 };
 
-export default function Cam({ webcam, isActive, refreshQuery, designTokens, togglePeek }: Props): JSX.Element {
+export const Cam: FC<Props> = ({ webcam, isActive, refreshQuery, designTokens }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const { camSize, borderRadius, arrowSize } = designTokens;
 
@@ -33,7 +33,6 @@ export default function Cam({ webcam, isActive, refreshQuery, designTokens, togg
           layoutId={`${webcam.name}-${webcam.city}`}
           transition={{ type: 'spring', bounce: 0.1, duration: 0.5 }}
           initial={false}
-          onClick={togglePeek}
           className={joinClasses([
             'user-select-none relative z-10 mt-1 cursor-pointer overflow-hidden border-2 border-white bg-slate-700 shadow-md',
             borderRadius,
@@ -79,4 +78,4 @@ export default function Cam({ webcam, isActive, refreshQuery, designTokens, togg
       </ROverlay>
     </RFeature>
   );
-}
+};
