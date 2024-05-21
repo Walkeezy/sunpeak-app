@@ -1,20 +1,23 @@
 'use client';
 
 import 'leaflet/dist/leaflet.css';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '../config';
 import { TemperatureData } from '../services/weatherData';
 import { Webcam, WebcamData } from '../services/webcamData';
+import { SaveCenter } from './save-center';
+import { Temperature } from './temperature';
 
 type Props = {
   mapboxUrl: string;
   webcamData: WebcamData;
   temperatureData: TemperatureData;
   activeWebcam?: Webcam;
+  center?: { centerLat: string; centerLon: string; zoom: string };
 };
 
-export const Map: FC<Props> = ({ mapboxUrl }) => {
+export const Map: FC<Props> = ({ mapboxUrl, temperatureData, center }) => {
   // const mapRef = createRef<RMap>();
   // const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
   // const [designTokens, setDesignTokens] = useState<DesignTokens>(DefaultDesignTokens);
@@ -75,22 +78,23 @@ export const Map: FC<Props> = ({ mapboxUrl }) => {
   //   [webcamData, activeWebcam, refreshQuery, designTokens, togglePeek],
   // );
 
-  // const allTemperatures = useMemo(
-  //   () => temperatureData.map((temperature) => <Temperature key={temperature.id} temperature={temperature} />),
+  const allTemperatures = useMemo(
+    () => temperatureData.map((temperature) => <Temperature key={temperature.id} temperature={temperature} />),
 
-  //   [temperatureData],
-  // );
+    [temperatureData],
+  );
 
   return (
     <MapContainer
-      center={INITIAL_CENTER}
-      zoom={INITIAL_ZOOM}
+      center={center ? [parseFloat(center.centerLat), parseFloat(center.centerLon)] : INITIAL_CENTER}
+      zoom={center ? parseInt(center.zoom) : INITIAL_ZOOM}
       maxBounds={MAX_BOUNDS}
       minZoom={MIN_ZOOM}
       maxZoom={MAX_ZOOM}
       style={{ height: '100%', width: '100%' }}
     >
       <TileLayer attribution='Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>' url={mapboxUrl} />
+      <SaveCenter />
     </MapContainer>
   );
 };
