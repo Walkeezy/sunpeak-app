@@ -23,6 +23,7 @@ export async function getTemperatureData(): Promise<TemperatureData | []> {
   try {
     const response = await fetch(
       'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-lufttemperatur-10min/ch.meteoschweiz.messwerte-lufttemperatur-10min_de.json',
+      { cache: 'no-store' },
     );
     const data = await response.json();
 
