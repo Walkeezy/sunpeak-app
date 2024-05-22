@@ -7,7 +7,6 @@ import { LayerGroup, LayersControl, MapContainer, TileLayer } from 'react-leafle
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '../config';
 import { TemperatureData } from '../services/weatherData';
 import { Webcam, WebcamData } from '../services/webcamData';
-import { generateRefreshQuery } from '../utils/generateRefreshQuery';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
 import { MapEvents } from './map-events';
@@ -19,13 +18,13 @@ type Props = {
   temperatureData: TemperatureData;
   activeWebcam?: Webcam;
   center?: { centerLat: string; centerLon: string; zoom: string };
+  refreshQuery: string;
 };
 
-export const Map: FC<Props> = ({ mapboxUrl, webcamData, temperatureData, center }) => {
+export const Map: FC<Props> = ({ mapboxUrl, webcamData, temperatureData, center, refreshQuery }) => {
   const tempLayerRef = useRef<LayerGroupType<unknown> | null>(null);
   const [camSize, setCamSize] = useState(36);
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
-  const [refreshQuery] = useState<string>(generateRefreshQuery());
 
   const handleCamSizing = (zoom: number) => {
     if (zoom <= 10) {

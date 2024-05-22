@@ -1,13 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
 import { cookies } from 'next/headers';
-import NextLink from 'next/link';
-import { Header } from '../components/header';
-import { InfoIcon } from '../components/icons/info';
-import { LoadingMap } from '../components/loading-map';
-import { Logo } from '../components/logo';
+import { App } from '../components/app';
 import { getTemperatureData } from '../services/weatherData';
 import { getWebcamData } from '../services/webcamData';
 
@@ -25,34 +20,9 @@ export default async function Page() {
   const centerLat = cookieStore.get('centerLat')?.value;
   const centerLon = cookieStore.get('centerLon')?.value;
   const zoom = cookieStore.get('zoom')?.value;
-
   const center = centerLat && centerLon && zoom ? { centerLat, centerLon, zoom } : undefined;
-
-  const DynamicMap = dynamic(() => import('../components/map').then((mod) => mod.Map), {
-    loading: () => <LoadingMap />,
-    ssr: false,
-  });
 
   const mapboxUrl = `https://api.mapbox.com/styles/v1/${process.env.MAPBOX_USER_ID}/${process.env.MAPBOX_STYLE_ID}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
 
-  return (
-    <div className="absolute left-0 top-0 flex h-full w-full flex-col">
-      <Header>
-        <NextLink href="/info" title="Go to info page">
-          <InfoIcon />
-        </NextLink>
-        <Logo />
-        {/* <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} /> */}
-      </Header>
-
-      <main data-test-id="index-page" className="grow bg-slate-700">
-        <DynamicMap
-          webcamData={webcamData}
-          temperatureData={temperatureData}
-          mapboxUrl={mapboxUrl}
-          center={center ?? undefined}
-        />
-      </main>
-    </div>
-  );
+  return <App mapboxUrl={mapboxUrl} webcamData={webcamData} temperatureData={temperatureData} center={center} />;
 }
