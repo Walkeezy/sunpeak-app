@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import NextLink from 'next/link';
 import { Header } from '../components/header';
 import { InfoIcon } from '../components/icons/info';
+import { LoadingMap } from '../components/loading-map';
 import { Logo } from '../components/logo';
 import { getTemperatureData } from '../services/weatherData';
 import { getWebcamData } from '../services/webcamData';
@@ -28,7 +29,7 @@ export default async function Page() {
   const center = centerLat && centerLon && zoom ? { centerLat, centerLon, zoom } : undefined;
 
   const DynamicMap = dynamic(() => import('../components/map').then((mod) => mod.Map), {
-    loading: () => <p>A map is loading</p>,
+    loading: () => <LoadingMap />,
     ssr: false,
   });
 
