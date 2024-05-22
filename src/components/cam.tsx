@@ -6,34 +6,35 @@ import { Webcam } from '../services/webcamData';
 
 type Props = {
   webcam: Webcam;
+  size: number;
+  refreshQuery: string;
+  onSelected: (webcam: Webcam) => void;
 };
 
-type IconProps = Props & {
-  refreshQuery?: string;
-};
-
-const CamIcon: FC<IconProps> = ({ webcam, refreshQuery = 'asdf' }) => {
+const CamIcon: FC<Omit<Props, 'size' | 'onSelected'>> = ({ webcam, refreshQuery }) => {
   return (
-    <div className="user-select-none h-full w-full cursor-pointer overflow-hidden rounded-xl border-2 border-white bg-slate-700 shadow-md">
-      <picture>
-        <img
-          src={webcam.thumbnail + '?' + refreshQuery}
-          className="object-cover"
-          loading="lazy"
-          alt={webcam.name}
-          style={{ width: '100%', height: '100%' }}
-        />
-      </picture>
-    </div>
+    <div
+      className="user-select-none h-full w-full cursor-pointer overflow-hidden rounded-xl border border-white bg-slate-700 bg-cover bg-center bg-no-repeat shadow-md"
+      style={{ backgroundImage: `url(${webcam.thumbnail}?${refreshQuery})` }}
+    />
   );
 };
 
-export const Cam: FC<Props> = ({ webcam }) => {
+export const Cam: FC<Props> = ({ webcam, size, refreshQuery, onSelected }) => {
   const icon = new DivIcon({
     className: '',
-    iconSize: [64, 64],
-    html: renderToString(<CamIcon webcam={webcam} />),
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    html: renderToString(<CamIcon webcam={webcam} refreshQuery={refreshQuery} />),
   });
 
-  return <Marker position={[webcam.latitude, webcam.longitude]} icon={icon} />;
+  return (
+    <Marker
+      position={[webcam.latitude, webcam.longitude]}
+      icon={icon}
+      eventHandlers={{
+        click: () => onSelected && onSelected(webcam),
+      }}
+    />
+  );
 };

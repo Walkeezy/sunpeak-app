@@ -5,9 +5,10 @@ import { saveCenterToCookie } from '../app/actions';
 
 type Props = {
   tempLayerRef: React.MutableRefObject<LayerGroupType<unknown> | null>;
+  onZoomChange?: (zoom: number) => void;
 };
 
-export const MapEvents: FC<Props> = ({ tempLayerRef }) => {
+export const MapEvents: FC<Props> = ({ tempLayerRef, onZoomChange }) => {
   const map = useMapEvents({
     // When moving the map, save the new center to a cookie
     moveend: () => {
@@ -17,6 +18,7 @@ export const MapEvents: FC<Props> = ({ tempLayerRef }) => {
 
     // When zooming in, show or hide the temperature layer
     zoomend: () => {
+      onZoomChange && onZoomChange(map.getZoom());
       if (map.getZoom() < 10) {
         map.removeLayer(tempLayerRef.current!);
       } else {

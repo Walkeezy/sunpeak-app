@@ -2,8 +2,8 @@ import { LatLngTuple } from 'leaflet';
 
 // ZOOM
 export const INITIAL_ZOOM = 10;
-export const MIN_ZOOM = 8;
-export const MAX_ZOOM = 14;
+export const MIN_ZOOM = 9;
+export const MAX_ZOOM = 13;
 
 // COORDINATES
 export const INITIAL_CENTER = [46.85, 9.533333] as LatLngTuple;

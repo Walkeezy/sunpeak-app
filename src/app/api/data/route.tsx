@@ -1,12 +1,10 @@
 import { getTemperatureData } from '../../../services/weatherData';
-import { getWebcamData } from '../../../services/webcamData';
 
 export async function GET() {
   try {
-    const webcamData = await getWebcamData();
     const temperatureData = await getTemperatureData();
-    if (webcamData && temperatureData) {
-      return new Response(JSON.stringify({ webcamData, temperatureData }), {
+    if (temperatureData) {
+      return new Response(JSON.stringify({ temperatureData }), {
         headers: { 'Content-Type': 'application/json' },
       });
     }
