@@ -25,7 +25,7 @@ export const Map: FC<Props> = ({ mapboxUrl, webcamData, temperatureData, center 
   const tempLayerRef = useRef<LayerGroupType<unknown> | null>(null);
   const [camSize, setCamSize] = useState(36);
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
-  const [refreshQuery, setRefreshQuery] = useState<string>(generateRefreshQuery());
+  const [refreshQuery] = useState<string>(generateRefreshQuery());
 
   const handleCamSizing = (zoom: number) => {
     if (zoom <= 10) {
