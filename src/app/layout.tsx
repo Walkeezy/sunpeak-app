@@ -1,5 +1,4 @@
 import { Analytics } from '@vercel/analytics/react';
-import 'ol/ol.css';
 import { ReactNode } from 'react';
 import '../styles/globals.css';
 import { lexend } from './fonts';

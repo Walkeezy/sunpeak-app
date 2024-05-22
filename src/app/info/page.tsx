@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import ExternalLink from '../../components/externalLink';
-import Header from '../../components/header';
-import BackIcon from '../../components/icons/back';
-import Logo from '../../components/logo';
+import { ExternalLink } from '../../components/externalLink';
+import { Header } from '../../components/header';
+import { BackIcon } from '../../components/icons/back';
+import { Logo } from '../../components/logo';
 
 export const metadata: Metadata = {
   title: 'Info – Sunpeak App — Webcams from all over Switzerland',
@@ -34,11 +34,7 @@ export default function InfoPage() {
         </p>
         <p>All webcams are manually collected and directly loaded from public URLs.</p>
         <p>
-          The map is build with{' '}
-          <ExternalLink href="https://www.geo.admin.ch/en/geo-services/geo-services/portrayal-services-web-mapping/web-map-tiling-services-wmts.html">
-            WMTS from Swisstopo
-          </ExternalLink>
-          , temperature data is from{' '}
+          The temperature data displayed on the map is from{' '}
           <ExternalLink href="https://www.meteoschweiz.admin.ch/">Bundesamt für Meteorologie und Klimatologie</ExternalLink>.
         </p>
         <p>

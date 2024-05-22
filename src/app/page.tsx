@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 import { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { App } from '../components/app';
 import { getTemperatureData } from '../services/weatherData';
 import { getWebcamData } from '../services/webcamData';
-import { SunpeakApp } from './app';
 
 export const metadata: Metadata = {
   title: 'Sunpeak App — Webcams from all over Switzerland',
@@ -13,5 +16,13 @@ export default async function Page() {
   const webcamData = await getWebcamData();
   const temperatureData = await getTemperatureData();
 
-  return <SunpeakApp webcamData={webcamData} temperatureData={temperatureData} />;
+  const cookieStore = cookies();
+  const centerLat = cookieStore.get('centerLat')?.value;
+  const centerLon = cookieStore.get('centerLon')?.value;
+  const zoom = cookieStore.get('zoom')?.value;
+  const center = centerLat && centerLon && zoom ? { centerLat, centerLon, zoom } : undefined;
+
+  const mapboxUrl = `https://api.mapbox.com/styles/v1/${process.env.MAPBOX_USER_ID}/${process.env.MAPBOX_STYLE_ID}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
+
+  return <App mapboxUrl={mapboxUrl} webcamData={webcamData} temperatureData={temperatureData} center={center} />;
 }
