@@ -1,28 +1,42 @@
 'use client';
 
-import { LayerGroup as LayerGroupType } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { LayerGroup, LayersControl, MapContainer, TileLayer } from 'react-leaflet';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '../config';
-import { TemperatureData } from '../services/weatherData';
+import { TemperatureData } from '../services/temperatureData';
 import { Webcam, WebcamData } from '../services/webcamData';
+import { WindData } from '../services/windData';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
 import { MapEvents } from './map-events';
 import { Temperature } from './temperature';
+import { Wind } from './wind';
 
 type Props = {
   mapboxUrl: string;
   webcamData: WebcamData;
   temperatureData: TemperatureData;
+  windData: WindData;
+  refreshQuery: string;
   activeWebcam?: Webcam;
   center?: { centerLat: string; centerLon: string; zoom: string };
-  refreshQuery: string;
+  isWindVisible: boolean;
+  isTemperatureVisible: boolean;
+  isWebcamsVisible: boolean;
 };
 
-export const Map: FC<Props> = ({ mapboxUrl, webcamData, temperatureData, center, refreshQuery }) => {
-  const tempLayerRef = useRef<LayerGroupType<unknown> | null>(null);
+export const Map: FC<Props> = ({
+  mapboxUrl,
+  webcamData,
+  temperatureData,
+  windData,
+  center,
+  refreshQuery,
+  isWindVisible,
+  isTemperatureVisible,
+  isWebcamsVisible,
+}) => {
   const [camSize, setCamSize] = useState(36);
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
 
@@ -63,6 +77,8 @@ export const Map: FC<Props> = ({ mapboxUrl, webcamData, temperatureData, center,
     [temperatureData],
   );
 
+  const allWinds = useMemo(() => windData.map((wind) => <Wind key={wind.id} wind={wind} />), [windData]);
+
   return (
     <div className="h-full w-full">
       {activeCam && <CamOverlay webcam={activeCam} onClose={() => setActiveCam(undefined)} />}
@@ -76,14 +92,17 @@ export const Map: FC<Props> = ({ mapboxUrl, webcamData, temperatureData, center,
       >
         <TileLayer attribution='Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>' url={mapboxUrl} />
         <LayersControl position="topright">
-          <LayersControl.Overlay checked name="Temperatur">
-            <LayerGroup ref={tempLayerRef}>{allTemperatures.map((temp) => temp)}</LayerGroup>
+          <LayersControl.Overlay checked={isTemperatureVisible} name="Temperatur">
+            <LayerGroup>{allTemperatures.map((temp) => temp)}</LayerGroup>
           </LayersControl.Overlay>
-          <LayersControl.Overlay checked name="Webcams">
+          <LayersControl.Overlay checked={isWindVisible} name="Wind">
+            <LayerGroup>{allWinds.map((wind) => wind)}</LayerGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay checked={isWebcamsVisible} name="Webcams">
             <LayerGroup>{allWebcams.map((cam) => cam)}</LayerGroup>
           </LayersControl.Overlay>
         </LayersControl>
-        <MapEvents tempLayerRef={tempLayerRef} onZoomChange={(zoom) => handleCamSizing(zoom)} />
+        <MapEvents onZoomChange={(zoom) => handleCamSizing(zoom)} />
       </MapContainer>
     </div>
   );
