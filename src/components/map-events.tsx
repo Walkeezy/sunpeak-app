@@ -1,14 +1,12 @@
-import { LayerGroup as LayerGroupType } from 'leaflet';
 import { FC } from 'react';
 import { useMapEvents } from 'react-leaflet';
-import { saveCenterToCookie } from '../app/actions';
+import { saveCenterToCookie, saveLayerToCookie } from '../app/cookie-actions';
 
 type Props = {
-  tempLayerRef: React.MutableRefObject<LayerGroupType<unknown> | null>;
   onZoomChange?: (zoom: number) => void;
 };
 
-export const MapEvents: FC<Props> = ({ tempLayerRef, onZoomChange }) => {
+export const MapEvents: FC<Props> = ({ onZoomChange }) => {
   const map = useMapEvents({
     // When moving the map, save the new center to a cookie
     moveend: () => {
@@ -16,23 +14,17 @@ export const MapEvents: FC<Props> = ({ tempLayerRef, onZoomChange }) => {
       saveCenterToCookie(center.lat.toString(), center.lng.toString(), map.getZoom().toString());
     },
 
-    // When zooming in, show or hide the temperature layer
     zoomend: () => {
       onZoomChange && onZoomChange(map.getZoom());
-      if (map.getZoom() < 10) {
-        map.removeLayer(tempLayerRef.current!);
-      } else {
-        map.addLayer(tempLayerRef.current!);
-      }
     },
 
     // When layers are switched, save the settings to a cookie
     overlayadd: (event) => {
-      console.info('overlay add: ', event); // TODO
+      saveLayerToCookie(event.name, true);
     },
 
     overlayremove: (event) => {
-      console.info('overlay remove: ', event); // TODO
+      saveLayerToCookie(event.name, false);
     },
   });
 

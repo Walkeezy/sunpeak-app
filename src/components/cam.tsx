@@ -35,6 +35,7 @@ export const Cam: FC<Props> = ({ webcam, size, refreshQuery, onSelected }) => {
       eventHandlers={{
         click: () => onSelected && onSelected(webcam),
       }}
+      riseOnHover
     />
   );
 };

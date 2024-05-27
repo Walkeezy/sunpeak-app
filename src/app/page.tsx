@@ -3,8 +3,9 @@
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { App } from '../components/app';
-import { getTemperatureData } from '../services/weatherData';
+import { getTemperatureData } from '../services/temperatureData';
 import { getWebcamData } from '../services/webcamData';
+import { getWindData } from '../services/windData';
 
 export const metadata: Metadata = {
   title: 'Sunpeak App — Webcams from all over Switzerland',
@@ -15,8 +16,10 @@ export const metadata: Metadata = {
 export default async function Page() {
   const webcamData = await getWebcamData();
   const temperatureData = await getTemperatureData();
+  const windData = await getWindData();
 
   const cookieStore = cookies();
+
   const centerLat = cookieStore.get('centerLat')?.value;
   const centerLon = cookieStore.get('centerLon')?.value;
   const zoom = cookieStore.get('zoom')?.value;
@@ -24,5 +27,16 @@ export default async function Page() {
 
   const mapboxUrl = `https://api.mapbox.com/styles/v1/${process.env.MAPBOX_USER_ID}/${process.env.MAPBOX_STYLE_ID}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
 
-  return <App mapboxUrl={mapboxUrl} webcamData={webcamData} temperatureData={temperatureData} center={center} />;
+  return (
+    <App
+      mapboxUrl={mapboxUrl}
+      webcamData={webcamData}
+      temperatureData={temperatureData}
+      windData={windData}
+      center={center}
+      isWindVisible={cookieStore.get('Wind')?.value === 'true' || false}
+      isTemperatureVisible={cookieStore.get('Temperatur')?.value === 'true' || true}
+      isWebcamsVisible={cookieStore.get('Webcams')?.value === 'true' || true}
+    />
+  );
 }

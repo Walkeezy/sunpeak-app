@@ -2,7 +2,7 @@ import { DivIcon } from 'leaflet';
 import { FC } from 'react';
 import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
-import { Temperature as TemperatureType } from '../services/weatherData';
+import { Temperature as TemperatureType } from '../services/temperatureData';
 
 type Props = {
   temperature: TemperatureType;
@@ -23,5 +23,5 @@ export const Temperature: FC<Props> = ({ temperature }) => {
     html: renderToString(<TemperatureIcon value={temperature.value} />),
   });
 
-  return <Marker position={[temperature.latitude, temperature.longitude]} icon={icon} />;
+  return <Marker position={[temperature.latitude, temperature.longitude]} icon={icon} riseOnHover />;
 };
