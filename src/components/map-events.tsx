@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useMapEvents } from 'react-leaflet';
-import { saveCenterToCookie, saveLayerToCookie } from '../app/cookie-actions';
+import { saveCenterToCookie, saveLayerToCookie } from '../services/cookie-actions';
 
 type Props = {
   onZoomChange?: (zoom: number) => void;
