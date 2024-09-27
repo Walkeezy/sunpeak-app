@@ -22,7 +22,10 @@ export const metadata: Metadata = {
     images: ['/sunpeak-open-graph.jpg'],
     url: 'https://sunpeak.app',
   },
+  referrer: 'origin-when-cross-origin',
+  creator: 'Kevin Walker',
   applicationName: 'Sunpeak',
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     title: 'Sunpeak',
