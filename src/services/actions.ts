@@ -1,10 +1,11 @@
-// app/actions.ts
 'use server';
 
 import { getTemperatureData } from './temperatureData';
+import { getWindData } from './windData';
 
-export async function refreshData() {
+export async function getData() {
   const temperatureData = await getTemperatureData();
+  const windData = await getWindData();
 
-  return { temperatureData };
+  return { windData, temperatureData };
 }

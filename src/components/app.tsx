@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import NextLink from 'next/link';
 import { FC, useState } from 'react';
+import { getData } from '../services/actions';
 import { TemperatureData } from '../services/temperatureData';
 import { WebcamData } from '../services/webcamData';
 import { WindData } from '../services/windData';
@@ -48,9 +49,7 @@ export const App: FC<Props> = ({
     try {
       setDataLoading(true);
       setRefreshQuery(new Date().getTime().toString());
-      const response = await fetch('/api/data');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data: { temperatureData: TemperatureData; windData: WindData } = await response.json();
+      const data = await getData();
       setTempData(data.temperatureData);
       setWindData(data.windData);
       setDataLoading(false);
