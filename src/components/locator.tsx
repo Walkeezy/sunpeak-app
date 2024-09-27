@@ -31,7 +31,7 @@ export const Locator: FC<Props> = ({ location, setLocation }) => {
 
   useEffect(() => {
     if (location) {
-      map.flyTo(location, map.getZoom());
+      map.flyTo(location, 13);
     }
   }, [location]); // eslint-disable-line react-hooks/exhaustive-deps
 
