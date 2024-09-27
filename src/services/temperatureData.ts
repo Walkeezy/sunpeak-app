@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
+import { unstable_noStore as noStore } from 'next/cache';
 import proj4 from 'proj4';
 
 export type TemperatureData = Temperature[];
@@ -20,10 +21,11 @@ export async function getTemperatureData(): Promise<TemperatureData | []> {
     '+proj=somerc +lat_0=46.9524055555556 +lon_0=7.43958333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs +type=crs',
   );
 
+  noStore();
+
   try {
     const response = await fetch(
       'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-lufttemperatur-10min/ch.meteoschweiz.messwerte-lufttemperatur-10min_de.json',
-      { cache: 'no-store' },
     );
     const data = await response.json();
 
