@@ -15,7 +15,9 @@ export const MapEvents: FC<Props> = ({ onZoomChange }) => {
     },
 
     zoomend: () => {
-      onZoomChange && onZoomChange(map.getZoom());
+      if (onZoomChange) {
+        onZoomChange(map.getZoom());
+      }
     },
 
     // When layers are switched, save the settings to a cookie

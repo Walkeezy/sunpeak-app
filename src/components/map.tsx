@@ -57,7 +57,9 @@ export const Map: FC<Props> = ({
   };
 
   useEffect(() => {
-    center && handleCamSizing(parseInt(center.zoom));
+    if (center) {
+      handleCamSizing(parseInt(center.zoom));
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const allWebcams = useMemo(
