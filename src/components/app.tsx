@@ -69,7 +69,7 @@ export const App: FC<Props> = ({
         <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
       </Header>
 
-      <main data-test-id="index-page" className="grow bg-slate-700">
+      <main data-test-id="index-page" className="bg-slate grow">
         <DynamicMap
           webcamData={webcamData}
           temperatureData={tempData}

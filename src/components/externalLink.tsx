@@ -10,7 +10,7 @@ export const ExternalLink: FC<Props> = ({ href, children }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="text-slate-700 underline underline-offset-4 transition-colors hover:text-slate-400"
+    className="text-slate underline underline-offset-4 transition-opacity hover:opacity-60"
   >
     {children}
   </NextLink>
