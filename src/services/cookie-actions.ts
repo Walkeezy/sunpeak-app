@@ -8,13 +8,13 @@ const COOKIE_OPTIONS = {
   expires: new Date(ONE_YEAR_FROM_TODAY),
 };
 
-export const saveCenterToCookie = (centerLat: string, centerLon: string, zoom: string) => {
-  cookies().set('centerLat', centerLat, COOKIE_OPTIONS);
-  cookies().set('centerLon', centerLon, COOKIE_OPTIONS);
-  cookies().set('zoom', zoom, COOKIE_OPTIONS);
+export const saveCenterToCookie = async (centerLat: string, centerLon: string, zoom: string) => {
+  (await cookies()).set('centerLat', centerLat, COOKIE_OPTIONS);
+  (await cookies()).set('centerLon', centerLon, COOKIE_OPTIONS);
+  (await cookies()).set('zoom', zoom, COOKIE_OPTIONS);
 };
 
-export const saveLayerToCookie = (layer: string, isActive: boolean) => {
+export const saveLayerToCookie = async (layer: string, isActive: boolean) => {
   // expire the cookie in 1 year
-  cookies().set(layer, isActive.toString(), COOKIE_OPTIONS);
+  (await cookies()).set(layer, isActive.toString(), COOKIE_OPTIONS);
 };

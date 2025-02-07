@@ -4,14 +4,12 @@ import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { LayerGroup, LayersControl, MapContainer, Marker, TileLayer } from 'react-leaflet';
-import Control from 'react-leaflet-custom-control';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '../config';
 import { TemperatureData } from '../services/temperatureData';
 import { Webcam, WebcamData } from '../services/webcamData';
 import { WindData } from '../services/windData';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
-import { Locator } from './locator';
 import { MapEvents } from './map-events';
 import { Temperature } from './temperature';
 import { Wind } from './wind';
@@ -42,7 +40,7 @@ export const Map: FC<Props> = ({
 }) => {
   const [camSize, setCamSize] = useState(36);
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
-  const [location, setLocation] = useState<[number, number]>();
+  const [location] = useState<[number, number]>();
 
   const handleCamSizing = (zoom: number) => {
     if (zoom <= 10) {
@@ -107,9 +105,9 @@ export const Map: FC<Props> = ({
           </LayersControl.Overlay>
         </LayersControl>
         <MapEvents onZoomChange={(zoom) => handleCamSizing(zoom)} />
-        <Control prepend position="bottomright">
+        {/* <Control prepend position="bottomright">
           <Locator location={location} setLocation={setLocation} />
-        </Control>
+        </Control> */}
         {location && (
           <Marker
             position={location}
