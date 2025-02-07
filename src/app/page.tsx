@@ -255,7 +255,7 @@ export default async function Page() {
   const temperatureData = await getTemperatureData();
   const windData = await getWindData();
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   const centerLat = cookieStore.get('centerLat')?.value;
   const centerLon = cookieStore.get('centerLon')?.value;

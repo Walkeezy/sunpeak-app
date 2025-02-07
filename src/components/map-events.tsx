@@ -11,7 +11,7 @@ export const MapEvents: FC<Props> = ({ onZoomChange }) => {
     // When moving the map, save the new center to a cookie
     moveend: () => {
       const center = map.getCenter();
-      saveCenterToCookie(center.lat.toString(), center.lng.toString(), map.getZoom().toString());
+      void saveCenterToCookie(center.lat.toString(), center.lng.toString(), map.getZoom().toString());
     },
 
     zoomend: () => {
@@ -20,11 +20,11 @@ export const MapEvents: FC<Props> = ({ onZoomChange }) => {
 
     // When layers are switched, save the settings to a cookie
     overlayadd: (event) => {
-      saveLayerToCookie(event.name, true);
+      void saveLayerToCookie(event.name, true);
     },
 
     overlayremove: (event) => {
-      saveLayerToCookie(event.name, false);
+      void saveLayerToCookie(event.name, false);
     },
   });
 
