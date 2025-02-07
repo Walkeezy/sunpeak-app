@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-
 import { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import { App } from '../components/app';
