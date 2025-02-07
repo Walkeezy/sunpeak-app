@@ -60,7 +60,7 @@ export const App: FC<Props> = ({
   };
 
   return (
-    <div className="absolute left-0 top-0 flex h-full w-full flex-col">
+    <div className="absolute top-0 left-0 flex h-full w-full flex-col">
       <Header>
         <NextLink href="/info" title="Go to info page">
           <InfoIcon />
@@ -69,7 +69,7 @@ export const App: FC<Props> = ({
         <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
       </Header>
 
-      <main data-test-id="index-page" className="grow bg-slate-700">
+      <main data-test-id="index-page" className="bg-slate grow">
         <DynamicMap
           webcamData={webcamData}
           temperatureData={tempData}

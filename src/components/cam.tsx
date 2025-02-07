@@ -14,7 +14,7 @@ type Props = {
 const CamIcon: FC<Omit<Props, 'size' | 'onSelected'>> = ({ webcam, refreshQuery }) => {
   return (
     <div
-      className="user-select-none h-full w-full cursor-pointer overflow-hidden rounded-xl border border-white bg-slate-700 bg-cover bg-center bg-no-repeat shadow-md"
+      className="user-select-none bg-slate h-full w-full cursor-pointer overflow-hidden rounded-xl border border-white bg-cover bg-center bg-no-repeat shadow-md"
       style={{ backgroundImage: `url(${webcam.thumbnail}?${refreshQuery})` }}
     />
   );
