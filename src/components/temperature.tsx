@@ -10,7 +10,7 @@ type Props = {
 
 const TemperatureIcon: FC<{ value: number }> = ({ value }) => {
   return (
-    <div className="pointer-events-none flex h-full w-full select-none items-center justify-center rounded-full border border-white bg-slate-700 font-sans text-[10px] text-white shadow-md">
+    <div className="pointer-events-none flex h-full w-full items-center justify-center rounded-full border border-white bg-slate-700 font-sans text-[10px] text-white shadow-md select-none">
       <span className="ml-[2px]">{value}°</span>
     </div>
   );

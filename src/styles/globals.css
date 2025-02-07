@@ -1,7 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-html {
-  -webkit-tap-highlight-color: transparent;
+/* Toggle dark mode manually */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-*: initial;
+  --font-sans: var(--lexend-font), sans-serif;
+
+  --color-*: initial;
+  --color-transparent: transparent;
+
+  --color-yellow: #fbb829;
+
+  --font-weight-*: initial;
+
+  --animate-move-background: move-bg 120s linear infinite;
+  --animate-move-background-faster: move-bg 60s linear infinite;
+
+  @keyframes move-bg {
+    from {
+      background-position: '1000px 0';
+    }
+    to {
+      background-position: '0 0';
+    }
+  }
 }

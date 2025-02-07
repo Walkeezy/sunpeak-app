@@ -54,8 +54,8 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
   const webcamSrc = isDesktop ? convertToLargeRoundshotUrl(webcam.fullsize) : webcam.fullsize;
 
   return (
-    <div className="fixed inset-0 z-[1000] overflow-hidden" onClick={onClose}>
-      <div className="absolute left-[2vw] top-[28vh] h-[42vh] w-[96vw] lg:top-[10vh] lg:h-[80vh]">
+    <div className="fixed inset-0 z-1000 overflow-hidden" onClick={onClose}>
+      <div className="absolute top-[28vh] left-[2vw] h-[42vh] w-[96vw] lg:top-[10vh] lg:h-[80vh]">
         <div className="bg-loading-spinner bg-50% relative h-full w-full overflow-hidden rounded-xl border-[2px] border-white bg-slate-700 bg-center bg-no-repeat shadow-2xl">
           <div ref={wrapperRef} onTouchStart={() => setPauseAnimation(true)} className="h-full w-full overflow-scroll">
             {loading && (
