@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.1.1",
-    "@vercel/speed-insights": "^1.0.14",
     "leaflet": "^1.9.4",
     "next": "^15.1.6",
     "proj4": "^2.9.1",
