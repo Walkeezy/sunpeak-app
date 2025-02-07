@@ -38,7 +38,7 @@
     "eslint": "^9.19.0",
     "eslint-config-next": "^15.1.6",
     "googleapis": "^144.0.0",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.0.0",
     "knip": "^5.30.5",
     "postcss": "^8.4.21",
     "postcss-import": "^16.1.0",
