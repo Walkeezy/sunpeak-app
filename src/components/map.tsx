@@ -10,6 +10,7 @@ import { Webcam, WebcamData } from '../services/webcamData';
 import { WindData } from '../services/windData';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
+import { LocationControl } from './location-control';
 import { MapEvents } from './map-events';
 import { Temperature } from './temperature';
 import { Wind } from './wind';
@@ -40,7 +41,7 @@ export const Map: FC<Props> = ({
 }) => {
   const [camSize, setCamSize] = useState(36);
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
-  const [location] = useState<[number, number]>();
+  const [location, setLocation] = useState<[number, number] | undefined>(undefined);
 
   const handleCamSizing = (zoom: number) => {
     if (zoom <= 10) {
@@ -107,9 +108,7 @@ export const Map: FC<Props> = ({
           </LayersControl.Overlay>
         </LayersControl>
         <MapEvents onZoomChange={(zoom) => handleCamSizing(zoom)} />
-        {/* <Control prepend position="bottomright">
-          <Locator location={location} setLocation={setLocation} />
-        </Control> */}
+        <LocationControl onLocationFound={setLocation} />
         {location && (
           <Marker
             position={location}
