@@ -33,7 +33,7 @@ export const Cam: FC<Props> = ({ webcam, size, refreshQuery, onSelected }) => {
       position={[webcam.latitude, webcam.longitude]}
       icon={icon}
       eventHandlers={{
-        click: () => onSelected && onSelected(webcam),
+        click: () => onSelected?.(webcam),
       }}
       riseOnHover
     />

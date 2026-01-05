@@ -8,17 +8,17 @@
     "start": "next start",
     "check:unused": "knip",
     "type-check": "tsc --noEmit",
-    "lint": "next lint && npm run type-check && npm run check:unused",
+    "lint": "next typegen && eslint src --ext .ts,.tsx && npm run type-check && npm run check:unused",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest"
   },
   "engines": {
-    "node": "^22.0.0"
+    "node": "^24.0.0"
   },
   "dependencies": {
     "@vercel/analytics": "^1.1.1",
     "leaflet": "^1.9.4",
-    "next": "^15.1.6",
+    "next": "^16.1.1",
     "postcss": "^8.5.3",
     "proj4": "^2.9.1",
     "react": "^19.0.0",
@@ -26,17 +26,16 @@
     "react-leaflet": "^5.0.0"
   },
   "devDependencies": {
-    "@smartive/eslint-config": "^6.4.0",
+    "@smartive/eslint-config": "^7.0.0",
     "@smartive/prettier-config": "^3.1.2",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/leaflet": "^1.9.12",
     "@types/node": "^22.13.1",
-    "@types/proj4": "^2.5.4",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.1.0",
     "eslint": "^9.19.0",
-    "eslint-config-next": "^15.1.6",
+    "eslint-config-next": "^16.1.1",
     "googleapis": "^148.0.0",
     "jsdom": "^26.0.0",
     "knip": "^5.30.5",
