@@ -2,7 +2,7 @@
 
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { LayerGroup, LayersControl, MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '../config';
 import { TemperatureData } from '../services/temperatureData';
@@ -39,29 +39,30 @@ export const Map: FC<Props> = ({
   isTemperatureVisible,
   isWebcamsVisible,
 }) => {
-  const [camSize, setCamSize] = useState(36);
+  const calculateCamSize = (zoom: number): number => {
+    if (zoom <= 10) {
+      return 36;
+    }
+    if (zoom <= 11) {
+      return 42;
+    }
+    if (zoom <= 12) {
+      return 56;
+    }
+    if (zoom <= 13) {
+      return 64;
+    }
+
+    return 72;
+  };
+
+  const [camSize, setCamSize] = useState(() => (center ? calculateCamSize(parseInt(center.zoom)) : 36));
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
 
   const handleCamSizing = (zoom: number) => {
-    if (zoom <= 10) {
-      setCamSize(36);
-    } else if (zoom <= 11) {
-      setCamSize(42);
-    } else if (zoom <= 12) {
-      setCamSize(56);
-    } else if (zoom <= 13) {
-      setCamSize(64);
-    } else {
-      setCamSize(72);
-    }
+    setCamSize(calculateCamSize(zoom));
   };
-
-  useEffect(() => {
-    if (center) {
-      handleCamSizing(parseInt(center.zoom));
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const allWebcams = useMemo(
     () =>
