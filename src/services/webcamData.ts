@@ -20,13 +20,11 @@ export type Webcam = {
 
 export async function getWebcamData(): Promise<WebcamData | []> {
   try {
-    const target = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
-    const jwt = new google.auth.JWT(
-      process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-      undefined,
-      (process.env.GOOGLE_SHEETS_PRIVATE_KEY ?? '').replace(/\\n/g, '\n'),
-      target,
-    );
+    const jwt = new google.auth.JWT({
+      email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+      key: (process.env.GOOGLE_SHEETS_PRIVATE_KEY ?? '').replace(/\\n/g, '\n'),
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
 
     const sheets = google.sheets({ version: 'v4', auth: jwt });
     const response = await sheets.spreadsheets.values.get({
