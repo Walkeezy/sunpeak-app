@@ -30,7 +30,7 @@
     "@smartive/prettier-config": "3.1.2",
     "@tailwindcss/postcss": "4.2.1",
     "@types/leaflet": "1.9.21",
-    "@types/node": "22.19.13",
+    "@types/node": "24.11.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.4",
