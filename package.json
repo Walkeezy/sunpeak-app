@@ -39,7 +39,7 @@
     "eslint-config-next": "16.2.1",
     "googleapis": "171.4.0",
     "jsdom": "29.0.1",
-    "knip": "5.87.0",
+    "knip": "5.88.1",
     "prettier": "3.8.1",
     "prettier-plugin-tailwindcss": "0.7.2",
     "tailwindcss": "4.2.2",
