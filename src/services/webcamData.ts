@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { google } from 'googleapis';
 
 export type WebcamData = Webcam[];
@@ -18,7 +14,7 @@ export type Webcam = {
   panorama: boolean;
 };
 
-export async function getWebcamData(): Promise<WebcamData | []> {
+export async function getWebcamData(): Promise<WebcamData> {
   try {
     const jwt = new google.auth.JWT({
       email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
@@ -32,35 +28,33 @@ export async function getWebcamData(): Promise<WebcamData | []> {
       range: 'Webcams',
     });
 
-    const rows = response.data.values;
-    const data: WebcamData = [];
+    // Sheets returns formatted values, so every cell is a string
+    const rows = (response.data.values ?? []) as string[][];
 
-    if (rows?.length) {
-      rows.shift(); // remove header row
-      rows.forEach((row) => {
-        const isActive = row[9] === 'TRUE';
-        if (isActive) {
-          const latitude = parseFloat(row[3].toString());
-          const longitude = parseFloat(row[4].toString());
-          const fullsize = row[6];
-          if (latitude && longitude && fullsize) {
-            data.push({
-              name: row[0],
-              city: row[1],
-              region: row[2],
-              latitude,
-              longitude,
-              thumbnail: row[5] === '' ? fullsize : row[5],
-              fullsize,
-              link: row[7] === '' ? fullsize : row[7],
-              panorama: row[8] === 'TRUE',
-            });
-          }
+    return rows
+      .slice(1) // skip header row
+      .filter((row) => row[9] === 'TRUE') // only active webcams
+      .flatMap((row) => {
+        const latitude = parseFloat(row[3]);
+        const longitude = parseFloat(row[4]);
+        const fullsize = row[6];
+
+        if (!latitude || !longitude || !fullsize) {
+          return [];
         }
-      });
-    }
 
-    return data;
+        return {
+          name: row[0],
+          city: row[1],
+          region: row[2],
+          latitude,
+          longitude,
+          thumbnail: row[5] === '' ? fullsize : row[5],
+          fullsize,
+          link: row[7] === '' ? fullsize : row[7],
+          panorama: row[8] === 'TRUE',
+        };
+      });
   } catch (err) {
     console.error(err);
 
