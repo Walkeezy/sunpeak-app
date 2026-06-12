@@ -9,6 +9,9 @@ concurrency:
   group: ${{ github.head_ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   NODE_VERSION: 24
 
