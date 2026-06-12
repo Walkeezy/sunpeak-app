@@ -50,7 +50,8 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isDesktop = window.innerWidth > 1024;
+  // Lazy initializer keeps the window access out of render and only evaluates it once on mount
+  const [isDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth > 1024);
   const webcamSrc = isDesktop ? convertToLargeRoundshotUrl(webcam.fullsize) : webcam.fullsize;
 
   return (

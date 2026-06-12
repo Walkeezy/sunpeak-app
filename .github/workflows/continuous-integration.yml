@@ -9,6 +9,9 @@ concurrency:
   group: ${{ github.head_ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   NODE_VERSION: 24
 
@@ -23,12 +26,16 @@ jobs:
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run lint
         run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
 
   test-unit:
     runs-on: ubuntu-latest
@@ -40,9 +47,36 @@ jobs:
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run unit tests
         run: npm run test:unit
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Dummy values so the build succeeds without real credentials
+      GOOGLE_SHEETS_PRIVATE_KEY: dummy
+      GOOGLE_SHEETS_CLIENT_EMAIL: dummy@example.com
+      SPREADSHEET_ID: dummy
+      MAPBOX_STYLE_ID: dummy
+      MAPBOX_USER_ID: dummy
+      MAPBOX_ACCESS_TOKEN: dummy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build

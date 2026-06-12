@@ -9,7 +9,7 @@ describe('generateRefreshQuery', () => {
     expect(generateRefreshQuery()).toBe('1-15-30');
   });
 
-  test('get refresh query for 15:36', () => {
+  test('get refresh query for 08:47', () => {
     vi.setSystemTime(new Date('2020-01-02 08:47'));
     expect(generateRefreshQuery()).toBe('2-8-45');
   });

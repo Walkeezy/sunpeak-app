@@ -7,10 +7,13 @@
     "build": "next build",
     "start": "next start",
     "check:unused": "knip",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "type-check": "tsc --noEmit",
     "lint": "next typegen && eslint src --ext .ts,.tsx && npm run type-check && npm run check:unused",
     "test:unit": "vitest run",
-    "test:unit:watch": "vitest"
+    "test:unit:watch": "vitest",
+    "test:unit:coverage": "vitest run --coverage"
   },
   "engines": {
     "node": "^24.0.0"
@@ -20,7 +23,6 @@
     "googleapis": "173.0.0",
     "leaflet": "^1.9.4",
     "next": "^16.1.1",
-    "postcss": "^8.5.3",
     "proj4": "^2.9.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -35,10 +37,12 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
+    "@vitest/coverage-v8": "^4.1.8",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.7",
     "jsdom": "29.1.1",
     "knip": "6.16.1",
+    "postcss": "^8.5.3",
     "prettier": "3.8.3",
     "prettier-plugin-tailwindcss": "0.8.0",
     "tailwindcss": "4.3.0",
