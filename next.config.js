@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 
-const nextConfig = {
-  transpilePackages: ['ol', 'rlayers'],
-};
+const nextConfig = {};
 
 module.exports = nextConfig;

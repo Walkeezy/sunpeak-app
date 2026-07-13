@@ -98,7 +98,7 @@ export const Map: FC<Props> = ({
       >
         <TileLayer attribution='Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>' url={mapboxUrl} />
         <LayersControl position="topright">
-          <LayersControl.Overlay checked={isTemperatureVisible} name="Temperatur">
+          <LayersControl.Overlay checked={isTemperatureVisible} name="Temperature">
             <LayerGroup>{allTemperatures.map((temp) => temp)}</LayerGroup>
           </LayersControl.Overlay>
           <LayersControl.Overlay checked={isWindVisible} name="Wind">

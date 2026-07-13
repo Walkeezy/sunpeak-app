@@ -2,19 +2,20 @@
 
 import { cookies } from 'next/headers';
 
-const ONE_YEAR_FROM_TODAY = Date.now() + 365 * 24 * 60 * 60 * 1000;
+const ONE_YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000;
 
-const COOKIE_OPTIONS = {
-  expires: new Date(ONE_YEAR_FROM_TODAY),
-};
+const cookieOptions = () => ({
+  expires: new Date(Date.now() + ONE_YEAR_IN_MS),
+});
 
 export const saveCenterToCookie = async (centerLat: string, centerLon: string, zoom: string) => {
-  (await cookies()).set('centerLat', centerLat, COOKIE_OPTIONS);
-  (await cookies()).set('centerLon', centerLon, COOKIE_OPTIONS);
-  (await cookies()).set('zoom', zoom, COOKIE_OPTIONS);
+  const cookieStore = await cookies();
+  const options = cookieOptions();
+  cookieStore.set('centerLat', centerLat, options);
+  cookieStore.set('centerLon', centerLon, options);
+  cookieStore.set('zoom', zoom, options);
 };
 
 export const saveLayerToCookie = async (layer: string, isActive: boolean) => {
-  // expire the cookie in 1 year
-  (await cookies()).set(layer, isActive.toString(), COOKIE_OPTIONS);
+  (await cookies()).set(layer, isActive.toString(), cookieOptions());
 };

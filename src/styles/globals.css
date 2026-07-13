@@ -1,8 +1,5 @@
 @import 'tailwindcss';
 
-/* Toggle dark mode manually */
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
   --font-*: initial;
   --font-sans: var(--lexend-font), sans-serif;
@@ -15,16 +12,4 @@
   --color-slate: #334155;
 
   --font-weight-*: initial;
-
-  --animate-move-background: move-bg 120s linear infinite;
-  --animate-move-background-faster: move-bg 60s linear infinite;
-
-  @keyframes move-bg {
-    from {
-      background-position: '1000px 0';
-    }
-    to {
-      background-position: '0 0';
-    }
-  }
 }

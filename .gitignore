@@ -10,3 +10,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .env.local
+# Test coverage output
+coverage/
+# TypeScript incremental build info
+*.tsbuildinfo

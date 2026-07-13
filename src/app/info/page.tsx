@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Head from 'next/head';
 import Link from 'next/link';
 import { ExternalLink } from '../../components/externalLink';
 import { Header } from '../../components/header';
@@ -15,10 +14,6 @@ export const metadata: Metadata = {
 export default function InfoPage() {
   return (
     <>
-      <Head>
-        <title>Sunpeak App – Info</title>
-      </Head>
-
       <Header>
         <Link href="/" title="Go to back to home page">
           <BackIcon />
@@ -43,7 +38,7 @@ export default function InfoPage() {
         </p>
         <p>
           Questions and feedback? You can reach me at{' '}
-          <ExternalLink href="mailto:kevinwalker.ch">mail@kevinwalker.ch</ExternalLink>.
+          <ExternalLink href="mailto:mail@kevinwalker.ch">mail@kevinwalker.ch</ExternalLink>.
         </p>
       </main>
     </>

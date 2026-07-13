@@ -20,7 +20,7 @@ const config = [
     },
   },
   {
-    ignores: ['test/check-page-errors.js', '**/generated.ts', 'tailwind.config.ts'],
+    ignores: ['**/generated.ts'],
   },
 ];
 
