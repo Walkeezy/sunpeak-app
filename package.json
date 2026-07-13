@@ -42,7 +42,7 @@
     "eslint-config-next": "16.2.10",
     "jsdom": "29.1.1",
     "postcss": "8.5.18",
-    "knip": "6.25.0",
+    "knip": "6.26.0",
     "prettier": "3.9.5",
     "prettier-plugin-tailwindcss": "0.8.0",
     "tailwindcss": "4.3.2",
