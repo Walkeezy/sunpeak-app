@@ -31,22 +31,22 @@
   "devDependencies": {
     "@smartive/eslint-config": "7.0.1",
     "@smartive/prettier-config": "3.1.2",
-    "@tailwindcss/postcss": "4.3.0",
+    "@tailwindcss/postcss": "4.3.2",
     "@types/leaflet": "1.9.21",
-    "@types/node": "24.13.1",
+    "@types/node": "24.13.3",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/coverage-v8": "4.1.10",
+    "@vitejs/plugin-react": "6.0.3",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.7",
+    "eslint-config-next": "16.2.10",
     "jsdom": "29.1.1",
-    "knip": "6.16.1",
     "postcss": "^8.5.3",
-    "prettier": "3.8.3",
+    "knip": "6.25.0",
+    "prettier": "3.9.5",
     "prettier-plugin-tailwindcss": "0.8.0",
-    "tailwindcss": "4.3.0",
+    "tailwindcss": "4.3.2",
     "typescript": "5.9.3",
-    "vitest": "4.1.8"
+    "vitest": "4.1.10"
   }
 }
