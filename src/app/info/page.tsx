@@ -38,7 +38,7 @@ export default function InfoPage() {
         </p>
         <p>
           Questions and feedback? You can reach me at{' '}
-          <ExternalLink href="mailto:kevinwalker.ch">mail@kevinwalker.ch</ExternalLink>.
+          <ExternalLink href="mailto:mail@kevinwalker.ch">mail@kevinwalker.ch</ExternalLink>.
         </p>
       </main>
     </>

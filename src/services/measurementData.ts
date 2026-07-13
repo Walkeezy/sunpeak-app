@@ -29,6 +29,11 @@ export async function fetchMeasurementData(url: string): Promise<Measurement[]> 
 
   try {
     const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch measurement data: ${response.status}`);
+    }
+
     const data = (await response.json()) as GeoAdminResponse;
 
     return (data.features ?? []).map((feature) => {

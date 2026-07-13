@@ -18,6 +18,7 @@ describe('getTemperatureData', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        ok: true,
         json: () =>
           Promise.resolve({
             features: [feature('ok', 21.5), feature('too-cold', -99), feature('too-hot', 99)],

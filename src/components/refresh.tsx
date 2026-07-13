@@ -14,7 +14,8 @@ export const Refresh: FC<Props> = ({ reloadData, isRefreshing }) => (
     data-test-id="refresh-button"
     className={joinClasses([isRefreshing && 'animate-spin'])}
     onClick={reloadData}
-    title="Refresh webcam data"
+    disabled={isRefreshing}
+    title="Refresh data"
   >
     <RefreshIcon />
   </button>

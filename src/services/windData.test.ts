@@ -12,6 +12,7 @@ describe('getWindData', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        ok: true,
         json: () =>
           Promise.resolve({
             features: [

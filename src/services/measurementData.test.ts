@@ -7,7 +7,7 @@ vi.mock('next/cache', () => ({ unstable_noStore: vi.fn() }));
 const bernLV95 = [2_600_000, 1_200_000];
 
 const mockFetchResponse = (body: unknown) => {
-  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ json: () => Promise.resolve(body) }));
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(body) }));
 };
 
 describe('fetchMeasurementData', () => {
@@ -38,6 +38,13 @@ describe('fetchMeasurementData', () => {
     mockFetchResponse({});
 
     await expect(fetchMeasurementData('https://example.com/data.json')).resolves.toEqual([]);
+  });
+
+  test('returns empty array when response is not ok', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500, json: () => Promise.resolve({}) }));
+
+    await expect(fetchMeasurementData('https://example.com/data.json')).resolves.toEqual([]);
+    expect(console.error).toHaveBeenCalled();
   });
 
   test('returns empty array when fetch fails', async () => {

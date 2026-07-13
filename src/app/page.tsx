@@ -39,9 +39,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const webcamData = await getWebcamData();
-  const temperatureData = await getTemperatureData();
-  const windData = await getWindData();
+  const [webcamData, temperatureData, windData] = await Promise.all([getWebcamData(), getTemperatureData(), getWindData()]);
 
   const cookieStore = await cookies();
 
@@ -59,9 +57,9 @@ export default async function Page() {
       temperatureData={temperatureData}
       windData={windData}
       center={center}
-      isWindVisible={cookieStore.get('Wind')?.value === 'true' || false}
-      isTemperatureVisible={cookieStore.get('Temperatur')?.value === 'true' || true}
-      isWebcamsVisible={cookieStore.get('Webcams')?.value === 'true' || true}
+      isWindVisible={cookieStore.get('Wind')?.value === 'true'}
+      isTemperatureVisible={cookieStore.get('Temperature')?.value !== 'false'}
+      isWebcamsVisible={cookieStore.get('Webcams')?.value !== 'false'}
     />
   );
 }
