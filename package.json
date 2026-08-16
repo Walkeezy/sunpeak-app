@@ -39,7 +39,7 @@
     "@vitest/coverage-v8": "4.1.10",
     "@vitejs/plugin-react": "6.0.5",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "16.3.1",
     "jsdom": "30.0.1",
     "postcss": "8.5.26",
     "knip": "6.32.2",
