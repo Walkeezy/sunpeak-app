@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.0",
-    "googleapis": "174.0.1",
+    "googleapis": "175.0.0",
     "leaflet": "^1.9.4",
     "next": "^16.1.1",
     "proj4": "^2.9.1",
