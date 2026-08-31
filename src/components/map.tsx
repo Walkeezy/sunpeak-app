@@ -2,12 +2,13 @@
 
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { FC, useMemo, useState } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import { LayerGroup, LayersControl, MapContainer, Marker, TileLayer } from 'react-leaflet';
-import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '../config';
-import { TemperatureData } from '../services/temperatureData';
-import { Webcam, WebcamData } from '../services/webcamData';
-import { WindData } from '../services/windData';
+import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '@/config';
+import type { TemperatureData } from '@/services/temperatureData';
+import type { Webcam, WebcamData } from '@/services/webcamData';
+import type { WindData } from '@/services/windData';
+import type { MapCenter } from '@/utils/parseMapCenter';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
 import { LocationControl } from './location-control';
@@ -21,7 +22,7 @@ type Props = {
   temperatureData: TemperatureData;
   windData: WindData;
   refreshQuery: string;
-  center?: { centerLat: string; centerLon: string; zoom: string };
+  center?: MapCenter;
   isWindVisible: boolean;
   isTemperatureVisible: boolean;
   isWebcamsVisible: boolean;
@@ -34,7 +35,7 @@ const locationIcon = new Icon({
   iconAnchor: [18, 36],
 });
 
-export const Map: FC<Props> = ({
+export const WebcamMap: FC<Props> = ({
   mapboxUrl,
   webcamData,
   temperatureData,

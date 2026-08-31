@@ -26,4 +26,11 @@ describe('parseMapCenter', () => {
     expect(parseMapCenter('46.85', '9.53', '8')).toBeUndefined();
     expect(parseMapCenter('46.85', '9.53', '14')).toBeUndefined();
   });
+
+  test('returns undefined when latitude or longitude is out of range', () => {
+    expect(parseMapCenter('91', '9.53', '11')).toBeUndefined();
+    expect(parseMapCenter('-91', '9.53', '11')).toBeUndefined();
+    expect(parseMapCenter('46.85', '181', '11')).toBeUndefined();
+    expect(parseMapCenter('46.85', '-181', '11')).toBeUndefined();
+  });
 });

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { FETCH_TIMEOUT_MS } from '../config';
+import { FETCH_TIMEOUT_MS } from '@/config';
 import { getWebcamData } from './webcamData';
 
 const { valuesGet } = vi.hoisted(() => ({ valuesGet: vi.fn() }));

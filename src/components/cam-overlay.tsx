@@ -1,10 +1,10 @@
 'use client';
 
-import { FC, useEffect, useRef, useState } from 'react';
-import { Webcam } from '../services/webcamData';
-import { convertToLargeRoundshotUrl } from '../utils/convertToLargeRoundshotUrl';
-import { generateRefreshQuery } from '../utils/generateRefreshQuery';
-import { joinClasses } from '../utils/joinClasses';
+import { type FC, useEffect, useRef, useState } from 'react';
+import type { Webcam } from '@/services/webcamData';
+import { convertToLargeRoundshotUrl } from '@/utils/convertToLargeRoundshotUrl';
+import { generateRefreshQuery } from '@/utils/generateRefreshQuery';
+import { joinClasses } from '@/utils/joinClasses';
 import { Caption } from './caption';
 import { LoadingIcon } from './icons/loading';
 
@@ -104,16 +104,17 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
   const webcamSrc = isDesktop ? convertToLargeRoundshotUrl(webcam.fullsize) : webcam.fullsize;
 
   return (
-    <div className="fixed inset-0 z-1000 overflow-hidden" onClick={onClose}>
+    <div className="fixed inset-0 z-1000 overflow-hidden">
+      <button type="button" tabIndex={-1} aria-hidden="true" className="absolute inset-0" onClick={onClose} />
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={webcam.name}
-        onClick={(event) => event.stopPropagation()}
-        className="absolute top-[28vh] left-[2vw] h-[42vh] w-[96vw] lg:top-[10vh] lg:h-[80vh]"
+        className="absolute top-[28vh] left-[2vw] z-10 h-[42vh] w-[96vw] lg:top-[10vh] lg:h-[80vh]"
       >
         <button
+          type="button"
           ref={closeButtonRef}
           onClick={onClose}
           aria-label="Close webcam view"
@@ -130,7 +131,7 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
             )}
             <picture>
               <img
-                src={webcamSrc + '?' + generateRefreshQuery()}
+                src={`${webcamSrc}?${generateRefreshQuery()}`}
                 className={joinClasses(['mx-auto h-full w-auto max-w-none', loading && 'opacity-0'])}
                 onLoad={() => setLoading(false)}
                 alt={webcam.name}

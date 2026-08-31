@@ -1,4 +1,4 @@
-import { MAX_ZOOM, MIN_ZOOM } from '../config';
+import { MAX_ZOOM, MIN_ZOOM } from '@/config';
 
 export type MapCenter = { centerLat: string; centerLon: string; zoom: string };
 
@@ -12,6 +12,10 @@ export const parseMapCenter = (centerLat?: string, centerLon?: string, zoom?: st
   const parsedZoom = parseInt(zoom, 10);
 
   if (!Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(parsedZoom)) {
+    return undefined;
+  }
+
+  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
     return undefined;
   }
 

@@ -1,8 +1,8 @@
 import { DivIcon } from 'leaflet';
-import { FC } from 'react';
+import type { FC } from 'react';
 import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
-import { Wind as WindType } from '../services/windData';
+import type { Wind as WindType } from '@/services/windData';
 
 type Props = {
   wind: WindType;

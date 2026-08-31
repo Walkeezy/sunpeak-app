@@ -1,18 +1,15 @@
-import { Map as LeafletMap } from 'leaflet';
-import { FC, useEffect } from 'react';
-import { useMap, useMapEvents } from 'react-leaflet';
-import { camIconSize } from '../config';
-import { saveCenterToCookie, saveLayerToCookie } from '../services/cookie-actions';
+import type { Map as LeafletMap } from 'leaflet';
+import { type FC, useLayoutEffect } from 'react';
+import { useMapEvents } from 'react-leaflet';
+import { camIconSize } from '@/config';
+import { saveCenterToCookie, saveLayerToCookie } from '@/services/cookie-actions';
 
 const setCamSizeVariable = (map: LeafletMap) => {
   map.getContainer().style.setProperty('--cam-size', `${camIconSize(map.getZoom())}px`);
 };
 
 export const MapEvents: FC = () => {
-  const map = useMap();
-
-  useMapEvents({
-    // When moving the map, save the new center to a cookie
+  const map = useMapEvents({
     moveend: () => {
       const center = map.getCenter();
       void saveCenterToCookie(center.lat.toString(), center.lng.toString(), map.getZoom().toString());
@@ -22,7 +19,6 @@ export const MapEvents: FC = () => {
       setCamSizeVariable(map);
     },
 
-    // When layers are switched, save the settings to a cookie
     overlayadd: (event) => {
       void saveLayerToCookie(event.name, true);
     },
@@ -32,7 +28,7 @@ export const MapEvents: FC = () => {
     },
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setCamSizeVariable(map);
   }, [map]);
 

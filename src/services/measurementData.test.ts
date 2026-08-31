@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { FETCH_TIMEOUT_MS } from '../config';
+import { FETCH_TIMEOUT_MS } from '@/config';
 import { fetchMeasurementData } from './measurementData';
 
 // LV95 coordinates of the projection origin (Bern), which maps to ~7.44° E / ~46.95° N

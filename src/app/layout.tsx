@@ -1,7 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
-import { ReactNode } from 'react';
-import '../styles/globals.css';
+import type { ReactNode } from 'react';
 import { lexend } from './fonts';
+import '@/styles/globals.css';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

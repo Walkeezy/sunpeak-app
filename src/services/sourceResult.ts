@@ -1,4 +1,4 @@
-export type SourceResult<T> = {
+type SourceResult<T> = {
   data: T;
   ok: boolean;
 };

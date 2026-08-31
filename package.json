@@ -7,10 +7,9 @@
     "build": "next build",
     "start": "next start",
     "check:unused": "knip",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "biome check --write .",
     "type-check": "tsc --noEmit",
-    "lint": "next typegen && eslint src --ext .ts,.tsx && npm run type-check && npm run check:unused",
+    "lint": "next typegen && biome ci . && npm run type-check && npm run check:unused",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "test:unit:coverage": "vitest run --coverage"
@@ -29,8 +28,7 @@
     "react-leaflet": "^5.0.0"
   },
   "devDependencies": {
-    "@smartive/eslint-config": "7.0.1",
-    "@smartive/prettier-config": "3.1.2",
+    "@biomejs/biome": "2.5.9",
     "@tailwindcss/postcss": "4.3.3",
     "@types/leaflet": "1.9.22",
     "@types/node": "24.13.3",
@@ -38,13 +36,9 @@
     "@types/react-dom": "19.2.5",
     "@vitest/coverage-v8": "4.1.11",
     "@vitejs/plugin-react": "6.1.1",
-    "eslint": "9.39.5",
-    "eslint-config-next": "16.3.3",
     "jsdom": "30.0.1",
-    "postcss": "8.5.26",
     "knip": "6.32.3",
-    "prettier": "3.9.6",
-    "prettier-plugin-tailwindcss": "0.8.1",
+    "postcss": "8.5.26",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
     "vitest": "4.1.11"

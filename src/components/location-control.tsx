@@ -1,7 +1,7 @@
-import { Control as LeafletControl, LocationEvent } from 'leaflet';
-import { FC, useEffect, useRef } from 'react';
+import { Control as LeafletControl, type LocationEvent } from 'leaflet';
+import { type FC, useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
-import { MAX_ZOOM } from '../config';
+import { MAX_ZOOM } from '@/config';
 
 type Props = {
   onLocationFound: (location: [number, number]) => void;
@@ -20,10 +20,13 @@ export const LocationControl: FC<Props> = ({ onLocationFound }) => {
         div.className = 'leaflet-control';
 
         const button = document.createElement('button');
+        button.type = 'button';
         button.className = 'bg-white p-2 rounded shadow hover:opacity-80';
         button.title = 'Show my location';
+        button.setAttribute('aria-label', 'Show my location');
         button.innerHTML = `
           <svg
+            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"

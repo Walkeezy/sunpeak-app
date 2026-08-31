@@ -9,6 +9,7 @@ Available here: [sunpeak.app](https://sunpeak.app)
 - [Next.js](https://nextjs.org/) (App Router) with React and TypeScript
 - [Leaflet](https://leafletjs.com/) / [react-leaflet](https://react-leaflet.js.org/) for the interactive map, with tiles from [Mapbox](https://www.mapbox.com/)
 - [Tailwind CSS](https://tailwindcss.com/) for styling
+- [Biome](https://biomejs.dev/) for linting and formatting
 - [Vitest](https://vitest.dev/) for unit tests
 
 ## Data sources
@@ -44,16 +45,15 @@ The MeteoSwiss data is delivered in the Swiss LV95 coordinate system and convert
 | `npm run dev`                | Start the development server                             |
 | `npm run build`              | Create a production build                                |
 | `npm run start`              | Serve the production build                               |
-| `npm run lint`               | Route typegen, ESLint, type check, and unused-code check |
-| `npm run format`             | Format all files with Prettier                           |
-| `npm run format:check`       | Verify formatting without writing                        |
+| `npm run lint`               | Typegen, Biome, type check, and unused-code check        |
+| `npm run format`             | Format all files with Biome                              |
 | `npm run test:unit`          | Run unit tests once                                      |
 | `npm run test:unit:watch`    | Run unit tests in watch mode                             |
 | `npm run test:unit:coverage` | Run unit tests with a coverage report                    |
 
 ## Continuous integration
 
-Pull requests against `main` run lint (including formatting), unit tests, and a production build via GitHub Actions. Dependency updates are managed by Renovate.
+Pull requests against `main` run lint (Biome, type check, unused exports), unit tests, and a production build via GitHub Actions. Dependency updates are managed by Renovate.
 
 ## Deployment
 
