@@ -1,32 +1,35 @@
 import { DivIcon } from 'leaflet';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
 import { Webcam } from '../services/webcamData';
 
 type Props = {
   webcam: Webcam;
-  size: number;
   refreshQuery: string;
   onSelected: (webcam: Webcam) => void;
 };
 
-const CamIcon: FC<Omit<Props, 'size' | 'onSelected'>> = ({ webcam, refreshQuery }) => {
+const CamIcon: FC<Omit<Props, 'onSelected'>> = ({ webcam, refreshQuery }) => {
   return (
     <div
-      className="user-select-none bg-slate h-full w-full cursor-pointer overflow-hidden rounded-xl border border-white bg-cover bg-center bg-no-repeat shadow-md"
+      className="bg-slate h-full w-full cursor-pointer overflow-hidden rounded-xl border border-white bg-cover bg-center bg-no-repeat shadow-md select-none"
       style={{ backgroundImage: `url(${webcam.thumbnail}?${refreshQuery})` }}
     />
   );
 };
 
-export const Cam: FC<Props> = ({ webcam, size, refreshQuery, onSelected }) => {
-  const icon = new DivIcon({
-    className: '',
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    html: renderToString(<CamIcon webcam={webcam} refreshQuery={refreshQuery} />),
-  });
+export const Cam: FC<Props> = ({ webcam, refreshQuery, onSelected }) => {
+  const icon = useMemo(
+    () =>
+      new DivIcon({
+        className: 'webcam-icon',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+        html: renderToString(<CamIcon webcam={webcam} refreshQuery={refreshQuery} />),
+      }),
+    [webcam, refreshQuery],
+  );
 
   return (
     <Marker

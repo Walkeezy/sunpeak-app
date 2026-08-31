@@ -11,7 +11,7 @@ const config = [
           forbid: [
             {
               propName: 'className',
-              allowedFor: ['NextLink', 'ROverlay', 'RMap', 'RControl.RCustom'],
+              allowedFor: ['NextLink'],
               message: 'Avoid using className',
             },
           ],

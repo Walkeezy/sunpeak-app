@@ -1,7 +1,12 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { FETCH_TIMEOUT_MS } from '../config';
 import { getWebcamData } from './webcamData';
 
 const { valuesGet } = vi.hoisted(() => ({ valuesGet: vi.fn() }));
+
+vi.mock('next/cache', () => ({
+  unstable_cache: (fn: () => unknown) => fn,
+}));
 
 vi.mock('googleapis', () => ({
   google: {
@@ -30,10 +35,6 @@ const row = (overrides: Partial<Record<number, string>> = {}) => {
 };
 
 describe('getWebcamData', () => {
-  beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => undefined);
-  });
-
   afterEach(() => {
     vi.restoreAllMocks();
     valuesGet.mockReset();
@@ -57,6 +58,13 @@ describe('getWebcamData', () => {
         panorama: false,
       },
     ]);
+    expect(valuesGet).toHaveBeenCalledWith(
+      {
+        spreadsheetId: process.env.SPREADSHEET_ID,
+        range: 'Webcams',
+      },
+      { timeout: FETCH_TIMEOUT_MS },
+    );
   });
 
   test('skips inactive rows', async () => {
@@ -82,10 +90,9 @@ describe('getWebcamData', () => {
     await expect(getWebcamData()).resolves.toEqual([]);
   });
 
-  test('returns empty array when the Sheets API fails', async () => {
+  test('throws when the Sheets API fails', async () => {
     valuesGet.mockRejectedValue(new Error('api error'));
 
-    await expect(getWebcamData()).resolves.toEqual([]);
-    expect(console.error).toHaveBeenCalled();
+    await expect(getWebcamData()).rejects.toThrow('api error');
   });
 });

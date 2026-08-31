@@ -15,14 +15,15 @@ export default function InfoPage() {
   return (
     <>
       <Header>
-        <Link href="/" title="Go to back to home page">
+        <Link href="/" title="Go back to home page">
           <BackIcon />
         </Link>
-        <Logo />
+        <Logo as="span" />
         <div></div>
       </Header>
 
       <main data-test-id="info-page" className="mx-auto my-0 max-w-prose space-y-4 p-8">
+        <h1 className="sr-only">Info</h1>
         <p>
           This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current
           weather conditions and helping you plan your next outdoor adventure.

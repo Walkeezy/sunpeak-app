@@ -1,5 +1,5 @@
-import { unstable_noStore as noStore } from 'next/cache';
 import proj4 from 'proj4';
+import { FETCH_TIMEOUT_MS } from '../config';
 
 export type Measurement = {
   id: string;
@@ -25,30 +25,25 @@ proj4.defs(
 );
 
 export async function fetchMeasurementData(url: string): Promise<Measurement[]> {
-  noStore();
+  const response = await fetch(url, {
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    next: { revalidate: 600, tags: ['measurements'] },
+  });
 
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch measurement data: ${response.status}`);
-    }
-
-    const data = (await response.json()) as GeoAdminResponse;
-
-    return (data.features ?? []).map((feature) => {
-      const [longitude, latitude] = proj4('LV95', 'WGS84', feature.geometry.coordinates);
-
-      return {
-        id: feature.id,
-        latitude,
-        longitude,
-        value: feature.properties.value,
-      };
-    });
-  } catch (err) {
-    console.error(err);
-
-    return [];
+  if (!response.ok) {
+    throw new Error(`Failed to fetch measurement data: ${response.status}`);
   }
+
+  const data = (await response.json()) as GeoAdminResponse;
+
+  return (data.features ?? []).map((feature) => {
+    const [longitude, latitude] = proj4('LV95', 'WGS84', feature.geometry.coordinates);
+
+    return {
+      id: feature.id,
+      latitude,
+      longitude,
+      value: feature.properties.value,
+    };
+  });
 }
