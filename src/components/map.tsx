@@ -8,6 +8,7 @@ import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '@/
 import type { TemperatureData } from '@/services/temperatureData';
 import type { Webcam, WebcamData } from '@/services/webcamData';
 import type { WindData } from '@/services/windData';
+import type { MapCenter } from '@/utils/parseMapCenter';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
 import { LocationControl } from './location-control';
@@ -21,7 +22,7 @@ type Props = {
   temperatureData: TemperatureData;
   windData: WindData;
   refreshQuery: string;
-  center?: { centerLat: string; centerLon: string; zoom: string };
+  center?: MapCenter;
   isWindVisible: boolean;
   isTemperatureVisible: boolean;
   isWebcamsVisible: boolean;

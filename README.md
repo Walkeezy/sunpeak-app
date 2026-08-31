@@ -45,7 +45,7 @@ The MeteoSwiss data is delivered in the Swiss LV95 coordinate system and convert
 | `npm run dev`                | Start the development server                             |
 | `npm run build`              | Create a production build                                |
 | `npm run start`              | Serve the production build                               |
-| `npm run lint`               | Route typegen, Biome lint/format check, type check, and unused-code check |
+| `npm run lint`               | Typegen, Biome, type check, and unused-code check        |
 | `npm run format`             | Format all files with Biome                              |
 | `npm run test:unit`          | Run unit tests once                                      |
 | `npm run test:unit:watch`    | Run unit tests in watch mode                             |

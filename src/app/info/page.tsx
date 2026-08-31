@@ -19,7 +19,7 @@ export default function InfoPage() {
           <BackIcon />
         </Link>
         <Logo as="span" />
-        <div></div>
+        <div />
       </Header>
 
       <main data-test-id="info-page" className="mx-auto my-0 max-w-prose space-y-4 p-8">

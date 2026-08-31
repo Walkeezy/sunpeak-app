@@ -1,4 +1,10 @@
-export const dataLoadErrorMessage = (webcamOk: boolean, temperatureOk: boolean, windOk: boolean): string | null => {
+type DataLoadFlags = {
+  webcamOk: boolean;
+  temperatureOk: boolean;
+  windOk: boolean;
+};
+
+export const dataLoadErrorMessage = ({ webcamOk, temperatureOk, windOk }: DataLoadFlags): string | null => {
   const parts: string[] = [];
 
   if (!webcamOk) {

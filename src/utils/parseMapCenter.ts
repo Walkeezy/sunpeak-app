@@ -15,6 +15,10 @@ export const parseMapCenter = (centerLat?: string, centerLon?: string, zoom?: st
     return undefined;
   }
 
+  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+    return undefined;
+  }
+
   if (parsedZoom < MIN_ZOOM || parsedZoom > MAX_ZOOM) {
     return undefined;
   }

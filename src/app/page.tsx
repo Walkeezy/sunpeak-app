@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import { App } from '@/components/app';
-import { settle } from '@/services/sourceResult';
-import { getTemperatureData } from '@/services/temperatureData';
-import { getWebcamData } from '@/services/webcamData';
-import { getWindData } from '@/services/windData';
+import { loadSourceData } from '@/services/sourceData';
 import { parseMapCenter } from '@/utils/parseMapCenter';
 import { splashScreens } from './splash-screens';
 
@@ -41,14 +38,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const [webcams, temperatures, winds] = await Promise.all([
-    settle(getWebcamData(), []),
-    settle(getTemperatureData(), []),
-    settle(getWindData(), []),
-  ]);
-
+  const sources = await loadSourceData();
   const cookieStore = await cookies();
-
   const center = parseMapCenter(
     cookieStore.get('centerLat')?.value,
     cookieStore.get('centerLon')?.value,
@@ -60,12 +51,7 @@ export default async function Page() {
   return (
     <App
       mapboxUrl={mapboxUrl}
-      webcamData={webcams.data}
-      temperatureData={temperatures.data}
-      windData={winds.data}
-      webcamOk={webcams.ok}
-      temperatureOk={temperatures.ok}
-      windOk={winds.ok}
+      {...sources}
       center={center}
       isWindVisible={cookieStore.get('Wind')?.value === 'true'}
       isTemperatureVisible={cookieStore.get('Temperature')?.value !== 'false'}

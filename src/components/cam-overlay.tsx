@@ -105,7 +105,7 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-1000 overflow-hidden">
-      <button type="button" className="absolute inset-0" aria-label="Close webcam view" onClick={onClose} />
+      <button type="button" tabIndex={-1} aria-hidden="true" className="absolute inset-0" onClick={onClose} />
       <div
         ref={dialogRef}
         role="dialog"
