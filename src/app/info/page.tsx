@@ -30,7 +30,7 @@ export default function InfoPage() {
         </p>
         <p>All webcams are manually collected and directly loaded from public URLs.</p>
         <p>
-          The temperature data displayed on the map is from{' '}
+          The temperature and wind data displayed on the map is from{' '}
           <ExternalLink href="https://www.meteoschweiz.admin.ch/">Bundesamt für Meteorologie und Klimatologie</ExternalLink>.
         </p>
         <p>
