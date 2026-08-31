@@ -1,6 +1,10 @@
 import { FC } from 'react';
 
-export const Logo: FC = () => (
+type Props = {
+  as?: 'h1' | 'span';
+};
+
+export const Logo: FC<Props> = ({ as: TitleTag = 'h1' }) => (
   <div className="flex items-center justify-center gap-1">
     <svg width="36" height="21" viewBox="0 0 851 495" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -11,6 +15,6 @@ export const Logo: FC = () => (
         strokeLinejoin="round"
       />
     </svg>
-    <h1>Sunpeak</h1>
+    <TitleTag>Sunpeak</TitleTag>
   </div>
 );

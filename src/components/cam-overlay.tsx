@@ -13,29 +13,28 @@ type Props = {
   onClose: () => void;
 };
 
+const FOCUSABLE_SELECTOR = 'button, a[href]';
+
 export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [pauseAnimation, setPauseAnimation] = useState(false);
-  const imageRef = useRef<HTMLImageElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (webcam.panorama && imageRef.current && wrapperRef.current) {
-      const interval = setInterval(() => {
-        if (imageRef.current && wrapperRef.current) {
-          wrapperRef.current.scrollLeft += 1;
-        }
-      }, 1000 / 60);
-
-      if (pauseAnimation) {
-        clearInterval(interval);
-      }
-
-      return () => clearInterval(interval);
+    if (!webcam.panorama || pauseAnimation) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pauseAnimation]);
+
+    const interval = setInterval(() => {
+      if (wrapperRef.current) {
+        wrapperRef.current.scrollLeft += 1;
+      }
+    }, 1000 / 60);
+
+    return () => clearInterval(interval);
+  }, [webcam.panorama, pauseAnimation]);
 
   useEffect(() => {
     const closeWebcam = (event: KeyboardEvent) => {
@@ -63,6 +62,43 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const dialog = dialogRef.current;
+
+    if (!dialog) {
+      return;
+    }
+
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const focusable = [...dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)];
+
+      if (focusable.length === 0) {
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    dialog.addEventListener('keydown', trapFocus);
+
+    return () => {
+      dialog.removeEventListener('keydown', trapFocus);
+    };
+  }, []);
+
   // Lazy initializer keeps the window access out of render and only evaluates it once on mount
   const [isDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth > 1024);
   const webcamSrc = isDesktop ? convertToLargeRoundshotUrl(webcam.fullsize) : webcam.fullsize;
@@ -70,6 +106,7 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
   return (
     <div className="fixed inset-0 z-1000 overflow-hidden" onClick={onClose}>
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={webcam.name}
@@ -93,10 +130,8 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
             )}
             <picture>
               <img
-                ref={imageRef}
                 src={webcamSrc + '?' + generateRefreshQuery()}
                 className={joinClasses(['mx-auto h-full w-auto max-w-none', loading && 'opacity-0'])}
-                loading="lazy"
                 onLoad={() => setLoading(false)}
                 alt={webcam.name}
               />

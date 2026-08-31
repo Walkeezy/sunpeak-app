@@ -1,6 +1,7 @@
-import { Control as LeafletControl } from 'leaflet';
+import { Control as LeafletControl, LocationEvent } from 'leaflet';
 import { FC, useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
+import { MAX_ZOOM } from '../config';
 
 type Props = {
   onLocationFound: (location: [number, number]) => void;
@@ -19,7 +20,7 @@ export const LocationControl: FC<Props> = ({ onLocationFound }) => {
         div.className = 'leaflet-control';
 
         const button = document.createElement('button');
-        button.className = 'bg-white p-2 rounded shadow hover:bg-gray-100';
+        button.className = 'bg-white p-2 rounded shadow hover:opacity-80';
         button.title = 'Show my location';
         button.innerHTML = `
           <svg
@@ -39,7 +40,7 @@ export const LocationControl: FC<Props> = ({ onLocationFound }) => {
         `;
 
         button.onclick = () => {
-          map.locate({ setView: true, maxZoom: 16 });
+          map.locate({ setView: true, maxZoom: MAX_ZOOM });
         };
 
         div.appendChild(button);
@@ -51,7 +52,7 @@ export const LocationControl: FC<Props> = ({ onLocationFound }) => {
       control.addTo(map);
     }
 
-    const handleLocationFound = (e: L.LocationEvent) => {
+    const handleLocationFound = (e: LocationEvent) => {
       onLocationFound([e.latlng.lat, e.latlng.lng]);
     };
 

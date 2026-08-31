@@ -1,8 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getWindData } from './windData';
 
-vi.mock('next/cache', () => ({ unstable_noStore: vi.fn() }));
-
 describe('getWindData', () => {
   afterEach(() => {
     vi.unstubAllGlobals();

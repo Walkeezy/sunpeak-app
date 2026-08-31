@@ -1,8 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getTemperatureData } from './temperatureData';
 
-vi.mock('next/cache', () => ({ unstable_noStore: vi.fn() }));
-
 const feature = (id: string, value: number) => ({
   id,
   geometry: { coordinates: [2_600_000, 1_200_000] },

@@ -13,3 +13,18 @@
 
   --font-weight-*: initial;
 }
+
+.webcam-icon,
+.user-location-icon {
+  width: var(--cam-size, 36px) !important;
+  height: var(--cam-size, 36px) !important;
+  margin-left: calc(var(--cam-size, 36px) / -2) !important;
+}
+
+.webcam-icon {
+  margin-top: calc(var(--cam-size, 36px) / -2) !important;
+}
+
+.user-location-icon {
+  margin-top: calc(var(--cam-size, 36px) * -1) !important;
+}

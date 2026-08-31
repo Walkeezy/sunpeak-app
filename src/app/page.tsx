@@ -1,9 +1,11 @@
 import { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import { App } from '../components/app';
+import { settle } from '../services/sourceResult';
 import { getTemperatureData } from '../services/temperatureData';
 import { getWebcamData } from '../services/webcamData';
 import { getWindData } from '../services/windData';
+import { parseMapCenter } from '../utils/parseMapCenter';
 import { splashScreens } from './splash-screens';
 
 export const viewport: Viewport = {
@@ -39,23 +41,31 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const [webcamData, temperatureData, windData] = await Promise.all([getWebcamData(), getTemperatureData(), getWindData()]);
+  const [webcams, temperatures, winds] = await Promise.all([
+    settle(getWebcamData(), []),
+    settle(getTemperatureData(), []),
+    settle(getWindData(), []),
+  ]);
 
   const cookieStore = await cookies();
 
-  const centerLat = cookieStore.get('centerLat')?.value;
-  const centerLon = cookieStore.get('centerLon')?.value;
-  const zoom = cookieStore.get('zoom')?.value;
-  const center = centerLat && centerLon && zoom ? { centerLat, centerLon, zoom } : undefined;
+  const center = parseMapCenter(
+    cookieStore.get('centerLat')?.value,
+    cookieStore.get('centerLon')?.value,
+    cookieStore.get('zoom')?.value,
+  );
 
   const mapboxUrl = `https://api.mapbox.com/styles/v1/${process.env.MAPBOX_USER_ID}/${process.env.MAPBOX_STYLE_ID}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
 
   return (
     <App
       mapboxUrl={mapboxUrl}
-      webcamData={webcamData}
-      temperatureData={temperatureData}
-      windData={windData}
+      webcamData={webcams.data}
+      temperatureData={temperatures.data}
+      windData={winds.data}
+      webcamOk={webcams.ok}
+      temperatureOk={temperatures.ok}
+      windOk={winds.ok}
       center={center}
       isWindVisible={cookieStore.get('Wind')?.value === 'true'}
       isTemperatureVisible={cookieStore.get('Temperature')?.value !== 'false'}

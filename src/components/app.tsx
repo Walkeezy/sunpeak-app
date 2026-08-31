@@ -2,23 +2,30 @@
 
 import dynamic from 'next/dynamic';
 import NextLink from 'next/link';
-import { FC, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { getData } from '../services/actions';
 import { TemperatureData } from '../services/temperatureData';
 import { WebcamData } from '../services/webcamData';
 import { WindData } from '../services/windData';
+import { dataLoadErrorMessage } from '../utils/dataLoadErrorMessage';
 import { generateRefreshQuery } from '../utils/generateRefreshQuery';
+import { DataStatusBanner } from './data-status-banner';
 import { Header } from './header';
 import { InfoIcon } from './icons/info';
 import { LoadingMap } from './loading-map';
 import { Logo } from './logo';
 import { Refresh } from './refresh';
 
+type Status = { kind: 'error' | 'success'; message: string };
+
 type Props = {
   mapboxUrl: string;
   webcamData: WebcamData;
   temperatureData: TemperatureData;
   windData: WindData;
+  webcamOk: boolean;
+  temperatureOk: boolean;
+  windOk: boolean;
   center?: { centerLat: string; centerLon: string; zoom: string };
   isWindVisible: boolean;
   isTemperatureVisible: boolean;
@@ -35,26 +42,52 @@ export const App: FC<Props> = ({
   webcamData,
   temperatureData,
   windData,
+  webcamOk,
+  temperatureOk,
+  windOk,
   center,
   isWindVisible,
   isTemperatureVisible,
   isWebcamsVisible,
 }) => {
   const [dataLoading, setDataLoading] = useState(false);
+  const [localWebcamData, setWebcamData] = useState(webcamData);
   const [tempData, setTempData] = useState(temperatureData);
   const [localWindData, setWindData] = useState(windData);
   const [refreshQuery, setRefreshQuery] = useState<string>(generateRefreshQuery());
+  const [status, setStatus] = useState<Status | null>(() => {
+    const message = dataLoadErrorMessage(webcamOk, temperatureOk, windOk);
+
+    return message ? { kind: 'error', message } : null;
+  });
+
+  const dismissStatus = useCallback(() => setStatus(null), []);
 
   const handleReloadData = async () => {
+    setDataLoading(true);
+
     try {
-      setDataLoading(true);
       setRefreshQuery(new Date().getTime().toString());
       const data = await getData();
-      setTempData(data.temperatureData);
-      setWindData(data.windData);
-      setDataLoading(false);
+
+      if (data.webcamOk) {
+        setWebcamData(data.webcamData);
+      }
+
+      if (data.temperatureOk) {
+        setTempData(data.temperatureData);
+      }
+
+      if (data.windOk) {
+        setWindData(data.windData);
+      }
+
+      const message = dataLoadErrorMessage(data.webcamOk, data.temperatureOk, data.windOk);
+      setStatus(message ? { kind: 'error', message } : { kind: 'success', message: 'Updated' });
     } catch (error) {
       console.error(error);
+      setStatus({ kind: 'error', message: 'Data could not be loaded' });
+    } finally {
       setDataLoading(false);
     }
   };
@@ -69,9 +102,11 @@ export const App: FC<Props> = ({
         <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
       </Header>
 
+      {status && <DataStatusBanner kind={status.kind} message={status.message} onDismiss={dismissStatus} />}
+
       <main data-test-id="index-page" className="bg-slate grow">
         <DynamicMap
-          webcamData={webcamData}
+          webcamData={localWebcamData}
           temperatureData={tempData}
           windData={localWindData}
           mapboxUrl={mapboxUrl}

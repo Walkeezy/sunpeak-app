@@ -21,12 +21,18 @@ type Props = {
   temperatureData: TemperatureData;
   windData: WindData;
   refreshQuery: string;
-  activeWebcam?: Webcam;
   center?: { centerLat: string; centerLon: string; zoom: string };
   isWindVisible: boolean;
   isTemperatureVisible: boolean;
   isWebcamsVisible: boolean;
 };
+
+const locationIcon = new Icon({
+  iconUrl: '/current-userlocation.svg',
+  className: 'user-location-icon',
+  iconSize: [36, 36],
+  iconAnchor: [18, 36],
+});
 
 export const Map: FC<Props> = ({
   mapboxUrl,
@@ -39,30 +45,8 @@ export const Map: FC<Props> = ({
   isTemperatureVisible,
   isWebcamsVisible,
 }) => {
-  const calculateCamSize = (zoom: number): number => {
-    if (zoom <= 10) {
-      return 36;
-    }
-    if (zoom <= 11) {
-      return 42;
-    }
-    if (zoom <= 12) {
-      return 56;
-    }
-    if (zoom <= 13) {
-      return 64;
-    }
-
-    return 72;
-  };
-
-  const [camSize, setCamSize] = useState(() => (center ? calculateCamSize(parseInt(center.zoom)) : 36));
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
-
-  const handleCamSizing = (zoom: number) => {
-    setCamSize(calculateCamSize(zoom));
-  };
 
   const allWebcams = useMemo(
     () =>
@@ -70,12 +54,11 @@ export const Map: FC<Props> = ({
         <Cam
           key={`${webcam.name}-${webcam.city}`}
           webcam={webcam}
-          size={camSize}
           refreshQuery={refreshQuery}
           onSelected={(cam) => setActiveCam(cam)}
         />
       )),
-    [webcamData, camSize, refreshQuery],
+    [webcamData, refreshQuery],
   );
 
   const allTemperatures = useMemo(
@@ -87,10 +70,12 @@ export const Map: FC<Props> = ({
 
   return (
     <div className="h-full w-full">
-      {activeCam && <CamOverlay webcam={activeCam} onClose={() => setActiveCam(undefined)} />}
+      {activeCam && (
+        <CamOverlay key={`${activeCam.name}-${activeCam.city}`} webcam={activeCam} onClose={() => setActiveCam(undefined)} />
+      )}
       <MapContainer
         center={center ? [parseFloat(center.centerLat), parseFloat(center.centerLon)] : INITIAL_CENTER}
-        zoom={center ? parseInt(center.zoom) : INITIAL_ZOOM}
+        zoom={center ? parseInt(center.zoom, 10) : INITIAL_ZOOM}
         maxBounds={MAX_BOUNDS}
         minZoom={MIN_ZOOM}
         maxZoom={MAX_ZOOM}
@@ -99,29 +84,18 @@ export const Map: FC<Props> = ({
         <TileLayer attribution='Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>' url={mapboxUrl} />
         <LayersControl position="topright">
           <LayersControl.Overlay checked={isTemperatureVisible} name="Temperature">
-            <LayerGroup>{allTemperatures.map((temp) => temp)}</LayerGroup>
+            <LayerGroup>{allTemperatures}</LayerGroup>
           </LayersControl.Overlay>
           <LayersControl.Overlay checked={isWindVisible} name="Wind">
-            <LayerGroup>{allWinds.map((wind) => wind)}</LayerGroup>
+            <LayerGroup>{allWinds}</LayerGroup>
           </LayersControl.Overlay>
           <LayersControl.Overlay checked={isWebcamsVisible} name="Webcams">
-            <LayerGroup>{allWebcams.map((cam) => cam)}</LayerGroup>
+            <LayerGroup>{allWebcams}</LayerGroup>
           </LayersControl.Overlay>
         </LayersControl>
-        <MapEvents onZoomChange={(zoom) => handleCamSizing(zoom)} />
+        <MapEvents />
         <LocationControl onLocationFound={setLocation} />
-        {location && (
-          <Marker
-            position={location}
-            icon={
-              new Icon({
-                iconUrl: '/current-userlocation.svg',
-                iconSize: [camSize, camSize],
-                iconAnchor: [camSize / 2, camSize],
-              })
-            }
-          />
-        )}
+        {location && <Marker position={location} icon={locationIcon} />}
       </MapContainer>
     </div>
   );

@@ -16,6 +16,8 @@ export const Refresh: FC<Props> = ({ reloadData, isRefreshing }) => (
     onClick={reloadData}
     disabled={isRefreshing}
     title="Refresh data"
+    aria-label="Refresh data"
+    aria-busy={isRefreshing}
   >
     <RefreshIcon />
   </button>
