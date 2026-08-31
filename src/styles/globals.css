@@ -14,6 +14,13 @@
   --font-weight-*: initial;
 }
 
+.leaflet-marker-icon.wind-icon,
+.wind-icon {
+  background: transparent !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
 .webcam-icon,
 .user-location-icon {
   width: var(--cam-size, 36px) !important;
