@@ -1,8 +1,8 @@
 import { DivIcon } from 'leaflet';
-import { FC, useMemo } from 'react';
+import { type FC, useMemo } from 'react';
 import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
-import { Webcam } from '../services/webcamData';
+import type { Webcam } from '@/services/webcamData';
 
 type Props = {
   webcam: Webcam;

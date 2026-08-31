@@ -2,13 +2,13 @@
 
 import dynamic from 'next/dynamic';
 import NextLink from 'next/link';
-import { FC, useCallback, useState } from 'react';
-import { getData } from '../services/actions';
-import { TemperatureData } from '../services/temperatureData';
-import { WebcamData } from '../services/webcamData';
-import { WindData } from '../services/windData';
-import { dataLoadErrorMessage } from '../utils/dataLoadErrorMessage';
-import { generateRefreshQuery } from '../utils/generateRefreshQuery';
+import { type FC, useCallback, useState } from 'react';
+import { getData } from '@/services/actions';
+import type { TemperatureData } from '@/services/temperatureData';
+import type { WebcamData } from '@/services/webcamData';
+import type { WindData } from '@/services/windData';
+import { dataLoadErrorMessage } from '@/utils/dataLoadErrorMessage';
+import { generateRefreshQuery } from '@/utils/generateRefreshQuery';
 import { DataStatusBanner } from './data-status-banner';
 import { Header } from './header';
 import { InfoIcon } from './icons/info';
@@ -32,7 +32,7 @@ type Props = {
   isWebcamsVisible: boolean;
 };
 
-const DynamicMap = dynamic(() => import('../components/map').then((module) => module.Map), {
+const DynamicMap = dynamic(() => import('@/components/map').then((module) => module.WebcamMap), {
   loading: () => <LoadingMap />,
   ssr: false,
 });
@@ -67,7 +67,7 @@ export const App: FC<Props> = ({
     setDataLoading(true);
 
     try {
-      setRefreshQuery(new Date().getTime().toString());
+      setRefreshQuery(Date.now().toString());
       const data = await getData();
 
       if (data.webcamOk) {
@@ -102,7 +102,14 @@ export const App: FC<Props> = ({
         <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
       </Header>
 
-      {status && <DataStatusBanner kind={status.kind} message={status.message} onDismiss={dismissStatus} />}
+      {status && (
+        <DataStatusBanner
+          key={`${status.kind}-${status.message}`}
+          kind={status.kind}
+          message={status.message}
+          onDismiss={dismissStatus}
+        />
+      )}
 
       <main data-test-id="index-page" className="bg-slate grow">
         <DynamicMap

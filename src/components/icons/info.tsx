@@ -1,8 +1,8 @@
-import { FC } from 'react';
-import { IconProps } from '../../types';
+import type { FC } from 'react';
+import type { IconProps } from '@/types';
 
 export const InfoIcon: FC<IconProps> = ({ size = 20, color = '#FFFFFF' }) => (
-  <svg width={size} height={size} viewBox="0 0 514 514" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg aria-hidden="true" width={size} height={size} viewBox="0 0 514 514" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M257 152.975V165.978M257 257V361.025M257 491.057C386.267 491.057 491.057 386.267 491.057 257C491.057 127.734 386.267 22.9429 257 22.9429C127.734 22.9429 22.9429 127.734 22.9429 257C22.9429 386.267 127.734 491.057 257 491.057Z"
       stroke={color}

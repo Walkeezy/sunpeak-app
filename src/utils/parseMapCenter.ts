@@ -1,4 +1,4 @@
-import { MAX_ZOOM, MIN_ZOOM } from '../config';
+import { MAX_ZOOM, MIN_ZOOM } from '@/config';
 
 export type MapCenter = { centerLat: string; centerLon: string; zoom: string };
 

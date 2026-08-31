@@ -1,8 +1,8 @@
-import { Map as LeafletMap } from 'leaflet';
-import { FC, useEffect } from 'react';
+import type { Map as LeafletMap } from 'leaflet';
+import { type FC, useEffect } from 'react';
 import { useMap, useMapEvents } from 'react-leaflet';
-import { camIconSize } from '../config';
-import { saveCenterToCookie, saveLayerToCookie } from '../services/cookie-actions';
+import { camIconSize } from '@/config';
+import { saveCenterToCookie, saveLayerToCookie } from '@/services/cookie-actions';
 
 const setCamSizeVariable = (map: LeafletMap) => {
   map.getContainer().style.setProperty('--cam-size', `${camIconSize(map.getZoom())}px`);

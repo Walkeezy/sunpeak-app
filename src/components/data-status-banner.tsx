@@ -1,7 +1,7 @@
 'use client';
 
-import { FC, useEffect } from 'react';
-import { joinClasses } from '../utils/joinClasses';
+import { type FC, useEffect } from 'react';
+import { joinClasses } from '@/utils/joinClasses';
 
 type Props = {
   kind: 'error' | 'success';
@@ -18,7 +18,7 @@ export const DataStatusBanner: FC<Props> = ({ kind, message, onDismiss }) => {
     const timeout = setTimeout(onDismiss, 2000);
 
     return () => clearTimeout(timeout);
-  }, [kind, message, onDismiss]);
+  }, [kind, onDismiss]);
 
   return (
     <div

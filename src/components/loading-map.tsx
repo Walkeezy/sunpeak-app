@@ -1,5 +1,5 @@
 import 'leaflet/dist/leaflet.css';
-import { FC } from 'react';
+import type { FC } from 'react';
 import { LoadingIcon } from './icons/loading';
 
 export const LoadingMap: FC = () => (

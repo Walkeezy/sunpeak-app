@@ -1,4 +1,4 @@
-import { fetchMeasurementData, Measurement } from './measurementData';
+import { fetchMeasurementData, type Measurement } from './measurementData';
 
 export type Temperature = Measurement;
 export type TemperatureData = Temperature[];

@@ -1,11 +1,11 @@
-import { Metadata, Viewport } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
-import { App } from '../components/app';
-import { settle } from '../services/sourceResult';
-import { getTemperatureData } from '../services/temperatureData';
-import { getWebcamData } from '../services/webcamData';
-import { getWindData } from '../services/windData';
-import { parseMapCenter } from '../utils/parseMapCenter';
+import { App } from '@/components/app';
+import { settle } from '@/services/sourceResult';
+import { getTemperatureData } from '@/services/temperatureData';
+import { getWebcamData } from '@/services/webcamData';
+import { getWindData } from '@/services/windData';
+import { parseMapCenter } from '@/utils/parseMapCenter';
 import { splashScreens } from './splash-screens';
 
 export const viewport: Viewport = {

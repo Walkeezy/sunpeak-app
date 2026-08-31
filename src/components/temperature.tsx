@@ -1,8 +1,8 @@
 import { DivIcon } from 'leaflet';
-import { FC } from 'react';
+import type { FC } from 'react';
 import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
-import { Temperature as TemperatureType } from '../services/temperatureData';
+import type { Temperature as TemperatureType } from '@/services/temperatureData';
 
 type Props = {
   temperature: TemperatureType;

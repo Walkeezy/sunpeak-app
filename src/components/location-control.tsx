@@ -1,7 +1,7 @@
-import { Control as LeafletControl, LocationEvent } from 'leaflet';
-import { FC, useEffect, useRef } from 'react';
+import { Control as LeafletControl, type LocationEvent } from 'leaflet';
+import { type FC, useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
-import { MAX_ZOOM } from '../config';
+import { MAX_ZOOM } from '@/config';
 
 type Props = {
   onLocationFound: (location: [number, number]) => void;

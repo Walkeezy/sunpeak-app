@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 import { unstable_cache } from 'next/cache';
-import { FETCH_TIMEOUT_MS } from '../config';
+import { FETCH_TIMEOUT_MS } from '@/config';
 
 export type WebcamData = Webcam[];
 

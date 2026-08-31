@@ -1,5 +1,5 @@
 import proj4 from 'proj4';
-import { FETCH_TIMEOUT_MS } from '../config';
+import { FETCH_TIMEOUT_MS } from '@/config';
 
 export type Measurement = {
   id: string;

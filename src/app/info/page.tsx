@@ -1,9 +1,9 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ExternalLink } from '../../components/externalLink';
-import { Header } from '../../components/header';
-import { BackIcon } from '../../components/icons/back';
-import { Logo } from '../../components/logo';
+import { ExternalLink } from '@/components/externalLink';
+import { Header } from '@/components/header';
+import { BackIcon } from '@/components/icons/back';
+import { Logo } from '@/components/logo';
 
 export const metadata: Metadata = {
   title: 'Info – Sunpeak App — Webcams from all over Switzerland',
