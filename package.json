@@ -34,13 +34,13 @@
     "@types/node": "24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.7",
-    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/coverage-v8": "5.0.0",
     "@vitejs/plugin-react": "6.1.1",
     "jsdom": "30.0.1",
     "knip": "6.34.0",
     "postcss": "8.5.28",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
-    "vitest": "4.1.11"
+    "vitest": "5.0.0"
   }
 }
