@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function InfoPage() {
   return (
-    <>
+    <div className="bg-white flex min-h-dvh flex-col">
       <Header>
         <Link href="/" title="Go back to home page">
           <BackIcon />
@@ -42,6 +42,6 @@ export default function InfoPage() {
           <ExternalLink href="mailto:mail@kevinwalker.ch">mail@kevinwalker.ch</ExternalLink>.
         </p>
       </main>
-    </>
+    </div>
   );
 }

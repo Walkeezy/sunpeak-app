@@ -7,6 +7,7 @@ import { splashScreens } from './splash-screens';
 
 export const viewport: Viewport = {
   themeColor: '#334155',
+  viewportFit: 'cover',
 };
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: 'Sunpeak',
-    statusBarStyle: 'default',
+    statusBarStyle: 'black-translucent',
     startupImage: splashScreens,
   },
   icons: [
