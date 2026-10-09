@@ -5,6 +5,7 @@ describe('convertToLargeRoundshotUrl', () => {
   const data = [
     { input: 'https://backend.roundshot.com/cams/151/50', expected: 'https://backend.roundshot.com/cams/151/1000' },
     { input: 'https://backend.roundshot.com/cams/500/400', expected: 'https://backend.roundshot.com/cams/500/1000' },
+    { input: 'https://backend.roundshot.com/cams/1087/1087', expected: 'https://backend.roundshot.com/cams/1087/1000' },
     { input: 'https://xyz.com/cams/123/456', expected: 'https://xyz.com/cams/123/456' },
   ];
 

@@ -32,6 +32,23 @@ describe('fetchMeasurementData', () => {
     expect(init?.next).toEqual({ revalidate: 600, tags: ['measurements'] });
   });
 
+  test('maps station name and measurement time', async () => {
+    mockFetchResponse({
+      features: [
+        {
+          id: 'ARO',
+          geometry: { coordinates: bernLV95 },
+          properties: { value: 8.1, station_name: 'Arosa', reference_ts: '2026-10-09T14:10:00Z' },
+        },
+      ],
+    });
+
+    const [measurement] = await fetchMeasurementData('https://example.com/data.json');
+
+    expect(measurement.stationName).toBe('Arosa');
+    expect(measurement.measuredAt).toBe('2026-10-09T14:10:00Z');
+  });
+
   test('returns empty array when response has no features', async () => {
     mockFetchResponse({});
 

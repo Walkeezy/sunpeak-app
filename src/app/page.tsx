@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { App } from '@/components/app';
 import { loadSourceData } from '@/services/sourceData';
 import { parseMapCenter } from '@/utils/parseMapCenter';
+import { layerCookieName, MAP_CENTER_LAT_COOKIE, MAP_CENTER_LON_COOKIE, MAP_ZOOM_COOKIE } from '@/utils/preferenceCookie';
 import { splashScreens } from './splash-screens';
 
 export const viewport: Viewport = {
@@ -42,9 +43,9 @@ export default async function Page() {
   const sources = await loadSourceData();
   const cookieStore = await cookies();
   const center = parseMapCenter(
-    cookieStore.get('centerLat')?.value,
-    cookieStore.get('centerLon')?.value,
-    cookieStore.get('zoom')?.value,
+    cookieStore.get(MAP_CENTER_LAT_COOKIE)?.value,
+    cookieStore.get(MAP_CENTER_LON_COOKIE)?.value,
+    cookieStore.get(MAP_ZOOM_COOKIE)?.value,
   );
 
   const mapboxUrl = `https://api.mapbox.com/styles/v1/${process.env.MAPBOX_USER_ID}/${process.env.MAPBOX_STYLE_ID}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
@@ -54,9 +55,9 @@ export default async function Page() {
       mapboxUrl={mapboxUrl}
       {...sources}
       center={center}
-      isWindVisible={cookieStore.get('Wind')?.value === 'true'}
-      isTemperatureVisible={cookieStore.get('Temperature')?.value !== 'false'}
-      isWebcamsVisible={cookieStore.get('Webcams')?.value !== 'false'}
+      isWindVisible={cookieStore.get(layerCookieName('Wind'))?.value === 'true'}
+      isTemperatureVisible={cookieStore.get(layerCookieName('Temperature'))?.value !== 'false'}
+      isWebcamsVisible={cookieStore.get(layerCookieName('Webcams'))?.value !== 'false'}
     />
   );
 }

@@ -26,6 +26,7 @@ type Props = {
   isWindVisible: boolean;
   isTemperatureVisible: boolean;
   isWebcamsVisible: boolean;
+  onLocationError: () => void;
 };
 
 const locationIcon = new Icon({
@@ -45,6 +46,7 @@ export const WebcamMap: FC<Props> = ({
   isWindVisible,
   isTemperatureVisible,
   isWebcamsVisible,
+  onLocationError,
 }) => {
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
@@ -72,7 +74,12 @@ export const WebcamMap: FC<Props> = ({
   return (
     <div className="h-full w-full">
       {activeCam && (
-        <CamOverlay key={`${activeCam.name}-${activeCam.city}`} webcam={activeCam} onClose={() => setActiveCam(undefined)} />
+        <CamOverlay
+          key={`${activeCam.name}-${activeCam.city}`}
+          webcam={activeCam}
+          refreshQuery={refreshQuery}
+          onClose={() => setActiveCam(undefined)}
+        />
       )}
       <MapContainer
         center={center ? [parseFloat(center.centerLat), parseFloat(center.centerLon)] : INITIAL_CENTER}
@@ -95,7 +102,7 @@ export const WebcamMap: FC<Props> = ({
           </LayersControl.Overlay>
         </LayersControl>
         <MapEvents />
-        <LocationControl onLocationFound={setLocation} />
+        <LocationControl onLocationFound={setLocation} onLocationError={onLocationError} />
         {location && <Marker position={location} icon={locationIcon} />}
       </MapContainer>
     </div>

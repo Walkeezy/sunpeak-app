@@ -1,8 +1,9 @@
 import { DivIcon } from 'leaflet';
-import type { FC } from 'react';
+import { type FC, useMemo } from 'react';
 import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
 import type { Temperature as TemperatureType } from '@/services/temperatureData';
+import { temperatureLabel } from '@/utils/temperatureLabel';
 
 type Props = {
   temperature: TemperatureType;
@@ -17,11 +18,25 @@ const TemperatureIcon: FC<{ value: number }> = ({ value }) => {
 };
 
 export const Temperature: FC<Props> = ({ temperature }) => {
-  const icon = new DivIcon({
-    className: '',
-    iconSize: [32, 32],
-    html: renderToString(<TemperatureIcon value={temperature.value} />),
-  });
+  const icon = useMemo(
+    () =>
+      new DivIcon({
+        className: '',
+        iconSize: [32, 32],
+        html: renderToString(<TemperatureIcon value={temperature.value} />),
+      }),
+    [temperature.value],
+  );
+  const label = temperatureLabel(temperature);
 
-  return <Marker position={[temperature.latitude, temperature.longitude]} icon={icon} riseOnHover />;
+  return (
+    <Marker
+      position={[temperature.latitude, temperature.longitude]}
+      icon={icon}
+      title={label}
+      alt={label}
+      keyboard={false}
+      riseOnHover
+    />
+  );
 };

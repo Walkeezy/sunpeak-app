@@ -3,10 +3,11 @@ export const convertToLargeRoundshotUrl = (url: string): string => {
     return url;
   }
 
-  const number = url.split('/').pop();
-  if (!number) {
+  const lastSlash = url.lastIndexOf('/');
+  if (lastSlash === -1 || lastSlash === url.length - 1) {
     return url;
   }
 
-  return url.replace(number, '1000');
+  // Only the last path segment is the image width
+  return `${url.slice(0, lastSlash + 1)}1000`;
 };

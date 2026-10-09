@@ -6,12 +6,14 @@ export type Measurement = {
   latitude: number;
   longitude: number;
   value: number;
+  stationName?: string;
+  measuredAt?: string;
 };
 
 type GeoAdminFeature = {
   id: string;
   geometry: { coordinates: [number, number] };
-  properties: { value: number };
+  properties: { value: number; station_name?: string; reference_ts?: string };
 };
 
 type GeoAdminResponse = {
@@ -44,6 +46,8 @@ export async function fetchMeasurementData(url: string): Promise<Measurement[]> 
       latitude,
       longitude,
       value: feature.properties.value,
+      stationName: feature.properties.station_name,
+      measuredAt: feature.properties.reference_ts,
     };
   });
 }

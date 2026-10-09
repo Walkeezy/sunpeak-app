@@ -1,5 +1,5 @@
 import { DivIcon } from 'leaflet';
-import type { FC } from 'react';
+import { type FC, useMemo } from 'react';
 import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
 import type { Wind as WindType } from '@/services/windData';
@@ -54,12 +54,16 @@ const WindIcon: FC<{ value: number; direction?: number }> = ({ value, direction 
 };
 
 export const Wind: FC<Props> = ({ wind }) => {
-  const icon = new DivIcon({
-    className: 'wind-icon',
-    iconSize: [ICON_SIZE, ICON_SIZE],
-    iconAnchor: [ICON_SIZE / 2, ICON_SIZE / 2],
-    html: renderToString(<WindIcon value={wind.value} direction={wind.direction} />),
-  });
+  const icon = useMemo(
+    () =>
+      new DivIcon({
+        className: 'wind-icon',
+        iconSize: [ICON_SIZE, ICON_SIZE],
+        iconAnchor: [ICON_SIZE / 2, ICON_SIZE / 2],
+        html: renderToString(<WindIcon value={wind.value} direction={wind.direction} />),
+      }),
+    [wind.value, wind.direction],
+  );
 
   return <Marker interactive={false} zIndexOffset={500} position={[wind.latitude, wind.longitude]} icon={icon} />;
 };
