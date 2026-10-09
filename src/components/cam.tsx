@@ -3,6 +3,7 @@ import { type FC, useMemo } from 'react';
 import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
 import type { Webcam } from '@/services/webcamData';
+import { withRefreshQuery } from '@/utils/generateRefreshQuery';
 
 type Props = {
   webcam: Webcam;
@@ -14,7 +15,7 @@ const CamIcon: FC<Omit<Props, 'onSelected'>> = ({ webcam, refreshQuery }) => {
   return (
     <div
       className="bg-slate h-full w-full cursor-pointer overflow-hidden rounded-xl border border-white bg-cover bg-center bg-no-repeat shadow-md select-none"
-      style={{ backgroundImage: `url(${webcam.thumbnail}?${refreshQuery})` }}
+      style={{ backgroundImage: `url(${withRefreshQuery(webcam.thumbnail, refreshQuery)})` }}
     />
   );
 };
