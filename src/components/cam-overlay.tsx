@@ -3,21 +3,26 @@
 import { type FC, useEffect, useRef, useState } from 'react';
 import type { Webcam } from '@/services/webcamData';
 import { convertToLargeRoundshotUrl } from '@/utils/convertToLargeRoundshotUrl';
-import { generateRefreshQuery } from '@/utils/generateRefreshQuery';
+import { withRefreshQuery } from '@/utils/generateRefreshQuery';
 import { joinClasses } from '@/utils/joinClasses';
 import { Caption } from './caption';
 import { LoadingIcon } from './icons/loading';
 
 type Props = {
   webcam: Webcam;
+  refreshQuery: string;
   onClose: () => void;
 };
 
 const FOCUSABLE_SELECTOR = 'button, a[href]';
 
-export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
+export const CamOverlay: FC<Props> = ({ webcam, refreshQuery, onClose }) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [pauseAnimation, setPauseAnimation] = useState(false);
+  const [failed, setFailed] = useState(false);
+  // Lazy initializer keeps the window access out of render and only evaluates it once on mount
+  const [pauseAnimation, setPauseAnimation] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -27,13 +32,24 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
       return;
     }
 
-    const interval = setInterval(() => {
-      if (wrapperRef.current) {
-        wrapperRef.current.scrollLeft += 1;
-      }
-    }, 1000 / 60);
+    let frame: number;
+    let previous: number | undefined;
+    // Tracked separately because browsers may round fractional scrollLeft values
+    let position = wrapperRef.current?.scrollLeft ?? 0;
 
-    return () => clearInterval(interval);
+    // Scroll 60px per second, independent of the display refresh rate
+    const step = (time: number) => {
+      if (wrapperRef.current && previous !== undefined) {
+        position += ((time - previous) * 60) / 1000;
+        wrapperRef.current.scrollLeft = position;
+      }
+      previous = time;
+      frame = requestAnimationFrame(step);
+    };
+
+    frame = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(frame);
   }, [webcam.panorama, pauseAnimation]);
 
   useEffect(() => {
@@ -99,7 +115,6 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
     };
   }, []);
 
-  // Lazy initializer keeps the window access out of render and only evaluates it once on mount
   const [isDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth > 1024);
   const webcamSrc = isDesktop ? convertToLargeRoundshotUrl(webcam.fullsize) : webcam.fullsize;
 
@@ -124,19 +139,23 @@ export const CamOverlay: FC<Props> = ({ webcam, onClose }) => {
         </button>
         <div className="bg-slate relative h-full w-full overflow-hidden rounded-xl border-[2px] border-white shadow-2xl">
           <div ref={wrapperRef} onPointerDown={() => setPauseAnimation(true)} className="h-full w-full overflow-scroll">
-            {loading && (
+            {loading && !failed && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <LoadingIcon size={56} />
               </div>
             )}
-            <picture>
-              <img
-                src={`${webcamSrc}?${generateRefreshQuery()}`}
-                className={joinClasses(['mx-auto h-full w-auto max-w-none', loading && 'opacity-0'])}
-                onLoad={() => setLoading(false)}
-                alt={webcam.name}
-              />
-            </picture>
+            {failed && (
+              <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-white">
+                This webcam image is currently unavailable
+              </div>
+            )}
+            <img
+              src={withRefreshQuery(webcamSrc, refreshQuery)}
+              className={joinClasses(['mx-auto h-full w-auto max-w-none', (loading || failed) && 'opacity-0'])}
+              onLoad={() => setLoading(false)}
+              onError={() => setFailed(true)}
+              alt={webcam.name}
+            />
           </div>
         </div>
         <Caption name={webcam.name} link={webcam.link} />

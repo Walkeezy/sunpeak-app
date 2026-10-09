@@ -5,9 +5,10 @@ import { MAX_ZOOM } from '@/config';
 
 type Props = {
   onLocationFound: (location: [number, number]) => void;
+  onLocationError: () => void;
 };
 
-export const LocationControl: FC<Props> = ({ onLocationFound }) => {
+export const LocationControl: FC<Props> = ({ onLocationFound, onLocationError }) => {
   const map = useMap();
   const controlRef = useRef<LeafletControl | null>(null);
 
@@ -60,7 +61,7 @@ export const LocationControl: FC<Props> = ({ onLocationFound }) => {
     };
 
     const handleLocationError = () => {
-      console.error('Unable to determine your location');
+      onLocationError();
     };
 
     map.on('locationfound', handleLocationFound);
@@ -74,7 +75,7 @@ export const LocationControl: FC<Props> = ({ onLocationFound }) => {
         controlRef.current = null;
       }
     };
-  }, [map, onLocationFound]);
+  }, [map, onLocationFound, onLocationError]);
 
   return null;
 };

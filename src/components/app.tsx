@@ -55,6 +55,10 @@ export const App: FC<Props> = ({
   });
 
   const dismissStatus = useCallback(() => setStatus(null), []);
+  const showLocationError = useCallback(
+    () => setStatus({ kind: 'error', message: 'Your location could not be determined' }),
+    [],
+  );
 
   const handleReloadData = async () => {
     setDataLoading(true);
@@ -115,6 +119,7 @@ export const App: FC<Props> = ({
           isWindVisible={isWindVisible}
           isTemperatureVisible={isTemperatureVisible}
           isWebcamsVisible={isWebcamsVisible}
+          onLocationError={showLocationError}
         />
       </main>
     </div>
