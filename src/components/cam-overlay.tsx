@@ -149,6 +149,7 @@ export const CamOverlay: FC<Props> = ({ webcam, refreshQuery, onClose }) => {
                 This webcam image is currently unavailable
               </div>
             )}
+            {/* biome-ignore lint/performance/noImgElement: webcam images come from many external hosts and are cache-busted, so next/image doesn't fit */}
             <img
               src={withRefreshQuery(webcamSrc, refreshQuery)}
               className={joinClasses(['mx-auto h-full w-auto max-w-none', (loading || failed) && 'opacity-0'])}

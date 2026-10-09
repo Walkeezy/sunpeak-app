@@ -16,6 +16,43 @@ export type Webcam = {
   panorama: boolean;
 };
 
+// Columns are looked up by header name so reordering or adding columns in the Sheet is safe
+const REQUIRED_COLUMNS = {
+  name: 'Name',
+  latitude: 'Latitude',
+  longitude: 'Longitude',
+  fullsize: 'Medium',
+  active: 'Active',
+} as const;
+
+const OPTIONAL_COLUMNS = {
+  city: 'Ort',
+  region: 'Kanton',
+  thumbnail: 'Thumbnail',
+  link: 'Link',
+  panorama: 'Panorama',
+} as const;
+
+type Columns = Record<keyof typeof REQUIRED_COLUMNS, number> & Partial<Record<keyof typeof OPTIONAL_COLUMNS, number>>;
+
+const resolveColumns = (header: string[]): Columns => {
+  const indexOf = (name: string) => {
+    const index = header.findIndex((cell) => cell.trim() === name);
+
+    return index === -1 ? undefined : index;
+  };
+
+  const missing = Object.values(REQUIRED_COLUMNS).filter((name) => indexOf(name) === undefined);
+  if (missing.length > 0) {
+    throw new Error(`Webcam sheet is missing required columns: ${missing.join(', ')}`);
+  }
+
+  const resolve = <T extends Record<string, string>>(columns: T) =>
+    Object.fromEntries(Object.entries(columns).map(([key, name]) => [key, indexOf(name)]));
+
+  return { ...resolve(REQUIRED_COLUMNS), ...resolve(OPTIONAL_COLUMNS) } as Columns;
+};
+
 async function loadWebcamData(): Promise<WebcamData> {
   const jwt = new google.auth.JWT({
     email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
@@ -33,30 +70,31 @@ async function loadWebcamData(): Promise<WebcamData> {
   );
 
   // Sheets returns formatted values, so every cell is a string
-  const rows = (response.data.values ?? []) as string[][];
+  const [header = [], ...rows] = (response.data.values ?? []) as string[][];
+  const column = resolveColumns(header);
 
   return rows
-    .slice(1) // skip header row
-    .filter((row) => row[9] === 'TRUE') // only active webcams
+    .filter((row) => row[column.active] === 'TRUE') // only active webcams
     .flatMap((row) => {
-      const latitude = parseFloat(row[3]);
-      const longitude = parseFloat(row[4]);
-      const fullsize = row[6];
+      const cell = (index: number | undefined) => (index === undefined ? '' : (row[index] ?? ''));
+      const latitude = parseFloat(cell(column.latitude));
+      const longitude = parseFloat(cell(column.longitude));
+      const fullsize = cell(column.fullsize);
 
       if (!latitude || !longitude || !fullsize) {
         return [];
       }
 
       return {
-        name: row[0],
-        city: row[1],
-        region: row[2],
+        name: cell(column.name),
+        city: cell(column.city),
+        region: cell(column.region),
         latitude,
         longitude,
-        thumbnail: row[5] === '' ? fullsize : row[5],
+        thumbnail: cell(column.thumbnail) || fullsize,
         fullsize,
-        link: row[7] === '' ? fullsize : row[7],
-        panorama: row[8] === 'TRUE',
+        link: cell(column.link) || fullsize,
+        panorama: cell(column.panorama) === 'TRUE',
       };
     });
 }

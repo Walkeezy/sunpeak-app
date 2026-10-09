@@ -5,6 +5,7 @@ import { lexend } from './fonts';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://sunpeak.app'),
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
