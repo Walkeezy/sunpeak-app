@@ -15,7 +15,7 @@ vi.mock('googleapis', () => ({
   },
 }));
 
-const header = ['Name', 'City', 'Region', 'Latitude', 'Longitude', 'Thumbnail', 'Fullsize', 'Link', 'Panorama', 'Active'];
+const header = ['Name', 'Ort', 'Kanton', 'Latitude', 'Longitude', 'Thumbnail', 'Medium', 'Link', 'Panorama', 'Active'];
 
 const row = (overrides: Partial<Record<number, string>> = {}) => {
   const base = [
@@ -88,6 +88,39 @@ describe('getWebcamData', () => {
     });
 
     await expect(getWebcamData()).resolves.toEqual([]);
+  });
+
+  test('maps columns by header name when they are reordered', async () => {
+    const order = [9, 0, 6, 3, 4, 1, 2, 5, 7, 8];
+    const reorder = (values: string[]) => order.map((index) => values[index]);
+    valuesGet.mockResolvedValue({ data: { values: [reorder(header), reorder(row({ 8: 'TRUE' }))] } });
+
+    const [webcam] = await getWebcamData();
+
+    expect(webcam).toMatchObject({
+      name: 'Cam',
+      city: 'Zurich',
+      latitude: 47.37,
+      fullsize: 'https://example.com/full.jpg',
+      panorama: true,
+    });
+  });
+
+  test('works without optional columns', async () => {
+    const keep = [0, 3, 4, 6, 9];
+    const pick = (values: string[]) => keep.map((index) => values[index]);
+    valuesGet.mockResolvedValue({ data: { values: [pick(header), pick(row())] } });
+
+    const [webcam] = await getWebcamData();
+
+    expect(webcam).toMatchObject({ city: '', thumbnail: 'https://example.com/full.jpg', panorama: false });
+  });
+
+  test('throws when a required column is missing', async () => {
+    const withoutActive = header.slice(0, 9);
+    valuesGet.mockResolvedValue({ data: { values: [withoutActive, row().slice(0, 9)] } });
+
+    await expect(getWebcamData()).rejects.toThrow('Webcam sheet is missing required columns: Active');
   });
 
   test('throws when the Sheets API fails', async () => {
