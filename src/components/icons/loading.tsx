@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import type { IconProps } from '@/types';
 
-export const LoadingIcon: FC<IconProps> = ({ size = 24, color = '#FFFFFF' }) => (
+export const LoadingIcon: FC<IconProps> = ({ size = 24, color = 'currentColor' }) => (
   <svg aria-hidden="true" width={size} height={size} viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" stroke={color}>
     <g fill="none" fillRule="evenodd" strokeWidth={2}>
       <circle cx={22} cy={22} r={1}>

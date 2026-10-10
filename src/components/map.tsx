@@ -3,14 +3,16 @@
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { type FC, useMemo, useState } from 'react';
-import { LayerGroup, LayersControl, MapContainer, Marker, TileLayer } from 'react-leaflet';
+import { AttributionControl, LayerGroup, MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '@/config';
 import type { TemperatureData } from '@/services/temperatureData';
 import type { Webcam, WebcamData } from '@/services/webcamData';
 import type { WindData } from '@/services/windData';
 import type { MapCenter } from '@/utils/parseMapCenter';
+import { saveLayerToCookie } from '@/utils/preferenceCookie';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
+import { type LayerName, LayerToggles, type LayerVisibility } from './layer-toggles';
 import { LocationControl } from './location-control';
 import { MapEvents } from './map-events';
 import { Temperature } from './temperature';
@@ -50,6 +52,17 @@ export const WebcamMap: FC<Props> = ({
 }) => {
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
+  const [visibility, setVisibility] = useState<LayerVisibility>({
+    Webcams: isWebcamsVisible,
+    Temperature: isTemperatureVisible,
+    Wind: isWindVisible,
+  });
+
+  const toggleLayer = (layer: LayerName) => {
+    const isOn = !visibility[layer];
+    saveLayerToCookie(layer, isOn);
+    setVisibility({ ...visibility, [layer]: isOn });
+  };
 
   const allWebcams = useMemo(
     () =>
@@ -72,7 +85,7 @@ export const WebcamMap: FC<Props> = ({
   const allWinds = useMemo(() => windData.map((wind) => <Wind key={wind.id} wind={wind} />), [windData]);
 
   return (
-    <div className="h-full w-full">
+    <div className="relative h-full w-full">
       {activeCam && (
         <CamOverlay
           key={`${activeCam.name}-${activeCam.city}`}
@@ -88,23 +101,19 @@ export const WebcamMap: FC<Props> = ({
         minZoom={MIN_ZOOM}
         maxZoom={MAX_ZOOM}
         style={{ height: '100%', width: '100%' }}
+        attributionControl={false}
       >
+        {/* Top right, opposite the zoom control, so the legend and locate button keep the bottom corners */}
+        <AttributionControl position="topright" prefix={false} />
         <TileLayer attribution='Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>' url={mapboxUrl} />
-        <LayersControl position="topright">
-          <LayersControl.Overlay checked={isTemperatureVisible} name="Temperature">
-            <LayerGroup>{allTemperatures}</LayerGroup>
-          </LayersControl.Overlay>
-          <LayersControl.Overlay checked={isWindVisible} name="Wind">
-            <LayerGroup>{allWinds}</LayerGroup>
-          </LayersControl.Overlay>
-          <LayersControl.Overlay checked={isWebcamsVisible} name="Webcams">
-            <LayerGroup>{allWebcams}</LayerGroup>
-          </LayersControl.Overlay>
-        </LayersControl>
+        {visibility.Temperature && <LayerGroup>{allTemperatures}</LayerGroup>}
+        {visibility.Wind && <LayerGroup>{allWinds}</LayerGroup>}
+        {visibility.Webcams && <LayerGroup>{allWebcams}</LayerGroup>}
         <MapEvents />
         <LocationControl onLocationFound={setLocation} onLocationError={onLocationError} />
         {location && <Marker position={location} icon={locationIcon} />}
       </MapContainer>
+      <LayerToggles visibility={visibility} onToggle={toggleLayer} />
     </div>
   );
 };

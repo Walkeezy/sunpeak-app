@@ -14,7 +14,7 @@ type Props = {
 const CamIcon: FC<Omit<Props, 'onSelected'>> = ({ webcam, refreshQuery }) => {
   return (
     <div
-      className="bg-slate h-full w-full cursor-pointer overflow-hidden rounded-xl border border-white bg-cover bg-center bg-no-repeat shadow-md select-none"
+      className="bg-schiefer border-firn h-full w-full cursor-pointer overflow-hidden border bg-cover bg-center bg-no-repeat shadow-md select-none"
       // The fallback icon underneath shows when the thumbnail can't be loaded
       style={{
         backgroundImage: `url(${withRefreshQuery(webcam.thumbnail, refreshQuery)}), url(/webcam-fallback.svg)`,

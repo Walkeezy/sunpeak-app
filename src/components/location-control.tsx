@@ -22,7 +22,8 @@ export const LocationControl: FC<Props> = ({ onLocationFound, onLocationError })
 
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'bg-white p-2 rounded shadow hover:opacity-80';
+        button.className =
+          'on-light flex size-11 items-center justify-center rounded-lg bg-firn text-tinte shadow-md hover:bg-white';
         button.title = 'Show my location';
         button.setAttribute('aria-label', 'Show my location');
         button.innerHTML = `
