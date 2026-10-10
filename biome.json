@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!next-env.d.ts", "!public"]
+    "includes": ["**", "!next-env.d.ts", "!public", "!.claude/skills"]
   },
   "formatter": {
     "enabled": true,
