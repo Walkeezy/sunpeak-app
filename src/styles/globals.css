@@ -4,7 +4,7 @@
   --font-*: initial;
   --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
 
-  /* Alpine palette: slate roofs, night, mist, firn snow, the signpost sun, ink on the plate */
+  /* Alpine palette: slate roofs, night, mist, firn snow, the sun, ink */
   --color-*: initial;
   --color-transparent: transparent;
   --color-current: currentColor;
@@ -42,11 +42,6 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
-}
-
-/* A signpost plate: the right end comes to a point */
-@utility signpost {
-  clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
 }
 
 @layer base {

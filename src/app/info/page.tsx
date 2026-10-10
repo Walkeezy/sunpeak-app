@@ -16,7 +16,7 @@ const facts = [
   {
     term: 'Webcams',
     detail:
-      "Collected by hand and loaded straight from their public addresses. Tap one on the map for the full picture, or follow the signpost to the webcam's own site.",
+      "Collected by hand and loaded straight from their public addresses. Tap one on the map for the full picture and a link to the webcam's own site.",
   },
   {
     term: 'Weather data',
