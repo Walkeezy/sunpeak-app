@@ -1,6 +1,5 @@
 import { DivIcon } from 'leaflet';
 import { type FC, useMemo } from 'react';
-import { renderToString } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
 import type { Wind as WindType } from '@/services/windData';
 
@@ -13,42 +12,16 @@ const CX = 60;
 const CY = 60;
 const BODY_Y = 30;
 
-const WindIcon: FC<{ value: number; direction?: number }> = ({ value, direction }) => {
+// Plain markup rather than renderToString, which would ship React's server renderer to the browser
+const windIconHtml = (value: number, direction?: number) => {
   const bearing = direction == null ? 180 : direction + 180;
   const speed = Math.round(value);
+  const body =
+    direction == null
+      ? `<circle cx="${CX}" cy="${BODY_Y}" r="14" class="fill-nebel stroke-firn" stroke-width="1.5"></circle>`
+      : `<path d="M60 7 L70 20 A14 14 0 1 1 50 20 Z" class="fill-nebel stroke-firn" stroke-width="1.5" stroke-linejoin="round"></path>`;
 
-  return (
-    <div className="pointer-events-none relative h-full w-full select-none">
-      <svg className="absolute inset-0 overflow-visible" viewBox="0 0 120 120" aria-hidden="true">
-        <g transform={`rotate(${bearing} ${CX} ${CY})`}>
-          {direction == null ? (
-            <circle cx={CX} cy={BODY_Y} r="14" className="fill-nebel stroke-firn" strokeWidth="1.5" />
-          ) : (
-            <path
-              d="M60 7 L70 20 A14 14 0 1 1 50 20 Z"
-              className="fill-nebel stroke-firn"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-          )}
-          <text
-            x={CX}
-            y={BODY_Y}
-            className="fill-firn signage font-sans"
-            textAnchor="middle"
-            transform={`rotate(${-bearing} ${CX} ${BODY_Y})`}
-          >
-            <tspan x={CX} dy="-2" fontSize="10">
-              {speed}
-            </tspan>
-            <tspan x={CX} dy="9" fontSize="7">
-              km/h
-            </tspan>
-          </text>
-        </g>
-      </svg>
-    </div>
-  );
+  return `<div class="pointer-events-none relative h-full w-full select-none"><svg class="absolute inset-0 overflow-visible" viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(${bearing} ${CX} ${CY})">${body}<text x="${CX}" y="${BODY_Y}" class="fill-firn signage font-sans" text-anchor="middle" transform="rotate(${-bearing} ${CX} ${BODY_Y})"><tspan x="${CX}" dy="-2" font-size="10">${speed}</tspan><tspan x="${CX}" dy="9" font-size="7">km/h</tspan></text></g></svg></div>`;
 };
 
 export const Wind: FC<Props> = ({ wind }) => {
@@ -58,7 +31,7 @@ export const Wind: FC<Props> = ({ wind }) => {
         className: 'wind-icon',
         iconSize: [ICON_SIZE, ICON_SIZE],
         iconAnchor: [ICON_SIZE / 2, ICON_SIZE / 2],
-        html: renderToString(<WindIcon value={wind.value} direction={wind.direction} />),
+        html: windIconHtml(wind.value, wind.direction),
       }),
     [wind.value, wind.direction],
   );

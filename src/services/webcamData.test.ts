@@ -8,11 +8,9 @@ vi.mock('next/cache', () => ({
   unstable_cache: (fn: () => unknown) => fn,
 }));
 
-vi.mock('googleapis', () => ({
-  google: {
-    auth: { JWT: vi.fn() },
-    sheets: vi.fn(() => ({ spreadsheets: { values: { get: valuesGet } } })),
-  },
+vi.mock('@googleapis/sheets', () => ({
+  auth: { JWT: vi.fn() },
+  sheets: vi.fn(() => ({ spreadsheets: { values: { get: valuesGet } } })),
 }));
 
 const header = ['Name', 'Ort', 'Kanton', 'Latitude', 'Longitude', 'Thumbnail', 'Medium', 'Link', 'Panorama', 'Active'];
@@ -49,7 +47,6 @@ describe('getWebcamData', () => {
       {
         name: 'Cam',
         city: 'Zurich',
-        region: 'ZH',
         latitude: 47.37,
         longitude: 8.54,
         thumbnail: 'https://example.com/thumb.jpg',
