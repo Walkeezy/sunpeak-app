@@ -62,6 +62,11 @@
   background: var(--color-nacht);
 }
 
+/* Clear the home indicator like the layer toggles do, so the locate button stays level with them */
+.leaflet-container .leaflet-bottom {
+  bottom: env(safe-area-inset-bottom);
+}
+
 .leaflet-container .leaflet-bar {
   border: 0;
   border-radius: 0.5rem;
