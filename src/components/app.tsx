@@ -10,6 +10,7 @@ import { generateRefreshQuery } from '@/utils/generateRefreshQuery';
 import type { MapCenter } from '@/utils/parseMapCenter';
 import { DataStatusBanner } from './data-status-banner';
 import { Header } from './header';
+import { iconButtonClasses } from './icon-button';
 import { InfoIcon } from './icons/info';
 import { LoadingMap } from './loading-map';
 import { Logo } from './logo';
@@ -92,11 +93,13 @@ export const App: FC<Props> = ({
   return (
     <div className="absolute top-0 left-0 flex h-full w-full flex-col">
       <Header>
-        <NextLink href="/info" title="Go to info page">
-          <InfoIcon />
-        </NextLink>
         <Logo />
-        <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
+        <div className="ms-auto flex items-center">
+          <Refresh reloadData={handleReloadData} isRefreshing={dataLoading} />
+          <NextLink href="/info" title="Go to info page" className={iconButtonClasses}>
+            <InfoIcon />
+          </NextLink>
+        </div>
       </Header>
 
       {status && (
@@ -108,7 +111,7 @@ export const App: FC<Props> = ({
         />
       )}
 
-      <main data-test-id="index-page" className="bg-slate grow">
+      <main data-test-id="index-page" className="bg-nacht relative grow">
         <DynamicMap
           webcamData={webcams}
           temperatureData={temperatures}

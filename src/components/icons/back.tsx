@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import type { IconProps } from '@/types';
 
-export const BackIcon: FC<IconProps> = ({ size = 20, color = '#FFFFFF' }) => (
+export const BackIcon: FC<IconProps> = ({ size = 20, color = 'currentColor' }) => (
   <svg aria-hidden="true" width={size} height={size} viewBox="0 0 514 514" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fillRule="evenodd"

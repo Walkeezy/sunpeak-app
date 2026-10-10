@@ -6,6 +6,7 @@ import { convertToLargeRoundshotUrl } from '@/utils/convertToLargeRoundshotUrl';
 import { withRefreshQuery } from '@/utils/generateRefreshQuery';
 import { joinClasses } from '@/utils/joinClasses';
 import { Caption } from './caption';
+import { CloseIcon } from './icons/close';
 import { LoadingIcon } from './icons/loading';
 
 type Props = {
@@ -119,33 +120,33 @@ export const CamOverlay: FC<Props> = ({ webcam, refreshQuery, onClose }) => {
   const webcamSrc = isDesktop ? convertToLargeRoundshotUrl(webcam.fullsize) : webcam.fullsize;
 
   return (
-    <div className="fixed inset-0 z-1000 overflow-hidden">
+    <div className="bg-nacht/70 fixed inset-0 z-[1100] overflow-hidden">
       <button type="button" tabIndex={-1} aria-hidden="true" className="absolute inset-0" onClick={onClose} />
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={webcam.name}
-        className="absolute top-[28vh] left-[2vw] z-10 h-[42vh] w-[96vw] lg:top-[10vh] lg:h-[80vh]"
+        className="motion-safe:animate-rise absolute inset-x-3 top-[18vh] z-10 h-[50vh] lg:inset-x-[8vw] lg:top-[7vh] lg:h-[76vh]"
       >
-        <button
-          type="button"
-          ref={closeButtonRef}
-          onClick={onClose}
-          aria-label="Close webcam view"
-          className="absolute -top-10 right-0 rounded-sm bg-white px-2 py-1 text-base shadow-md"
-        >
-          ✕
-        </button>
-        <div className="bg-slate relative h-full w-full overflow-hidden rounded-xl border-[2px] border-white shadow-2xl">
+        <div className="bg-schiefer relative h-full w-full overflow-hidden rounded-lg shadow-2xl">
+          <button
+            type="button"
+            ref={closeButtonRef}
+            onClick={onClose}
+            aria-label="Close webcam view"
+            className="on-light bg-firn/90 text-tinte absolute top-2 right-2 z-10 flex size-11 items-center justify-center rounded-full shadow-md transition-colors hover:bg-white"
+          >
+            <CloseIcon />
+          </button>
           <div ref={wrapperRef} onPointerDown={() => setPauseAnimation(true)} className="h-full w-full overflow-scroll">
             {loading && !failed && (
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-firn absolute inset-0 flex items-center justify-center">
                 <LoadingIcon size={56} />
               </div>
             )}
             {failed && (
-              <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-white">
+              <div className="text-firn absolute inset-0 flex items-center justify-center p-4 text-center">
                 This webcam image is currently unavailable
               </div>
             )}
@@ -159,7 +160,7 @@ export const CamOverlay: FC<Props> = ({ webcam, refreshQuery, onClose }) => {
             />
           </div>
         </div>
-        <Caption name={webcam.name} link={webcam.link} />
+        <Caption name={webcam.name} city={webcam.city} link={webcam.link} />
       </div>
     </div>
   );

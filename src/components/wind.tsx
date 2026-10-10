@@ -22,12 +22,11 @@ const WindIcon: FC<{ value: number; direction?: number }> = ({ value, direction 
       <svg className="absolute inset-0 overflow-visible" viewBox="0 0 120 120" aria-hidden="true">
         <g transform={`rotate(${bearing} ${CX} ${CY})`}>
           {direction == null ? (
-            <circle cx={CX} cy={BODY_Y} r="14" fill="#64748b" stroke="#ffffff" strokeWidth="1.5" />
+            <circle cx={CX} cy={BODY_Y} r="14" className="fill-nebel stroke-firn" strokeWidth="1.5" />
           ) : (
             <path
               d="M60 7 L70 20 A14 14 0 1 1 50 20 Z"
-              fill="#64748b"
-              stroke="#ffffff"
+              className="fill-nebel stroke-firn"
               strokeWidth="1.5"
               strokeLinejoin="round"
             />
@@ -35,8 +34,7 @@ const WindIcon: FC<{ value: number; direction?: number }> = ({ value, direction 
           <text
             x={CX}
             y={BODY_Y}
-            fill="#ffffff"
-            fontFamily="var(--lexend-font), sans-serif"
+            className="fill-firn signage font-sans"
             textAnchor="middle"
             transform={`rotate(${-bearing} ${CX} ${BODY_Y})`}
           >
