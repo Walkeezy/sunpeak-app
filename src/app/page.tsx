@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
+import { Suspense } from 'react';
+import { preconnect } from 'react-dom';
 import { App } from '@/components/app';
+import { AppFallback } from '@/components/app-fallback';
 import { loadSourceData } from '@/services/sourceData';
 import { parseMapCenter } from '@/utils/parseMapCenter';
 import { layerCookieName, MAP_CENTER_LAT_COOKIE, MAP_CENTER_LON_COOKIE, MAP_ZOOM_COOKIE } from '@/utils/preferenceCookie';
@@ -40,7 +43,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const sources = await loadSourceData();
+  // Not awaited: the app unwraps the promise with use() inside the Suspense boundary, so the
+  // header and loading map stream right away while the sources load
+  const sources = loadSourceData();
   const cookieStore = await cookies();
   const center = parseMapCenter(
     cookieStore.get(MAP_CENTER_LAT_COOKIE)?.value,
@@ -50,14 +55,19 @@ export default async function Page() {
 
   const mapboxUrl = `https://api.mapbox.com/styles/v1/${process.env.MAPBOX_USER_ID}/${process.env.MAPBOX_STYLE_ID}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
 
+  // Tiles are the first thing the map requests once it mounts; Next sends this as a Link response header
+  preconnect('https://api.mapbox.com');
+
   return (
-    <App
-      mapboxUrl={mapboxUrl}
-      {...sources}
-      center={center}
-      isWindVisible={cookieStore.get(layerCookieName('Wind'))?.value === 'true'}
-      isTemperatureVisible={cookieStore.get(layerCookieName('Temperature'))?.value !== 'false'}
-      isWebcamsVisible={cookieStore.get(layerCookieName('Webcams'))?.value !== 'false'}
-    />
+    <Suspense fallback={<AppFallback />}>
+      <App
+        sources={sources}
+        mapboxUrl={mapboxUrl}
+        center={center}
+        isWindVisible={cookieStore.get(layerCookieName('Wind'))?.value === 'true'}
+        isTemperatureVisible={cookieStore.get(layerCookieName('Temperature'))?.value !== 'false'}
+        isWebcamsVisible={cookieStore.get(layerCookieName('Webcams'))?.value !== 'false'}
+      />
+    </Suspense>
   );
 }

@@ -2,7 +2,7 @@
 
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, memo, useCallback, useMemo, useState } from 'react';
 import { AttributionControl, LayerGroup, MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '@/config';
 import type { TemperatureData } from '@/services/temperatureData';
@@ -38,7 +38,7 @@ const locationIcon = new Icon({
   iconAnchor: [18, 36],
 });
 
-export const WebcamMap: FC<Props> = ({
+const WebcamMapComponent: FC<Props> = ({
   mapboxUrl,
   webcamData,
   temperatureData,
@@ -61,8 +61,11 @@ export const WebcamMap: FC<Props> = ({
   const toggleLayer = (layer: LayerName) => {
     const isOn = !visibility[layer];
     saveLayerToCookie(layer, isOn);
-    setVisibility({ ...visibility, [layer]: isOn });
+    setVisibility((prev) => ({ ...prev, [layer]: isOn }));
   };
+
+  // Stable, so the overlay's window listener isn't re-registered on every map render
+  const closeCam = useCallback(() => setActiveCam(undefined), []);
 
   const allWebcams = useMemo(
     () =>
@@ -91,7 +94,7 @@ export const WebcamMap: FC<Props> = ({
           key={`${activeCam.name}-${activeCam.city}`}
           webcam={activeCam}
           refreshQuery={refreshQuery}
-          onClose={() => setActiveCam(undefined)}
+          onClose={closeCam}
         />
       )}
       <MapContainer
@@ -117,3 +120,6 @@ export const WebcamMap: FC<Props> = ({
     </div>
   );
 };
+
+// Every prop is stable between the app's own state changes (banner, refresh), so skip those renders
+export const WebcamMap = memo(WebcamMapComponent);

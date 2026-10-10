@@ -4,7 +4,7 @@ import type { IconProps } from '@/types';
 export const InfoIcon: FC<IconProps> = ({ size = 20, color = 'currentColor' }) => (
   <svg aria-hidden="true" width={size} height={size} viewBox="0 0 514 514" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
-      d="M257 152.975V165.978M257 257V361.025M257 491.057C386.267 491.057 491.057 386.267 491.057 257C491.057 127.734 386.267 22.9429 257 22.9429C127.734 22.9429 22.9429 127.734 22.9429 257C22.9429 386.267 127.734 491.057 257 491.057Z"
+      d="M257 153V166M257 257V361M257 491C386 491 491 386 491 257C491 128 386 23 257 23C128 23 23 128 23 257C23 386 128 491 257 491Z"
       stroke={color}
       strokeWidth="45"
       strokeLinecap="round"

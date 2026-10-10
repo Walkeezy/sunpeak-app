@@ -1,7 +1,8 @@
 import { FETCH_TIMEOUT_MS } from '@/config';
 import { fetchMeasurementData, type Measurement } from './measurementData';
 
-export type Wind = Measurement & { direction?: number };
+// Station name and time are only shown for temperatures, so they stay off the wire here
+export type Wind = Pick<Measurement, 'id' | 'latitude' | 'longitude' | 'value'> & { direction?: number };
 export type WindData = Wind[];
 
 const WIND_URL =
@@ -68,9 +69,9 @@ export async function getWindData(): Promise<WindData> {
     }),
   ]);
 
-  return gusts.map((gust) => {
-    const direction = directions.get(gust.id);
+  return gusts.map(({ id, latitude, longitude, value }) => {
+    const direction = directions.get(id);
 
-    return direction === undefined ? gust : { ...gust, direction };
+    return direction === undefined ? { id, latitude, longitude, value } : { id, latitude, longitude, value, direction };
   });
 }

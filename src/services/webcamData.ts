@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { auth, sheets } from '@googleapis/sheets';
 import { unstable_cache } from 'next/cache';
 import { FETCH_TIMEOUT_MS } from '@/config';
 
@@ -7,7 +7,6 @@ export type WebcamData = Webcam[];
 export type Webcam = {
   name: string;
   city: string;
-  region: string;
   latitude: number;
   longitude: number;
   thumbnail: string;
@@ -27,7 +26,6 @@ const REQUIRED_COLUMNS = {
 
 const OPTIONAL_COLUMNS = {
   city: 'Ort',
-  region: 'Kanton',
   thumbnail: 'Thumbnail',
   link: 'Link',
   panorama: 'Panorama',
@@ -54,14 +52,14 @@ const resolveColumns = (header: string[]): Columns => {
 };
 
 async function loadWebcamData(): Promise<WebcamData> {
-  const jwt = new google.auth.JWT({
+  const jwt = new auth.JWT({
     email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
     key: (process.env.GOOGLE_SHEETS_PRIVATE_KEY ?? '').replace(/\\n/g, '\n'),
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   });
 
-  const sheets = google.sheets({ version: 'v4', auth: jwt });
-  const response = await sheets.spreadsheets.values.get(
+  const api = sheets({ version: 'v4', auth: jwt });
+  const response = await api.spreadsheets.values.get(
     {
       spreadsheetId: process.env.SPREADSHEET_ID,
       range: 'Webcams',
@@ -88,7 +86,6 @@ async function loadWebcamData(): Promise<WebcamData> {
       return {
         name: cell(column.name),
         city: cell(column.city),
-        region: cell(column.region),
         latitude,
         longitude,
         thumbnail: cell(column.thumbnail) || fullsize,
