@@ -2,13 +2,14 @@ type DataLoadFlags = {
   webcamOk: boolean;
   temperatureOk: boolean;
   windOk: boolean;
+  sunshineOk: boolean;
 };
 
 export type DataLoadError = 'webcamList' | 'weatherData';
 
 // Joins the localized messages of the failed sources, or null when everything loaded
 export const dataLoadErrorMessage = (
-  { webcamOk, temperatureOk, windOk }: DataLoadFlags,
+  { webcamOk, temperatureOk, windOk, sunshineOk }: DataLoadFlags,
   messages: Record<DataLoadError, string>,
 ): string | null => {
   const errors: DataLoadError[] = [];
@@ -17,7 +18,7 @@ export const dataLoadErrorMessage = (
     errors.push('webcamList');
   }
 
-  if (!temperatureOk || !windOk) {
+  if (!temperatureOk || !windOk || !sunshineOk) {
     errors.push('weatherData');
   }
 

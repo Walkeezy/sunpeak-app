@@ -1,4 +1,4 @@
-import type { LayerName } from '@/components/layer-toggles';
+import type { LayerName } from '@/layers';
 import type { CompassPoint } from '@/utils/compassDirection';
 import type { DataLoadError } from '@/utils/dataLoadErrorMessage';
 
@@ -47,6 +47,8 @@ export type Messages = {
     gusts: string;
     gustFrom: string;
     gustSpeed: string;
+    sunshine: string;
+    sunshineMinutes: string;
     measuredAt: string;
     close: string;
     compass: Record<CompassPoint, string>;

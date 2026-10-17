@@ -15,7 +15,9 @@ import {
   MIN_ZOOM,
 } from '@/config';
 import { useLocale } from '@/i18n/messages-provider';
+import type { LayerName, LayerVisibility } from '@/layers';
 import { mergeStations } from '@/services/stationData';
+import type { SunshineData } from '@/services/sunshineData';
 import type { TemperatureData } from '@/services/temperatureData';
 import type { Webcam, WebcamData } from '@/services/webcamData';
 import type { WindData } from '@/services/windData';
@@ -24,11 +26,11 @@ import { CAM_SEARCH_PARAM, mapPath, mapWithWebcamPath } from '@/utils/paths';
 import { saveLayerToCookie } from '@/utils/preferenceCookie';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
-import { type LayerName, LayerToggles, type LayerVisibility } from './layer-toggles';
+import { LayerToggles } from './layer-toggles';
 import { LocationControl } from './location-control';
 import { MapEvents } from './map-events';
 import { StationDetails } from './station-details';
-import { Temperature } from './temperature';
+import { StationMarker } from './station-marker';
 import { VectorTileLayer } from './vector-tile-layer';
 import { Wind } from './wind';
 
@@ -36,13 +38,13 @@ type Props = {
   webcamData: WebcamData;
   temperatureData: TemperatureData;
   windData: WindData;
+  sunshineData: SunshineData;
   refreshQuery: string;
   center?: MapCenter;
   // Opened on mount, with the map centred on it; set when the page was requested as /?cam=…
   initialCam?: Webcam;
-  isWindVisible: boolean;
-  isTemperatureVisible: boolean;
-  isWebcamsVisible: boolean;
+  // From the cookies, read during the server render
+  layers: LayerVisibility;
   onLocationError: () => void;
 };
 
@@ -62,12 +64,11 @@ const WebcamMapComponent: FC<Props> = ({
   webcamData,
   temperatureData,
   windData,
+  sunshineData,
   center,
   initialCam,
   refreshQuery,
-  isWindVisible,
-  isTemperatureVisible,
-  isWebcamsVisible,
+  layers,
   onLocationError,
 }) => {
   const locale = useLocale();
@@ -75,11 +76,7 @@ const WebcamMapComponent: FC<Props> = ({
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
   // By id, so an open popup shows the new values after a refresh
   const [activeStationId, setActiveStationId] = useState<string | undefined>(undefined);
-  const [visibility, setVisibility] = useState<LayerVisibility>({
-    Webcams: isWebcamsVisible,
-    Temperature: isTemperatureVisible,
-    Wind: isWindVisible,
-  });
+  const [visibility, setVisibility] = useState(layers);
 
   const toggleLayer = (layer: LayerName) => {
     const isOn = !visibility[layer];
@@ -128,18 +125,27 @@ const WebcamMapComponent: FC<Props> = ({
     [webcamData, refreshQuery, openCam],
   );
 
-  const stations = useMemo(() => mergeStations(temperatureData, windData), [temperatureData, windData]);
+  const stations = useMemo(
+    () => mergeStations(temperatureData, windData, sunshineData),
+    [temperatureData, windData, sunshineData],
+  );
   const activeStation = activeStationId ? stations.get(activeStationId) : undefined;
   const closeStation = useCallback(() => setActiveStationId(undefined), []);
   // Leaflet closes the popup itself on a map click; keep the state in step
   const stationPopupEvents = useMemo(() => ({ remove: closeStation }), [closeStation]);
 
-  const allTemperatures = useMemo(
+  const allStations = useMemo(
     () =>
-      temperatureData.map((temperature) => (
-        <Temperature key={temperature.id} temperature={temperature} onSelect={setActiveStationId} />
+      [...stations.values()].map((station) => (
+        <StationMarker
+          key={station.id}
+          station={station}
+          showTemperature={visibility.Temperature}
+          showSunshine={visibility.Sunshine}
+          onSelect={setActiveStationId}
+        />
       )),
-    [temperatureData],
+    [stations, visibility.Temperature, visibility.Sunshine],
   );
 
   const allWinds = useMemo(
@@ -170,7 +176,7 @@ const WebcamMapComponent: FC<Props> = ({
         {/* Top right, opposite the zoom control, so the legend and locate button keep the bottom corners */}
         <AttributionControl position="topright" prefix={false} />
         <VectorTileLayer style={MAP_STYLE_URL} fallbackUrl={MAP_FALLBACK_TILES_URL} attribution={MAP_ATTRIBUTION} />
-        {visibility.Temperature && <LayerGroup>{allTemperatures}</LayerGroup>}
+        {(visibility.Temperature || visibility.Sunshine) && <LayerGroup>{allStations}</LayerGroup>}
         {visibility.Wind && <LayerGroup>{allWinds}</LayerGroup>}
         {visibility.Webcams && <LayerGroup>{allWebcams}</LayerGroup>}
         {activeStation && (

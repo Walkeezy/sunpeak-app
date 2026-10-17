@@ -1,14 +1,14 @@
 import { hasLocale, LOCALE_COOKIE, type Locale } from '@/i18n/config';
+import { DEFAULT_LAYER_VISIBILITY, isLayerName, LAYERS, type LayerVisibility } from '@/layers';
 import { parseMapCenter } from '@/utils/parseMapCenter';
 
 const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
-const LAYERS = new Set(['Wind', 'Temperature', 'Webcams']);
 
 // Prefixed names: the previous cookies were httpOnly, which document.cookie can't overwrite
 export const MAP_CENTER_LAT_COOKIE = 'mapCenterLat';
 export const MAP_CENTER_LON_COOKIE = 'mapCenterLon';
 export const MAP_ZOOM_COOKIE = 'mapZoom';
-export const layerCookieName = (layer: string) => `layer${layer}`;
+const layerCookieName = (layer: string) => `layer${layer}`;
 
 // Written on the client so map interactions don't trigger a Server Action and a server re-render;
 // the cookies are only read during the initial server render in page.tsx
@@ -30,8 +30,18 @@ export const saveCenterToCookie = (centerLat: string, centerLon: string, zoom: s
   setPreferenceCookie(MAP_ZOOM_COOKIE, center.zoom);
 };
 
+// Read during the server render: a saved choice per layer, the default otherwise
+export const layerVisibilityFromCookies = (readCookie: (name: string) => string | undefined): LayerVisibility =>
+  Object.fromEntries(
+    LAYERS.map((layer) => {
+      const saved = readCookie(layerCookieName(layer));
+
+      return [layer, saved === undefined ? DEFAULT_LAYER_VISIBILITY[layer] : saved === 'true'];
+    }),
+  ) as LayerVisibility;
+
 export const saveLayerToCookie = (layer: string, isActive: boolean) => {
-  if (!LAYERS.has(layer)) {
+  if (!isLayerName(layer)) {
     return;
   }
 

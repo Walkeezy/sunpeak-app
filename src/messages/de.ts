@@ -34,6 +34,7 @@ export const de: Messages = {
     layers: {
       Webcams: 'Webcams',
       Temperature: 'Temperatur',
+      Sunshine: 'Sonne',
       Wind: 'Böen',
     },
     showLocation: 'Meinen Standort zeigen',
@@ -48,6 +49,8 @@ export const de: Messages = {
     gusts: 'Böen',
     gustFrom: '{speed} km/h aus {direction}',
     gustSpeed: '{speed} km/h',
+    sunshine: 'Sonnenschein',
+    sunshineMinutes: '{minutes} von 10 Min.',
     measuredAt: 'Gemessen um {time}',
     close: 'Schliessen',
     compass: { N: 'Nord', NE: 'Nordost', E: 'Ost', SE: 'Südost', S: 'Süd', SW: 'Südwest', W: 'West', NW: 'Nordwest' },
@@ -62,7 +65,7 @@ export const de: Messages = {
     browseWebcams: 'stöbere in allen Webcams',
     weatherTerm: 'Wetterdaten',
     weatherDetail:
-      'Temperatur und Wind sind die neusten Zehn-Minuten-Messwerte von {meteoswiss}, dem Bundesamt für Meteorologie und Klimatologie.',
+      'Temperatur, Sonnenschein und Wind sind die neusten Zehn-Minuten-Messwerte von {meteoswiss}, dem Bundesamt für Meteorologie und Klimatologie. Der gelbe Ring um eine Station zeigt, wie viele dieser zehn Minuten die Sonne schien.',
     meteoswissName: 'MeteoSchweiz',
     meteoswissUrl: 'https://www.meteoschweiz.admin.ch/',
     sourceTerm: 'Quellcode',

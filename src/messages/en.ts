@@ -33,6 +33,7 @@ export const en: Messages = {
     layers: {
       Webcams: 'Webcams',
       Temperature: 'Temperature',
+      Sunshine: 'Sunshine',
       Wind: 'Gusts',
     },
     showLocation: 'Show my location',
@@ -47,6 +48,8 @@ export const en: Messages = {
     gusts: 'Gusts',
     gustFrom: '{speed} km/h from the {direction}',
     gustSpeed: '{speed} km/h',
+    sunshine: 'Sunshine',
+    sunshineMinutes: '{minutes} of the last 10 min',
     measuredAt: 'Measured at {time}',
     close: 'Close',
     compass: {
@@ -70,7 +73,7 @@ export const en: Messages = {
     browseWebcams: 'browse all webcams',
     weatherTerm: 'Weather data',
     weatherDetail:
-      'Temperature and wind are the latest ten-minute measurements from {meteoswiss}, the Federal Office of Meteorology and Climatology.',
+      'Temperature, sunshine and wind are the latest ten-minute measurements from {meteoswiss}, the Federal Office of Meteorology and Climatology. The yellow ring around a station shows for how many of those ten minutes the sun was out.',
     meteoswissName: 'MeteoSwiss',
     meteoswissUrl: 'https://www.meteoswiss.admin.ch/',
     sourceTerm: 'Source code',

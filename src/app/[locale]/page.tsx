@@ -10,7 +10,12 @@ import { requireLocale } from '@/i18n/server';
 import { loadSourceData } from '@/services/sourceData';
 import { parseMapCenter } from '@/utils/parseMapCenter';
 import { CAM_SEARCH_PARAM } from '@/utils/paths';
-import { layerCookieName, MAP_CENTER_LAT_COOKIE, MAP_CENTER_LON_COOKIE, MAP_ZOOM_COOKIE } from '@/utils/preferenceCookie';
+import {
+  layerVisibilityFromCookies,
+  MAP_CENTER_LAT_COOKIE,
+  MAP_CENTER_LON_COOKIE,
+  MAP_ZOOM_COOKIE,
+} from '@/utils/preferenceCookie';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]'>): Promise<Metadata> {
   const locale = requireLocale((await params).locale);
@@ -46,9 +51,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
       <App
         sources={sources}
         center={center}
-        isWindVisible={cookieStore.get(layerCookieName('Wind'))?.value === 'true'}
-        isTemperatureVisible={cookieStore.get(layerCookieName('Temperature'))?.value !== 'false'}
-        isWebcamsVisible={cookieStore.get(layerCookieName('Webcams'))?.value !== 'false'}
+        layers={layerVisibilityFromCookies((name) => cookieStore.get(name)?.value)}
         initialCamSlug={typeof cam === 'string' ? cam : undefined}
       />
     </Suspense>

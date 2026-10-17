@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { type FC, use, useCallback, useState, useTransition } from 'react';
 import { useMessages } from '@/i18n/messages-provider';
+import type { LayerVisibility } from '@/layers';
 import { getData } from '@/services/actions';
 import type { SourceData } from '@/services/sourceData';
 import { dataLoadErrorMessage } from '@/utils/dataLoadErrorMessage';
@@ -18,9 +19,7 @@ type Status = { kind: 'error' | 'success'; message: string };
 type Props = {
   sources: Promise<SourceData>;
   center?: MapCenter;
-  isWindVisible: boolean;
-  isTemperatureVisible: boolean;
-  isWebcamsVisible: boolean;
+  layers: LayerVisibility;
   // Slug from /?cam=…: the map opens with this webcam's overlay
   initialCamSlug?: string;
 };
@@ -30,16 +29,9 @@ const DynamicMap = dynamic(() => import('@/components/map').then((module) => mod
   ssr: false,
 });
 
-export const App: FC<Props> = ({
-  sources,
-  center,
-  isWindVisible,
-  isTemperatureVisible,
-  isWebcamsVisible,
-  initialCamSlug,
-}) => {
+export const App: FC<Props> = ({ sources, center, layers, initialCamSlug }) => {
   // Suspends until the sources are loaded; page.tsx shows the shell with a loading map meanwhile
-  const { webcamData, temperatureData, windData, webcamOk, temperatureOk, windOk } = use(sources);
+  const { webcamData, temperatureData, windData, sunshineData, webcamOk, temperatureOk, windOk, sunshineOk } = use(sources);
   const { app: t } = useMessages();
   // Resolved once from the URL the page was opened with; later opens and closes are handled by the map itself
   const [initialCam] = useState(() =>
@@ -49,9 +41,10 @@ export const App: FC<Props> = ({
   const [webcams, setWebcams] = useState(webcamData);
   const [temperatures, setTemperatures] = useState(temperatureData);
   const [winds, setWinds] = useState(windData);
+  const [sunshine, setSunshine] = useState(sunshineData);
   const [refreshQuery, setRefreshQuery] = useState(generateRefreshQuery);
   const [status, setStatus] = useState<Status | null>(() => {
-    const message = dataLoadErrorMessage({ webcamOk, temperatureOk, windOk }, t.loadErrors);
+    const message = dataLoadErrorMessage({ webcamOk, temperatureOk, windOk, sunshineOk }, t.loadErrors);
 
     return message ? { kind: 'error', message } : null;
   });
@@ -79,6 +72,10 @@ export const App: FC<Props> = ({
 
           if (data.windOk) {
             setWinds(data.windData);
+          }
+
+          if (data.sunshineOk) {
+            setSunshine(data.sunshineData);
           }
 
           const message = dataLoadErrorMessage(data, t.loadErrors);
@@ -109,12 +106,11 @@ export const App: FC<Props> = ({
         webcamData={webcams}
         temperatureData={temperatures}
         windData={winds}
+        sunshineData={sunshine}
         center={center}
         initialCam={initialCam}
         refreshQuery={refreshQuery}
-        isWindVisible={isWindVisible}
-        isTemperatureVisible={isTemperatureVisible}
-        isWebcamsVisible={isWebcamsVisible}
+        layers={layers}
         onLocationError={showLocationError}
       />
     </Shell>

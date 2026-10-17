@@ -21,7 +21,7 @@ export const StationDetails: FC<Props> = ({ station, onClose }) => {
   const decimal = new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 1 });
   const integer = new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 0 });
   const time = formatMeasurementTime(station.measuredAt);
-  const { altitude, temperature, gust, direction } = station;
+  const { altitude, temperature, sunshine, gust, direction } = station;
 
   return (
     <div data-test-id="station-details" className="on-light text-tinte min-w-44">
@@ -47,6 +47,12 @@ export const StationDetails: FC<Props> = ({ station, onClose }) => {
           <div className="flex justify-between gap-4">
             <dt>{t.temperature}</dt>
             <dd className="signage">{decimal.format(temperature)} °C</dd>
+          </div>
+        )}
+        {sunshine !== undefined && (
+          <div className="flex justify-between gap-4">
+            <dt>{t.sunshine}</dt>
+            <dd className="signage">{fill(t.sunshineMinutes, { minutes: sunshine })}</dd>
           </div>
         )}
         {gust !== undefined && (

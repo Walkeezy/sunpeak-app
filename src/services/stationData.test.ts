@@ -8,6 +8,7 @@ describe('mergeStations', () => {
     const stations = mergeStations(
       [{ id: 'ARO', ...base, value: 8.1, stationName: 'Arosa', altitude: 1878, measuredAt: '2026-10-17T10:50:00Z' }],
       [{ id: 'ARO', latitude: 46.81, longitude: 9.71, value: 14.4, direction: 105, altitude: 1888 }],
+      [{ id: 'ARO', latitude: 46.81, longitude: 9.71, value: 8 }],
     );
 
     expect(stations.get('ARO')).toEqual({
@@ -19,6 +20,7 @@ describe('mergeStations', () => {
       temperature: 8.1,
       gust: 14.4,
       direction: 105,
+      sunshine: 8,
     });
   });
 
@@ -26,9 +28,11 @@ describe('mergeStations', () => {
     const stations = mergeStations(
       [{ id: 'TEMP', ...base, value: 3 }],
       [{ id: 'WIND', ...base, value: 40, stationName: 'Gütsch', altitude: 2287 }],
+      [{ id: 'SUN', ...base, value: 0 }],
     );
 
     expect(stations.get('TEMP')).toEqual({ id: 'TEMP', ...base, temperature: 3 });
     expect(stations.get('WIND')).toEqual({ id: 'WIND', name: 'Gütsch', ...base, altitude: 2287, gust: 40 });
+    expect(stations.get('SUN')).toEqual({ id: 'SUN', ...base, sunshine: 0 });
   });
 });

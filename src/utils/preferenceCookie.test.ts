@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { Locale } from '@/i18n/config';
-import { saveCenterToCookie, saveLayerToCookie, saveLocaleToCookie } from './preferenceCookie';
+import { layerVisibilityFromCookies, saveCenterToCookie, saveLayerToCookie, saveLocaleToCookie } from './preferenceCookie';
 
 const cookieWrites = () => {
   const writes: string[] = [];
@@ -54,6 +54,17 @@ describe('preferenceCookie', () => {
     saveLocaleToCookie('fr' as Locale);
 
     expect(writes).toEqual(['locale=en; Path=/; Max-Age=31536000; SameSite=Lax']);
+  });
+
+  test('reads saved layer choices and falls back to the defaults', () => {
+    const cookies: Record<string, string> = { layerWind: 'true', layerSunshine: 'false' };
+
+    expect(layerVisibilityFromCookies((name) => cookies[name])).toEqual({
+      Webcams: true,
+      Temperature: true,
+      Sunshine: false,
+      Wind: true,
+    });
   });
 
   test('adds the Secure attribute on https', () => {
