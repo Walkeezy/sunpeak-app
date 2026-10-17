@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/copy-maplibre.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/copy-maplibre.mjs",
     "build": "next build",
     "start": "next start",
     "check:unused": "knip",
@@ -12,7 +14,8 @@
     "lint": "next typegen && biome ci . && npm run type-check && npm run check:unused",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
-    "test:unit:coverage": "vitest run --coverage"
+    "test:unit:coverage": "vitest run --coverage",
+    "map:style": "node scripts/build-map-style.mjs"
   },
   "engines": {
     "node": "^24.0.0"
@@ -21,6 +24,7 @@
     "@googleapis/sheets": "18.1.1",
     "@vercel/analytics": "^2.0.0",
     "leaflet": "^1.9.4",
+    "maplibre-gl": "^6.12.0",
     "next": "^16.1.1",
     "proj4": "^2.9.1",
     "react": "^19.0.0",

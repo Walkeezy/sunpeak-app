@@ -1,11 +1,9 @@
 'use client';
 
 import type { FC } from 'react';
+import { useMessages } from '@/i18n/messages-provider';
+import { LAYERS, type LayerName, type LayerVisibility } from '@/layers';
 import { joinClasses } from '@/utils/joinClasses';
-
-export type LayerName = 'Webcams' | 'Temperature' | 'Wind';
-
-export type LayerVisibility = Record<LayerName, boolean>;
 
 type Props = {
   visibility: LayerVisibility;
@@ -25,6 +23,15 @@ const glyphs: Record<LayerName, FC> = {
       °
     </span>
   ),
+  Sunshine: () => (
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="9" cy="9" r="3.5" fill="currentColor" />
+      <path
+        strokeLinecap="round"
+        d="M9 1.5v1.75M9 14.75v1.75M1.5 9h1.75M14.75 9h1.75M3.7 3.7l1.24 1.24M13.06 13.06l1.24 1.24M3.7 14.3l1.24-1.24M13.06 4.94l1.24-1.24"
+      />
+    </svg>
+  ),
   Wind: () => (
     <svg aria-hidden="true" width="18" height="18" viewBox="44 4 32 32" fill="currentColor">
       <path d="M60 7 L70 20 A14 14 0 1 1 50 20 Z" />
@@ -32,31 +39,36 @@ const glyphs: Record<LayerName, FC> = {
   ),
 };
 
-const layers: LayerName[] = ['Webcams', 'Temperature', 'Wind'];
+// The layer name is the cookie key and test id; the label comes from the messages
+export const LayerToggles: FC<Props> = ({ visibility, onToggle }) => {
+  const { app } = useMessages();
 
-export const LayerToggles: FC<Props> = ({ visibility, onToggle }) => (
-  <fieldset className="on-light bg-firn text-tinte absolute bottom-[calc(env(safe-area-inset-bottom)+0.625rem)] left-[0.625rem] z-[1000] flex gap-1 rounded-lg p-1 shadow-md">
-    <legend className="sr-only">Map layers</legend>
-    {layers.map((layer) => {
-      const Glyph = glyphs[layer];
-      const isOn = visibility[layer];
+  return (
+    <fieldset className="on-light bg-firn text-tinte flex gap-1 rounded-lg p-1 shadow-md">
+      <legend className="sr-only">{app.layersLegend}</legend>
+      {LAYERS.map((layer) => {
+        const Glyph = glyphs[layer];
+        const isOn = visibility[layer];
 
-      return (
-        <button
-          key={layer}
-          type="button"
-          aria-pressed={isOn}
-          data-test-id={`layer-toggle-${layer.toLowerCase()}`}
-          onClick={() => onToggle(layer)}
-          className={joinClasses([
-            'signage flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm transition-colors',
-            isOn ? 'bg-tinte text-firn' : 'text-tinte/55 hover:bg-tinte/10',
-          ])}
-        >
-          <Glyph />
-          <span>{layer}</span>
-        </button>
-      );
-    })}
-  </fieldset>
-);
+        return (
+          <button
+            key={layer}
+            type="button"
+            aria-pressed={isOn}
+            title={app.layers[layer]}
+            data-test-id={`layer-toggle-${layer.toLowerCase()}`}
+            onClick={() => onToggle(layer)}
+            className={joinClasses([
+              'signage flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm transition-colors',
+              isOn ? 'bg-tinte text-firn' : 'text-tinte/55 hover:bg-tinte/10',
+            ])}
+          >
+            <Glyph />
+            {/* Four labels don't fit next to the locate button on a phone; there the glyphs carry the legend */}
+            <span className="sr-only sm:not-sr-only">{app.layers[layer]}</span>
+          </button>
+        );
+      })}
+    </fieldset>
+  );
+};

@@ -3,34 +3,52 @@
 import { Icon, type LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { AttributionControl, LayerGroup, MapContainer, Marker, TileLayer } from 'react-leaflet';
-import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '@/config';
+import { AttributionControl, LayerGroup, MapContainer, Marker, Popup } from 'react-leaflet';
+import {
+  INITIAL_CENTER,
+  INITIAL_ZOOM,
+  MAP_ATTRIBUTION,
+  MAP_FALLBACK_TILES_URL,
+  MAP_STYLE_URL,
+  MAX_BOUNDS,
+  MAX_ZOOM,
+  MIN_ZOOM,
+} from '@/config';
+import { useLocale } from '@/i18n/messages-provider';
+import type { LayerName, LayerVisibility } from '@/layers';
+import { mergeStations } from '@/services/stationData';
+import type { SunshineData } from '@/services/sunshineData';
 import type { TemperatureData } from '@/services/temperatureData';
 import type { Webcam, WebcamData } from '@/services/webcamData';
 import type { WindData } from '@/services/windData';
+import { fogBoundary } from '@/utils/fogBoundary';
 import type { MapCenter } from '@/utils/parseMapCenter';
-import { saveLayerToCookie } from '@/utils/preferenceCookie';
-import { CAM_SEARCH_PARAM, mapWithWebcamPath } from '@/utils/webcamUrls';
+import { CAM_SEARCH_PARAM, mapPath, mapWithWebcamPath } from '@/utils/paths';
+import { saveLayerToCookie, saveMinAltitudeToCookie } from '@/utils/preferenceCookie';
+import { AltitudeFilter } from './altitude-filter';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
-import { type LayerName, LayerToggles, type LayerVisibility } from './layer-toggles';
+import { FogHint } from './fog-hint';
+import { LayerToggles } from './layer-toggles';
 import { LocationControl } from './location-control';
 import { MapEvents } from './map-events';
-import { Temperature } from './temperature';
+import { StationDetails } from './station-details';
+import { StationMarker } from './station-marker';
+import { VectorTileLayer } from './vector-tile-layer';
 import { Wind } from './wind';
 
 type Props = {
-  mapboxUrl: string;
   webcamData: WebcamData;
   temperatureData: TemperatureData;
   windData: WindData;
+  sunshineData: SunshineData;
   refreshQuery: string;
   center?: MapCenter;
   // Opened on mount, with the map centred on it; set when the page was requested as /?cam=…
   initialCam?: Webcam;
-  isWindVisible: boolean;
-  isTemperatureVisible: boolean;
-  isWebcamsVisible: boolean;
+  // From the cookies, read during the server render
+  layers: LayerVisibility;
+  minAltitude: number;
   onLocationError: () => void;
 };
 
@@ -47,25 +65,24 @@ const locationIcon = new Icon({
 });
 
 const WebcamMapComponent: FC<Props> = ({
-  mapboxUrl,
   webcamData,
   temperatureData,
   windData,
+  sunshineData,
   center,
   initialCam,
   refreshQuery,
-  isWindVisible,
-  isTemperatureVisible,
-  isWebcamsVisible,
+  layers,
+  minAltitude: initialMinAltitude,
   onLocationError,
 }) => {
+  const locale = useLocale();
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(initialCam);
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
-  const [visibility, setVisibility] = useState<LayerVisibility>({
-    Webcams: isWebcamsVisible,
-    Temperature: isTemperatureVisible,
-    Wind: isWindVisible,
-  });
+  // By id, so an open popup shows the new values after a refresh
+  const [activeStationId, setActiveStationId] = useState<string | undefined>(undefined);
+  const [visibility, setVisibility] = useState(layers);
+  const [minAltitude, setMinAltitude] = useState(initialMinAltitude);
 
   const toggleLayer = (layer: LayerName) => {
     const isOn = !visibility[layer];
@@ -73,12 +90,26 @@ const WebcamMapComponent: FC<Props> = ({
     setVisibility((prev) => ({ ...prev, [layer]: isOn }));
   };
 
+  const changeMinAltitude = (altitude: number) => {
+    saveMinAltitudeToCookie(altitude);
+    setMinAltitude(altitude);
+  };
+
+  // Without a filter everything shows; with one, places of unknown altitude are left out too
+  const isHighEnough = useCallback(
+    (altitude: number | undefined) => minAltitude === 0 || (altitude !== undefined && altitude >= minAltitude),
+    [minAltitude],
+  );
+
   // The open webcam is mirrored in the URL (/?cam=…) so the view can be shared and the back button closes it.
   // Native pushState keeps this on the client; a router navigation would re-render the page on the server
-  const openCam = useCallback((webcam: Webcam) => {
-    setActiveCam(webcam);
-    window.history.pushState({ [CAM_HISTORY_KEY]: true }, '', mapWithWebcamPath(webcam.slug));
-  }, []);
+  const openCam = useCallback(
+    (webcam: Webcam) => {
+      setActiveCam(webcam);
+      window.history.pushState({ [CAM_HISTORY_KEY]: true }, '', mapWithWebcamPath(locale, webcam.slug));
+    },
+    [locale],
+  );
 
   // Stable, so the overlay's window listener isn't re-registered on every map render
   const closeCam = useCallback(() => {
@@ -89,9 +120,9 @@ const WebcamMapComponent: FC<Props> = ({
       window.history.back();
     } else {
       // Opened from a shared link or a webcam page: just clean the URL
-      window.history.replaceState(null, '', '/');
+      window.history.replaceState(null, '', mapPath(locale));
     }
-  }, []);
+  }, [locale]);
 
   // Browser back and forward move between the plain map and an open webcam
   useEffect(() => {
@@ -107,16 +138,45 @@ const WebcamMapComponent: FC<Props> = ({
 
   const allWebcams = useMemo(
     () =>
-      webcamData.map((webcam) => <Cam key={webcam.slug} webcam={webcam} refreshQuery={refreshQuery} onSelected={openCam} />),
-    [webcamData, refreshQuery, openCam],
+      webcamData
+        .filter((webcam) => isHighEnough(webcam.altitude))
+        .map((webcam) => <Cam key={webcam.slug} webcam={webcam} refreshQuery={refreshQuery} onSelected={openCam} />),
+    [webcamData, refreshQuery, openCam, isHighEnough],
   );
 
-  const allTemperatures = useMemo(
-    () => temperatureData.map((temperature) => <Temperature key={temperature.id} temperature={temperature} />),
-    [temperatureData],
+  const stations = useMemo(
+    () => mergeStations(temperatureData, windData, sunshineData),
+    [temperatureData, windData, sunshineData],
+  );
+  const activeStation = activeStationId ? stations.get(activeStationId) : undefined;
+  const boundary = useMemo(() => fogBoundary([...stations.values()]), [stations]);
+  const closeStation = useCallback(() => setActiveStationId(undefined), []);
+  // Leaflet closes the popup itself on a map click; keep the state in step
+  const stationPopupEvents = useMemo(() => ({ remove: closeStation }), [closeStation]);
+
+  const allStations = useMemo(
+    () =>
+      [...stations.values()]
+        .filter((station) => isHighEnough(station.altitude))
+        .map((station) => (
+          <StationMarker
+            key={station.id}
+            station={station}
+            showTemperature={visibility.Temperature}
+            showSunshine={visibility.Sunshine}
+            onSelect={setActiveStationId}
+          />
+        )),
+    [stations, visibility.Temperature, visibility.Sunshine, isHighEnough],
   );
 
-  const allWinds = useMemo(() => windData.map((wind) => <Wind key={wind.id} wind={wind} />), [windData]);
+  const allWinds = useMemo(
+    () =>
+      windData
+        .filter((wind) => isHighEnough(wind.altitude))
+        .map((wind) => <Wind key={wind.id} wind={wind} onSelect={setActiveStationId} />),
+    [windData, isHighEnough],
+  );
 
   // A webcam from the URL wins over the remembered view, so a shared link always shows its webcam
   const initialCenter: LatLngTuple = initialCam
@@ -140,15 +200,31 @@ const WebcamMapComponent: FC<Props> = ({
       >
         {/* Top right, opposite the zoom control, so the legend and locate button keep the bottom corners */}
         <AttributionControl position="topright" prefix={false} />
-        <TileLayer attribution='Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>' url={mapboxUrl} />
-        {visibility.Temperature && <LayerGroup>{allTemperatures}</LayerGroup>}
+        <VectorTileLayer style={MAP_STYLE_URL} fallbackUrl={MAP_FALLBACK_TILES_URL} attribution={MAP_ATTRIBUTION} />
+        {(visibility.Temperature || visibility.Sunshine) && <LayerGroup>{allStations}</LayerGroup>}
         {visibility.Wind && <LayerGroup>{allWinds}</LayerGroup>}
         {visibility.Webcams && <LayerGroup>{allWebcams}</LayerGroup>}
+        {activeStation && (
+          <Popup
+            key={activeStation.id}
+            position={[activeStation.latitude, activeStation.longitude]}
+            offset={[0, -12]}
+            closeButton={false}
+            className="station-popup"
+            eventHandlers={stationPopupEvents}
+          >
+            <StationDetails station={activeStation} onClose={closeStation} />
+          </Popup>
+        )}
         <MapEvents />
         <LocationControl onLocationFound={setLocation} onLocationError={onLocationError} />
         {location && <Marker position={location} icon={locationIcon} />}
       </MapContainer>
-      <LayerToggles visibility={visibility} onToggle={toggleLayer} />
+      <div className="absolute bottom-[calc(env(safe-area-inset-bottom)+0.625rem)] left-[0.625rem] z-[1000] flex flex-col items-start gap-1.5">
+        {boundary && <FogHint boundary={boundary} minAltitude={minAltitude} onChange={changeMinAltitude} />}
+        <AltitudeFilter value={minAltitude} onChange={changeMinAltitude} />
+        <LayerToggles visibility={visibility} onToggle={toggleLayer} />
+      </div>
     </div>
   );
 };

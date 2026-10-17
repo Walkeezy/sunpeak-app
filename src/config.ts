@@ -4,6 +4,13 @@ export const SITE_URL = 'https://sunpeak.app';
 
 export const FETCH_TIMEOUT_MS = 8_000;
 
+// MAP TILES: swisstopo's free vector base map in Sunpeak's night colours (built by `npm run map:style`), and
+// swisstopo's raster map for browsers without WebGL 2, darkened with a CSS filter
+export const MAP_STYLE_URL = '/map-style-dark.json';
+export const MAP_FALLBACK_TILES_URL =
+  'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg';
+export const MAP_ATTRIBUTION = '&copy; <a href="https://www.swisstopo.admin.ch/">swisstopo</a>';
+
 // ZOOM
 export const INITIAL_ZOOM = 10;
 export const MIN_ZOOM = 9;
@@ -25,6 +32,9 @@ export const camIconSize = (zoom: number): number => {
 
   return 72;
 };
+
+// The altitude filter's steps in metres; 0 shows everything
+export const ALTITUDE_STEPS: readonly number[] = [0, 1000, 1500, 2000];
 
 // COORDINATES
 export const INITIAL_CENTER = [46.85, 9.533333] as LatLngTuple;

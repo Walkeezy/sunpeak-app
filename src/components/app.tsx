@@ -2,11 +2,17 @@
 
 import dynamic from 'next/dynamic';
 import { type FC, use, useCallback, useState, useTransition } from 'react';
+import { type RefreshTrigger, useAutoRefresh } from '@/hooks/useAutoRefresh';
+import { fill } from '@/i18n/format';
+import { useMessages } from '@/i18n/messages-provider';
+import type { LayerVisibility } from '@/layers';
 import { getData } from '@/services/actions';
 import type { SourceData } from '@/services/sourceData';
 import { dataLoadErrorMessage } from '@/utils/dataLoadErrorMessage';
 import { generateRefreshQuery } from '@/utils/generateRefreshQuery';
 import type { MapCenter } from '@/utils/parseMapCenter';
+import { latestMeasurement } from '@/utils/shouldRefresh';
+import { formatMeasurementTime } from '@/utils/temperatureLabel';
 import { DataStatusBanner } from './data-status-banner';
 import { LoadingMap } from './loading-map';
 import { Refresh } from './refresh';
@@ -16,11 +22,9 @@ type Status = { kind: 'error' | 'success'; message: string };
 
 type Props = {
   sources: Promise<SourceData>;
-  mapboxUrl: string;
   center?: MapCenter;
-  isWindVisible: boolean;
-  isTemperatureVisible: boolean;
-  isWebcamsVisible: boolean;
+  layers: LayerVisibility;
+  minAltitude: number;
   // Slug from /?cam=…: the map opens with this webcam's overlay
   initialCamSlug?: string;
 };
@@ -30,17 +34,10 @@ const DynamicMap = dynamic(() => import('@/components/map').then((module) => mod
   ssr: false,
 });
 
-export const App: FC<Props> = ({
-  sources,
-  mapboxUrl,
-  center,
-  isWindVisible,
-  isTemperatureVisible,
-  isWebcamsVisible,
-  initialCamSlug,
-}) => {
+export const App: FC<Props> = ({ sources, center, layers, minAltitude, initialCamSlug }) => {
   // Suspends until the sources are loaded; page.tsx shows the shell with a loading map meanwhile
-  const { webcamData, temperatureData, windData, webcamOk, temperatureOk, windOk } = use(sources);
+  const { webcamData, temperatureData, windData, sunshineData, webcamOk, temperatureOk, windOk, sunshineOk } = use(sources);
+  const { app: t } = useMessages();
   // Resolved once from the URL the page was opened with; later opens and closes are handled by the map itself
   const [initialCam] = useState(() =>
     initialCamSlug ? webcamData.find((webcam) => webcam.slug === initialCamSlug) : undefined,
@@ -49,54 +46,70 @@ export const App: FC<Props> = ({
   const [webcams, setWebcams] = useState(webcamData);
   const [temperatures, setTemperatures] = useState(temperatureData);
   const [winds, setWinds] = useState(windData);
+  const [sunshine, setSunshine] = useState(sunshineData);
   const [refreshQuery, setRefreshQuery] = useState(generateRefreshQuery);
   const [status, setStatus] = useState<Status | null>(() => {
-    const message = dataLoadErrorMessage({ webcamOk, temperatureOk, windOk });
+    const message = dataLoadErrorMessage({ webcamOk, temperatureOk, windOk, sunshineOk }, t.loadErrors);
 
     return message ? { kind: 'error', message } : null;
   });
 
   const dismissStatus = useCallback(() => setStatus(null), []);
-  const showLocationError = useCallback(
-    () => setStatus({ kind: 'error', message: 'Your location could not be determined' }),
-    [],
+  const showLocationError = useCallback(() => setStatus({ kind: 'error', message: t.locationFailed }), [t.locationFailed]);
+
+  // A manual refresh or coming back to the app confirms with the measurement time; the ten-minute refresh
+  // happens quietly unless something fails
+  const handleReloadData = useCallback(
+    (trigger: RefreshTrigger) => {
+      startRefresh(async () => {
+        // Refresh the images even if the data request fails
+        setRefreshQuery(Date.now().toString());
+
+        try {
+          const data = await getData();
+
+          // Updates after an await need their own startTransition to join the pending one
+          startRefresh(() => {
+            if (data.webcamOk) {
+              setWebcams(data.webcamData);
+            }
+
+            if (data.temperatureOk) {
+              setTemperatures(data.temperatureData);
+            }
+
+            if (data.windOk) {
+              setWinds(data.windData);
+            }
+
+            if (data.sunshineOk) {
+              setSunshine(data.sunshineData);
+            }
+
+            const message = dataLoadErrorMessage(data, t.loadErrors);
+            const time = formatMeasurementTime(latestMeasurement(data.temperatureData));
+
+            if (message) {
+              setStatus({ kind: 'error', message });
+            } else if (trigger !== 'interval') {
+              setStatus({ kind: 'success', message: time ? fill(t.updatedAt, { time }) : t.updated });
+            }
+          });
+        } catch (error) {
+          console.error(error);
+          startRefresh(() => setStatus({ kind: 'error', message: t.loadFailed }));
+        }
+      });
+    },
+    [t],
   );
 
-  const handleReloadData = () => {
-    startRefresh(async () => {
-      // Refresh the images even if the data request fails
-      setRefreshQuery(Date.now().toString());
-
-      try {
-        const data = await getData();
-
-        // Updates after an await need their own startTransition to join the pending one
-        startRefresh(() => {
-          if (data.webcamOk) {
-            setWebcams(data.webcamData);
-          }
-
-          if (data.temperatureOk) {
-            setTemperatures(data.temperatureData);
-          }
-
-          if (data.windOk) {
-            setWinds(data.windData);
-          }
-
-          const message = dataLoadErrorMessage(data);
-          setStatus(message ? { kind: 'error', message } : { kind: 'success', message: 'Updated' });
-        });
-      } catch (error) {
-        console.error(error);
-        startRefresh(() => setStatus({ kind: 'error', message: 'Data could not be loaded' }));
-      }
-    });
-  };
+  const refreshNow = useAutoRefresh(handleReloadData, isRefreshing);
+  const refreshManually = useCallback(() => refreshNow('manual'), [refreshNow]);
 
   return (
     <Shell
-      actions={<Refresh reloadData={handleReloadData} isRefreshing={isRefreshing} />}
+      actions={<Refresh reloadData={refreshManually} isRefreshing={isRefreshing} />}
       banner={
         status && (
           <DataStatusBanner
@@ -112,13 +125,12 @@ export const App: FC<Props> = ({
         webcamData={webcams}
         temperatureData={temperatures}
         windData={winds}
-        mapboxUrl={mapboxUrl}
+        sunshineData={sunshine}
         center={center}
         initialCam={initialCam}
         refreshQuery={refreshQuery}
-        isWindVisible={isWindVisible}
-        isTemperatureVisible={isTemperatureVisible}
-        isWebcamsVisible={isWebcamsVisible}
+        layers={layers}
+        minAltitude={minAltitude}
         onLocationError={showLocationError}
       />
     </Shell>

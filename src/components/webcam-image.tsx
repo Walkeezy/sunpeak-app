@@ -1,6 +1,7 @@
 'use client';
 
 import { type FC, useEffect, useRef, useState } from 'react';
+import { useMessages } from '@/i18n/messages-provider';
 import { joinClasses } from '@/utils/joinClasses';
 import { LoadingIcon } from './icons/loading';
 
@@ -38,6 +39,7 @@ type HeroProps = {
 
 // The big picture on a webcam's page: panoramas keep their height and scroll sideways like in the map overlay
 export const WebcamImage: FC<HeroProps> = ({ src, largeSrc, alt, panorama }) => {
+  const { app } = useMessages();
   const { ref, loading, failed, onLoad, onError } = useImageStatus();
 
   return (
@@ -54,7 +56,7 @@ export const WebcamImage: FC<HeroProps> = ({ src, largeSrc, alt, panorama }) => 
       )}
       {failed && (
         <div className="text-firn absolute inset-0 flex items-center justify-center p-4 text-center">
-          This webcam image is currently unavailable
+          {app.imageUnavailable}
         </div>
       )}
       <picture>
