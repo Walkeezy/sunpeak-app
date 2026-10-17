@@ -105,6 +105,7 @@ export const en: Messages = {
       'Live pictures from all over Switzerland, grouped by place and refreshed every few minutes. Open a place for all of its webcams, or a webcam for the full picture, the temperature nearby and its spot on the {map}.',
     mapLink: 'map',
     loadFailed: 'The webcam list could not be loaded. Please try again later.',
+    letterNav: 'Jump to a letter',
     elsewhere: 'Other webcams',
     webcamAlt: 'Webcam {name}',
     webcamAltWithCity: 'Webcam {name}, {city}',
