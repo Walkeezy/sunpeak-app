@@ -2,6 +2,8 @@
 
 import dynamic from 'next/dynamic';
 import { type FC, use, useCallback, useState, useTransition } from 'react';
+import { type RefreshTrigger, useAutoRefresh } from '@/hooks/useAutoRefresh';
+import { fill } from '@/i18n/format';
 import { useMessages } from '@/i18n/messages-provider';
 import type { LayerVisibility } from '@/layers';
 import { getData } from '@/services/actions';
@@ -9,6 +11,8 @@ import type { SourceData } from '@/services/sourceData';
 import { dataLoadErrorMessage } from '@/utils/dataLoadErrorMessage';
 import { generateRefreshQuery } from '@/utils/generateRefreshQuery';
 import type { MapCenter } from '@/utils/parseMapCenter';
+import { latestMeasurement } from '@/utils/shouldRefresh';
+import { formatMeasurementTime } from '@/utils/temperatureLabel';
 import { DataStatusBanner } from './data-status-banner';
 import { LoadingMap } from './loading-map';
 import { Refresh } from './refresh';
@@ -53,45 +57,59 @@ export const App: FC<Props> = ({ sources, center, layers, minAltitude, initialCa
   const dismissStatus = useCallback(() => setStatus(null), []);
   const showLocationError = useCallback(() => setStatus({ kind: 'error', message: t.locationFailed }), [t.locationFailed]);
 
-  const handleReloadData = () => {
-    startRefresh(async () => {
-      // Refresh the images even if the data request fails
-      setRefreshQuery(Date.now().toString());
+  // A manual refresh or coming back to the app confirms with the measurement time; the ten-minute refresh
+  // happens quietly unless something fails
+  const handleReloadData = useCallback(
+    (trigger: RefreshTrigger) => {
+      startRefresh(async () => {
+        // Refresh the images even if the data request fails
+        setRefreshQuery(Date.now().toString());
 
-      try {
-        const data = await getData();
+        try {
+          const data = await getData();
 
-        // Updates after an await need their own startTransition to join the pending one
-        startRefresh(() => {
-          if (data.webcamOk) {
-            setWebcams(data.webcamData);
-          }
+          // Updates after an await need their own startTransition to join the pending one
+          startRefresh(() => {
+            if (data.webcamOk) {
+              setWebcams(data.webcamData);
+            }
 
-          if (data.temperatureOk) {
-            setTemperatures(data.temperatureData);
-          }
+            if (data.temperatureOk) {
+              setTemperatures(data.temperatureData);
+            }
 
-          if (data.windOk) {
-            setWinds(data.windData);
-          }
+            if (data.windOk) {
+              setWinds(data.windData);
+            }
 
-          if (data.sunshineOk) {
-            setSunshine(data.sunshineData);
-          }
+            if (data.sunshineOk) {
+              setSunshine(data.sunshineData);
+            }
 
-          const message = dataLoadErrorMessage(data, t.loadErrors);
-          setStatus(message ? { kind: 'error', message } : { kind: 'success', message: t.updated });
-        });
-      } catch (error) {
-        console.error(error);
-        startRefresh(() => setStatus({ kind: 'error', message: t.loadFailed }));
-      }
-    });
-  };
+            const message = dataLoadErrorMessage(data, t.loadErrors);
+            const time = formatMeasurementTime(latestMeasurement(data.temperatureData));
+
+            if (message) {
+              setStatus({ kind: 'error', message });
+            } else if (trigger !== 'interval') {
+              setStatus({ kind: 'success', message: time ? fill(t.updatedAt, { time }) : t.updated });
+            }
+          });
+        } catch (error) {
+          console.error(error);
+          startRefresh(() => setStatus({ kind: 'error', message: t.loadFailed }));
+        }
+      });
+    },
+    [t],
+  );
+
+  const refreshNow = useAutoRefresh(handleReloadData, isRefreshing);
+  const refreshManually = useCallback(() => refreshNow('manual'), [refreshNow]);
 
   return (
     <Shell
-      actions={<Refresh reloadData={handleReloadData} isRefreshing={isRefreshing} />}
+      actions={<Refresh reloadData={refreshManually} isRefreshing={isRefreshing} />}
       banner={
         status && (
           <DataStatusBanner

@@ -22,6 +22,7 @@ export const en: Messages = {
   app: {
     refresh: 'Refresh data',
     updated: 'Updated',
+    updatedAt: 'Updated · measurements from {time}',
     loadFailed: 'Data could not be loaded',
     loadErrors: {
       webcamList: 'Webcam list could not be loaded',

@@ -28,6 +28,7 @@ export type Messages = {
   app: {
     refresh: string;
     updated: string;
+    updatedAt: string;
     loadFailed: string;
     loadErrors: Record<DataLoadError, string>;
     locationFailed: string;
