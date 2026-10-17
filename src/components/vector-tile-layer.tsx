@@ -68,5 +68,5 @@ export const VectorTileLayer: FC<Props> = ({ style, fallbackUrl, attribution }) 
     };
   }, [map, style, attribution, useRasterTiles]);
 
-  return useRasterTiles ? <TileLayer url={fallbackUrl} attribution={attribution} /> : null;
+  return useRasterTiles ? <TileLayer url={fallbackUrl} attribution={attribution} className="raster-fallback" /> : null;
 };

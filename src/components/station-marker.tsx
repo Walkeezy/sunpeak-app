@@ -16,17 +16,17 @@ const RING_SIZE = 40;
 const RING_RADIUS = 18.5;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
-// Yellow arc for the minutes of sunshine out of ten, starting at the top, on a faint track that marks
-// "measured, but no sun"
+// Yellow arc for the minutes of sunshine out of ten, starting at the top, on a faint light track that marks
+// "measured, but no sun". Light pills and the sun's yellow are what stands out on the night map
 const sunshineRing = (minutes: number) => {
   const arc = (RING_CIRCUMFERENCE * minutes) / 10;
   const center = RING_SIZE / 2;
 
-  return `<svg class="absolute inset-0 overflow-visible" viewBox="0 0 ${RING_SIZE} ${RING_SIZE}" aria-hidden="true"><circle cx="${center}" cy="${center}" r="${RING_RADIUS}" fill="none" stroke-width="3" class="stroke-schiefer/45"></circle>${minutes > 0 ? `<circle cx="${center}" cy="${center}" r="${RING_RADIUS}" fill="none" stroke-width="3" stroke-linecap="round" stroke-dasharray="${arc.toFixed(2)} ${RING_CIRCUMFERENCE.toFixed(2)}" transform="rotate(-90 ${center} ${center})" class="stroke-sonne"></circle>` : ''}</svg>`;
+  return `<svg class="absolute inset-0 overflow-visible" viewBox="0 0 ${RING_SIZE} ${RING_SIZE}" aria-hidden="true"><circle cx="${center}" cy="${center}" r="${RING_RADIUS}" fill="none" stroke-width="3" class="stroke-firn/30"></circle>${minutes > 0 ? `<circle cx="${center}" cy="${center}" r="${RING_RADIUS}" fill="none" stroke-width="3" stroke-linecap="round" stroke-dasharray="${arc.toFixed(2)} ${RING_CIRCUMFERENCE.toFixed(2)}" transform="rotate(-90 ${center} ${center})" class="stroke-sonne"></circle>` : ''}</svg>`;
 };
 
 const temperaturePill = (value: number) =>
-  `<div class="bg-schiefer border-firn text-firn signage absolute top-1/2 left-1/2 flex size-8 -translate-1/2 items-center justify-center rounded-full border font-sans text-[11px] shadow-md"><span class="ml-[2px]">${value}°</span></div>`;
+  `<div class="bg-firn border-nacht/20 text-tinte signage absolute top-1/2 left-1/2 flex size-8 -translate-1/2 items-center justify-center rounded-full border font-sans text-[11px] shadow-md"><span class="ml-[2px]">${value}°</span></div>`;
 
 // Without the temperature layer the ring surrounds a small sun: yellow when it shone at all
 const sunDot = (minutes: number) =>

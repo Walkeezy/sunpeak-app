@@ -14,7 +14,8 @@
     "lint": "next typegen && biome ci . && npm run type-check && npm run check:unused",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
-    "test:unit:coverage": "vitest run --coverage"
+    "test:unit:coverage": "vitest run --coverage",
+    "map:style": "node scripts/build-map-style.mjs"
   },
   "engines": {
     "node": "^24.0.0"
