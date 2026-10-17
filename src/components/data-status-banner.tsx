@@ -1,6 +1,7 @@
 'use client';
 
 import { type FC, useEffect } from 'react';
+import { useMessages } from '@/i18n/messages-provider';
 import { joinClasses } from '@/utils/joinClasses';
 import { CloseIcon } from './icons/close';
 
@@ -11,6 +12,8 @@ type Props = {
 };
 
 export const DataStatusBanner: FC<Props> = ({ kind, message, onDismiss }) => {
+  const { app } = useMessages();
+
   useEffect(() => {
     if (kind !== 'success') {
       return;
@@ -34,7 +37,7 @@ export const DataStatusBanner: FC<Props> = ({ kind, message, onDismiss }) => {
       <button
         type="button"
         onClick={onDismiss}
-        aria-label="Dismiss"
+        aria-label={app.dismiss}
         className="hover:bg-tinte/10 flex size-9 shrink-0 items-center justify-center rounded-md"
       >
         <CloseIcon size={16} />

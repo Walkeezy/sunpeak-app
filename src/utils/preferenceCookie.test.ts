@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { saveCenterToCookie, saveLayerToCookie } from './preferenceCookie';
+import type { Locale } from '@/i18n/config';
+import { saveCenterToCookie, saveLayerToCookie, saveLocaleToCookie } from './preferenceCookie';
 
 const cookieWrites = () => {
   const writes: string[] = [];
@@ -44,6 +45,15 @@ describe('preferenceCookie', () => {
     saveLayerToCookie('Unknown', true);
 
     expect(writes).toEqual(['layerWind=true; Path=/; Max-Age=31536000; SameSite=Lax']);
+  });
+
+  test('saves a supported locale and ignores others', () => {
+    const writes = cookieWrites();
+
+    saveLocaleToCookie('en');
+    saveLocaleToCookie('fr' as Locale);
+
+    expect(writes).toEqual(['locale=en; Path=/; Max-Age=31536000; SameSite=Lax']);
   });
 
   test('adds the Secure attribute on https', () => {

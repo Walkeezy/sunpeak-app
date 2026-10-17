@@ -1,51 +1,33 @@
-import type { Metadata, Viewport } from 'next';
+import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { Suspense } from 'react';
 import { preconnect } from 'react-dom';
 import { App } from '@/components/app';
 import { AppFallback } from '@/components/app-fallback';
+import { getMessages } from '@/i18n/messages';
+import { localizedAlternates, localizedOpenGraph } from '@/i18n/metadata';
+import { requireLocale } from '@/i18n/server';
 import { loadSourceData } from '@/services/sourceData';
 import { parseMapCenter } from '@/utils/parseMapCenter';
+import { CAM_SEARCH_PARAM } from '@/utils/paths';
 import { layerCookieName, MAP_CENTER_LAT_COOKIE, MAP_CENTER_LON_COOKIE, MAP_ZOOM_COOKIE } from '@/utils/preferenceCookie';
-import { CAM_SEARCH_PARAM } from '@/utils/webcamUrls';
-import { splashScreens } from './splash-screens';
 
-export const viewport: Viewport = {
-  themeColor: '#334155',
-  viewportFit: 'cover',
-};
+export async function generateMetadata({ params }: PageProps<'/[locale]'>): Promise<Metadata> {
+  const locale = requireLocale((await params).locale);
+  const { meta } = getMessages(locale);
 
-export const metadata: Metadata = {
-  title: 'Sunpeak App — Webcams from all over Switzerland',
-  description:
-    "This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current weather conditions and helping you plan your next outdoor adventure. So why wait? Let's find out where the sun is shining today!",
-  openGraph: {
-    title: 'Sunpeak App — Webcams from all over Switzerland',
-    description:
-      "This interactive map displays webcams from all over Switzerland, giving you a real-time glimpse of the current weather conditions and helping you plan your next outdoor adventure. So why wait? Let's find out where the sun is shining today!",
-    images: ['/sunpeak-open-graph.jpg'],
-    url: 'https://sunpeak.app',
-  },
-  // /?cam=… opens a webcam on the map; its indexable page lives under /webcams, so the map stays one URL for search engines
-  alternates: { canonical: '/' },
-  referrer: 'origin-when-cross-origin',
-  creator: 'Kevin Walker',
-  applicationName: 'Sunpeak',
-  manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    title: 'Sunpeak',
-    statusBarStyle: 'black-translucent',
-    startupImage: splashScreens,
-  },
-  icons: [
-    { rel: 'icon', sizes: '32x32', url: '/favicon-32x32.png' },
-    { rel: 'icon', sizes: '16x16', url: '/favicon-16x16.png' },
-    { rel: 'apple-touch-icon', url: '/apple-touch-icon.png' },
-  ],
-};
+  return {
+    title: { absolute: meta.siteTitle },
+    description: meta.siteDescription,
+    // ?cam=… opens a webcam on the map; its indexable page lives under /webcams, so the map stays one URL per language
+    alternates: localizedAlternates(locale, '/'),
+    openGraph: localizedOpenGraph(locale, { title: meta.siteTitle, description: meta.siteDescription, path: '/' }),
+  };
+}
 
-export default async function Page({ searchParams }: PageProps<'/'>) {
+export default async function Page({ params, searchParams }: PageProps<'/[locale]'>) {
+  // Rejects unknown locales and stray single segments that skip the proxy, such as /foo.png
+  requireLocale((await params).locale);
   // Not awaited: the app unwraps the promise with use() inside the Suspense boundary, so the
   // header and loading map stream right away while the sources load
   const sources = loadSourceData();

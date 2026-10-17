@@ -1,3 +1,4 @@
+import { hasLocale, LOCALE_COOKIE, type Locale } from '@/i18n/config';
 import { parseMapCenter } from '@/utils/parseMapCenter';
 
 const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
@@ -35,4 +36,13 @@ export const saveLayerToCookie = (layer: string, isActive: boolean) => {
   }
 
   setPreferenceCookie(layerCookieName(layer), isActive.toString());
+};
+
+// Read by the proxy when a visitor opens an unprefixed URL such as /
+export const saveLocaleToCookie = (locale: Locale) => {
+  if (!hasLocale(locale)) {
+    return;
+  }
+
+  setPreferenceCookie(LOCALE_COOKIE, locale);
 };

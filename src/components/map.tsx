@@ -5,12 +5,13 @@ import 'leaflet/dist/leaflet.css';
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { AttributionControl, LayerGroup, MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '@/config';
+import { useLocale } from '@/i18n/messages-provider';
 import type { TemperatureData } from '@/services/temperatureData';
 import type { Webcam, WebcamData } from '@/services/webcamData';
 import type { WindData } from '@/services/windData';
 import type { MapCenter } from '@/utils/parseMapCenter';
+import { CAM_SEARCH_PARAM, mapPath, mapWithWebcamPath } from '@/utils/paths';
 import { saveLayerToCookie } from '@/utils/preferenceCookie';
-import { CAM_SEARCH_PARAM, mapWithWebcamPath } from '@/utils/webcamUrls';
 import { Cam } from './cam';
 import { CamOverlay } from './cam-overlay';
 import { type LayerName, LayerToggles, type LayerVisibility } from './layer-toggles';
@@ -59,6 +60,7 @@ const WebcamMapComponent: FC<Props> = ({
   isWebcamsVisible,
   onLocationError,
 }) => {
+  const locale = useLocale();
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(initialCam);
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
   const [visibility, setVisibility] = useState<LayerVisibility>({
@@ -75,10 +77,13 @@ const WebcamMapComponent: FC<Props> = ({
 
   // The open webcam is mirrored in the URL (/?cam=…) so the view can be shared and the back button closes it.
   // Native pushState keeps this on the client; a router navigation would re-render the page on the server
-  const openCam = useCallback((webcam: Webcam) => {
-    setActiveCam(webcam);
-    window.history.pushState({ [CAM_HISTORY_KEY]: true }, '', mapWithWebcamPath(webcam.slug));
-  }, []);
+  const openCam = useCallback(
+    (webcam: Webcam) => {
+      setActiveCam(webcam);
+      window.history.pushState({ [CAM_HISTORY_KEY]: true }, '', mapWithWebcamPath(locale, webcam.slug));
+    },
+    [locale],
+  );
 
   // Stable, so the overlay's window listener isn't re-registered on every map render
   const closeCam = useCallback(() => {
@@ -89,9 +94,9 @@ const WebcamMapComponent: FC<Props> = ({
       window.history.back();
     } else {
       // Opened from a shared link or a webcam page: just clean the URL
-      window.history.replaceState(null, '', '/');
+      window.history.replaceState(null, '', mapPath(locale));
     }
-  }, []);
+  }, [locale]);
 
   // Browser back and forward move between the plain map and an open webcam
   useEffect(() => {

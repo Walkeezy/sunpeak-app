@@ -1,6 +1,7 @@
 'use client';
 
 import type { FC } from 'react';
+import { useMessages } from '@/i18n/messages-provider';
 import { joinClasses } from '@/utils/joinClasses';
 
 export type LayerName = 'Webcams' | 'Temperature' | 'Wind';
@@ -34,29 +35,34 @@ const glyphs: Record<LayerName, FC> = {
 
 const layers: LayerName[] = ['Webcams', 'Temperature', 'Wind'];
 
-export const LayerToggles: FC<Props> = ({ visibility, onToggle }) => (
-  <fieldset className="on-light bg-firn text-tinte absolute bottom-[calc(env(safe-area-inset-bottom)+0.625rem)] left-[0.625rem] z-[1000] flex gap-1 rounded-lg p-1 shadow-md">
-    <legend className="sr-only">Map layers</legend>
-    {layers.map((layer) => {
-      const Glyph = glyphs[layer];
-      const isOn = visibility[layer];
+// The layer name is the cookie key and test id; the label comes from the messages
+export const LayerToggles: FC<Props> = ({ visibility, onToggle }) => {
+  const { app } = useMessages();
 
-      return (
-        <button
-          key={layer}
-          type="button"
-          aria-pressed={isOn}
-          data-test-id={`layer-toggle-${layer.toLowerCase()}`}
-          onClick={() => onToggle(layer)}
-          className={joinClasses([
-            'signage flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm transition-colors',
-            isOn ? 'bg-tinte text-firn' : 'text-tinte/55 hover:bg-tinte/10',
-          ])}
-        >
-          <Glyph />
-          <span>{layer}</span>
-        </button>
-      );
-    })}
-  </fieldset>
-);
+  return (
+    <fieldset className="on-light bg-firn text-tinte absolute bottom-[calc(env(safe-area-inset-bottom)+0.625rem)] left-[0.625rem] z-[1000] flex gap-1 rounded-lg p-1 shadow-md">
+      <legend className="sr-only">{app.layersLegend}</legend>
+      {layers.map((layer) => {
+        const Glyph = glyphs[layer];
+        const isOn = visibility[layer];
+
+        return (
+          <button
+            key={layer}
+            type="button"
+            aria-pressed={isOn}
+            data-test-id={`layer-toggle-${layer.toLowerCase()}`}
+            onClick={() => onToggle(layer)}
+            className={joinClasses([
+              'signage flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm transition-colors',
+              isOn ? 'bg-tinte text-firn' : 'text-tinte/55 hover:bg-tinte/10',
+            ])}
+          >
+            <Glyph />
+            <span>{app.layers[layer]}</span>
+          </button>
+        );
+      })}
+    </fieldset>
+  );
+};

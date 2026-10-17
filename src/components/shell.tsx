@@ -1,8 +1,13 @@
+'use client';
+
 import NextLink from 'next/link';
 import type { FC, PropsWithChildren, ReactNode } from 'react';
+import { useLocale, useMessages } from '@/i18n/messages-provider';
+import { infoPath } from '@/utils/paths';
 import { Header } from './header';
 import { iconButtonClasses } from './icon-button';
 import { InfoIcon } from './icons/info';
+import { LanguageSwitcher } from './language-switcher';
 import { Logo } from './logo';
 
 type Props = PropsWithChildren<{
@@ -12,22 +17,28 @@ type Props = PropsWithChildren<{
 }>;
 
 // Page frame shared by the app and its Suspense fallback, so nothing moves when the data arrives
-export const Shell: FC<Props> = ({ actions, banner, children }) => (
-  <div className="absolute top-0 left-0 flex h-full w-full flex-col">
-    <Header>
-      <Logo />
-      <div className="ms-auto flex items-center">
-        {actions}
-        <NextLink href="/info" title="Go to info page" className={iconButtonClasses}>
-          <InfoIcon />
-        </NextLink>
-      </div>
-    </Header>
+export const Shell: FC<Props> = ({ actions, banner, children }) => {
+  const locale = useLocale();
+  const { nav } = useMessages();
 
-    {banner}
+  return (
+    <div className="absolute top-0 left-0 flex h-full w-full flex-col">
+      <Header>
+        <Logo />
+        <div className="ms-auto flex items-center">
+          {actions}
+          <LanguageSwitcher />
+          <NextLink href={infoPath(locale)} title={nav.info} className={iconButtonClasses}>
+            <InfoIcon />
+          </NextLink>
+        </div>
+      </Header>
 
-    <main data-test-id="index-page" className="bg-nacht relative grow">
-      {children}
-    </main>
-  </div>
-);
+      {banner}
+
+      <main data-test-id="index-page" className="bg-nacht relative grow">
+        {children}
+      </main>
+    </div>
+  );
+};

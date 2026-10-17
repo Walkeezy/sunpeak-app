@@ -12,6 +12,10 @@ Available here: [sunpeak.app](https://sunpeak.app)
 - [Biome](https://biomejs.dev/) for linting and formatting
 - [Vitest](https://vitest.dev/) for unit tests
 
+## Languages
+
+The app is available in German (default) and English under `/de` and `/en`. A proxy (`src/proxy.ts`) sends unprefixed URLs such as `/` to the language picked with the switcher, then to the browser language. All texts live in `src/messages/` as typed dictionaries; a unit test checks that both languages have the same keys and placeholders.
+
 ## Data sources
 
 | Data               | Source                                                                                                                      |

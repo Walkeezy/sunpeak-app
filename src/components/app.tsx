@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { type FC, use, useCallback, useState, useTransition } from 'react';
+import { useMessages } from '@/i18n/messages-provider';
 import { getData } from '@/services/actions';
 import type { SourceData } from '@/services/sourceData';
 import { dataLoadErrorMessage } from '@/utils/dataLoadErrorMessage';
@@ -41,6 +42,7 @@ export const App: FC<Props> = ({
 }) => {
   // Suspends until the sources are loaded; page.tsx shows the shell with a loading map meanwhile
   const { webcamData, temperatureData, windData, webcamOk, temperatureOk, windOk } = use(sources);
+  const { app: t } = useMessages();
   // Resolved once from the URL the page was opened with; later opens and closes are handled by the map itself
   const [initialCam] = useState(() =>
     initialCamSlug ? webcamData.find((webcam) => webcam.slug === initialCamSlug) : undefined,
@@ -51,16 +53,13 @@ export const App: FC<Props> = ({
   const [winds, setWinds] = useState(windData);
   const [refreshQuery, setRefreshQuery] = useState(generateRefreshQuery);
   const [status, setStatus] = useState<Status | null>(() => {
-    const message = dataLoadErrorMessage({ webcamOk, temperatureOk, windOk });
+    const message = dataLoadErrorMessage({ webcamOk, temperatureOk, windOk }, t.loadErrors);
 
     return message ? { kind: 'error', message } : null;
   });
 
   const dismissStatus = useCallback(() => setStatus(null), []);
-  const showLocationError = useCallback(
-    () => setStatus({ kind: 'error', message: 'Your location could not be determined' }),
-    [],
-  );
+  const showLocationError = useCallback(() => setStatus({ kind: 'error', message: t.locationFailed }), [t.locationFailed]);
 
   const handleReloadData = () => {
     startRefresh(async () => {
@@ -84,12 +83,12 @@ export const App: FC<Props> = ({
             setWinds(data.windData);
           }
 
-          const message = dataLoadErrorMessage(data);
-          setStatus(message ? { kind: 'error', message } : { kind: 'success', message: 'Updated' });
+          const message = dataLoadErrorMessage(data, t.loadErrors);
+          setStatus(message ? { kind: 'error', message } : { kind: 'success', message: t.updated });
         });
       } catch (error) {
         console.error(error);
-        startRefresh(() => setStatus({ kind: 'error', message: 'Data could not be loaded' }));
+        startRefresh(() => setStatus({ kind: 'error', message: t.loadFailed }));
       }
     });
   };

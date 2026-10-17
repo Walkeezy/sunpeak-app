@@ -2,6 +2,7 @@ import { Control as LeafletControl, type LocationEvent } from 'leaflet';
 import { type FC, useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import { MAX_ZOOM } from '@/config';
+import { useMessages } from '@/i18n/messages-provider';
 
 type Props = {
   onLocationFound: (location: [number, number]) => void;
@@ -10,6 +11,7 @@ type Props = {
 
 export const LocationControl: FC<Props> = ({ onLocationFound, onLocationError }) => {
   const map = useMap();
+  const label = useMessages().app.showLocation;
   const controlRef = useRef<LeafletControl | null>(null);
 
   useEffect(() => {
@@ -24,8 +26,8 @@ export const LocationControl: FC<Props> = ({ onLocationFound, onLocationError })
         button.type = 'button';
         button.className =
           'on-light flex size-11 items-center justify-center rounded-lg bg-firn text-tinte shadow-md hover:bg-white';
-        button.title = 'Show my location';
-        button.setAttribute('aria-label', 'Show my location');
+        button.title = label;
+        button.setAttribute('aria-label', label);
         button.innerHTML = `
           <svg
             aria-hidden="true"
@@ -76,7 +78,7 @@ export const LocationControl: FC<Props> = ({ onLocationFound, onLocationError })
         controlRef.current = null;
       }
     };
-  }, [map, onLocationFound, onLocationError]);
+  }, [map, label, onLocationFound, onLocationError]);
 
   return null;
 };

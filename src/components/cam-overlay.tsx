@@ -1,6 +1,7 @@
 'use client';
 
 import { type FC, useEffect, useRef, useState } from 'react';
+import { useMessages } from '@/i18n/messages-provider';
 import type { Webcam } from '@/services/webcamData';
 import { convertToLargeRoundshotUrl } from '@/utils/convertToLargeRoundshotUrl';
 import { withRefreshQuery } from '@/utils/generateRefreshQuery';
@@ -18,6 +19,7 @@ type Props = {
 const FOCUSABLE_SELECTOR = 'button, a[href]';
 
 export const CamOverlay: FC<Props> = ({ webcam, refreshQuery, onClose }) => {
+  const { app } = useMessages();
   const [loading, setLoading] = useState<boolean>(true);
   const [failed, setFailed] = useState(false);
   // Lazy initializer keeps the window access out of render and only evaluates it once on mount
@@ -134,7 +136,7 @@ export const CamOverlay: FC<Props> = ({ webcam, refreshQuery, onClose }) => {
             type="button"
             ref={closeButtonRef}
             onClick={onClose}
-            aria-label="Close webcam view"
+            aria-label={app.closeWebcam}
             className="on-light bg-firn/90 text-tinte absolute top-2 right-2 z-10 flex size-11 items-center justify-center rounded-full shadow-md transition-colors hover:bg-white"
           >
             <CloseIcon />
@@ -147,7 +149,7 @@ export const CamOverlay: FC<Props> = ({ webcam, refreshQuery, onClose }) => {
             )}
             {failed && (
               <div className="text-firn absolute inset-0 flex items-center justify-center p-4 text-center">
-                This webcam image is currently unavailable
+                {app.imageUnavailable}
               </div>
             )}
             {/* biome-ignore lint/performance/noImgElement: webcam images come from many external hosts and are cache-busted, so next/image doesn't fit */}
