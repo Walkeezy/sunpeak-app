@@ -38,16 +38,13 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
     cookieStore.get(MAP_ZOOM_COOKIE)?.value,
   );
 
-  const mapboxUrl = `https://api.mapbox.com/styles/v1/${process.env.MAPBOX_USER_ID}/${process.env.MAPBOX_STYLE_ID}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
-
-  // Tiles are the first thing the map requests once it mounts; Next sends this as a Link response header
-  preconnect('https://api.mapbox.com');
+  // The tile style and tiles are the first thing the map requests once it mounts; Next sends this as a Link header
+  preconnect('https://vectortiles.geo.admin.ch');
 
   return (
     <Suspense fallback={<AppFallback />}>
       <App
         sources={sources}
-        mapboxUrl={mapboxUrl}
         center={center}
         isWindVisible={cookieStore.get(layerCookieName('Wind'))?.value === 'true'}
         isTemperatureVisible={cookieStore.get(layerCookieName('Temperature'))?.value !== 'false'}

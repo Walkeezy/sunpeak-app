@@ -7,7 +7,7 @@ Available here: [sunpeak.app](https://sunpeak.app)
 ## Tech stack
 
 - [Next.js](https://nextjs.org/) (App Router) with React and TypeScript
-- [Leaflet](https://leafletjs.com/) / [react-leaflet](https://react-leaflet.js.org/) for the interactive map, with tiles from [Mapbox](https://www.mapbox.com/)
+- [Leaflet](https://leafletjs.com/) / [react-leaflet](https://react-leaflet.js.org/) for the interactive map, with [MapLibre](https://maplibre.org/) rendering swisstopo's vector tiles underneath. MapLibre is served from `public/vendor` (copied by `scripts/copy-maplibre.mjs` before `dev` and `build`) instead of the bundle, so the page and its web worker share one download
 - [Tailwind CSS](https://tailwindcss.com/) for styling
 - [Biome](https://biomejs.dev/) for linting and formatting
 - [Vitest](https://vitest.dev/) for unit tests
@@ -22,7 +22,7 @@ The app is available in German (default) and English under `/de` and `/en`. A pr
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------- |
 | Webcams            | A Google Sheet (read via the Sheets API), manually curated with name, location, coordinates, and image URLs                 |
 | Temperature & wind | [MeteoSwiss](https://www.meteoschweiz.admin.ch/) 10-minute measurements via [data.geo.admin.ch](https://data.geo.admin.ch/) |
-| Map tiles          | Mapbox custom style                                                                                                         |
+| Map tiles          | [swisstopo](https://www.swisstopo.admin.ch/) light base map (vector tiles), grey pixel map as raster fallback without WebGL  |
 
 The MeteoSwiss data is delivered in the Swiss LV95 coordinate system and converted to WGS84 with [proj4](https://github.com/proj4js/proj4js).
 

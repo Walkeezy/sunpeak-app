@@ -17,7 +17,6 @@ type Status = { kind: 'error' | 'success'; message: string };
 
 type Props = {
   sources: Promise<SourceData>;
-  mapboxUrl: string;
   center?: MapCenter;
   isWindVisible: boolean;
   isTemperatureVisible: boolean;
@@ -33,7 +32,6 @@ const DynamicMap = dynamic(() => import('@/components/map').then((module) => mod
 
 export const App: FC<Props> = ({
   sources,
-  mapboxUrl,
   center,
   isWindVisible,
   isTemperatureVisible,
@@ -111,7 +109,6 @@ export const App: FC<Props> = ({
         webcamData={webcams}
         temperatureData={temperatures}
         windData={winds}
-        mapboxUrl={mapboxUrl}
         center={center}
         initialCam={initialCam}
         refreshQuery={refreshQuery}

@@ -4,6 +4,12 @@ export const SITE_URL = 'https://sunpeak.app';
 
 export const FETCH_TIMEOUT_MS = 8_000;
 
+// MAP TILES: swisstopo's free vector base map, and its raster map for browsers without WebGL 2
+export const MAP_STYLE_URL = 'https://vectortiles.geo.admin.ch/styles/ch.swisstopo.lightbasemap.vt/style.json';
+export const MAP_FALLBACK_TILES_URL =
+  'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg';
+export const MAP_ATTRIBUTION = '&copy; <a href="https://www.swisstopo.admin.ch/">swisstopo</a>';
+
 // ZOOM
 export const INITIAL_ZOOM = 10;
 export const MIN_ZOOM = 9;

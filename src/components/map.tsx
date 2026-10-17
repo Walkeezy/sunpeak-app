@@ -3,8 +3,17 @@
 import { Icon, type LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { AttributionControl, LayerGroup, MapContainer, Marker, TileLayer } from 'react-leaflet';
-import { INITIAL_CENTER, INITIAL_ZOOM, MAX_BOUNDS, MAX_ZOOM, MIN_ZOOM } from '@/config';
+import { AttributionControl, LayerGroup, MapContainer, Marker } from 'react-leaflet';
+import {
+  INITIAL_CENTER,
+  INITIAL_ZOOM,
+  MAP_ATTRIBUTION,
+  MAP_FALLBACK_TILES_URL,
+  MAP_STYLE_URL,
+  MAX_BOUNDS,
+  MAX_ZOOM,
+  MIN_ZOOM,
+} from '@/config';
 import { useLocale } from '@/i18n/messages-provider';
 import type { TemperatureData } from '@/services/temperatureData';
 import type { Webcam, WebcamData } from '@/services/webcamData';
@@ -18,10 +27,10 @@ import { type LayerName, LayerToggles, type LayerVisibility } from './layer-togg
 import { LocationControl } from './location-control';
 import { MapEvents } from './map-events';
 import { Temperature } from './temperature';
+import { VectorTileLayer } from './vector-tile-layer';
 import { Wind } from './wind';
 
 type Props = {
-  mapboxUrl: string;
   webcamData: WebcamData;
   temperatureData: TemperatureData;
   windData: WindData;
@@ -48,7 +57,6 @@ const locationIcon = new Icon({
 });
 
 const WebcamMapComponent: FC<Props> = ({
-  mapboxUrl,
   webcamData,
   temperatureData,
   windData,
@@ -145,7 +153,7 @@ const WebcamMapComponent: FC<Props> = ({
       >
         {/* Top right, opposite the zoom control, so the legend and locate button keep the bottom corners */}
         <AttributionControl position="topright" prefix={false} />
-        <TileLayer attribution='Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>' url={mapboxUrl} />
+        <VectorTileLayer style={MAP_STYLE_URL} fallbackUrl={MAP_FALLBACK_TILES_URL} attribution={MAP_ATTRIBUTION} />
         {visibility.Temperature && <LayerGroup>{allTemperatures}</LayerGroup>}
         {visibility.Wind && <LayerGroup>{allWinds}</LayerGroup>}
         {visibility.Webcams && <LayerGroup>{allWebcams}</LayerGroup>}
