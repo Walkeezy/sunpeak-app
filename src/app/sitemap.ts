@@ -3,6 +3,7 @@ import { SITE_URL } from '@/config';
 import { DEFAULT_LOCALE, LOCALES } from '@/i18n/config';
 import { settle } from '@/services/sourceResult';
 import { getWebcamData } from '@/services/webcamData';
+import { escapeHtml } from '@/utils/escapeHtml';
 import { localizedPath } from '@/utils/paths';
 
 // Regenerated hourly like the webcam list; falls back to the static pages when the list can't be loaded
@@ -33,7 +34,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       localizedEntries(`/webcams/${encodeURIComponent(slug)}`, {
         changeFrequency: 'hourly',
         priority: 0.7,
-        images: [fullsize],
+        // Next writes image URLs into the XML unescaped, so a query string with & would break the sitemap
+        images: [escapeHtml(fullsize)],
       }),
     ),
   ];
