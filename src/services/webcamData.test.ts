@@ -45,6 +45,7 @@ describe('getWebcamData', () => {
 
     expect(data).toEqual([
       {
+        slug: 'cam-zurich',
         name: 'Cam',
         city: 'Zurich',
         latitude: 47.37,
@@ -111,6 +112,16 @@ describe('getWebcamData', () => {
     const [webcam] = await getWebcamData();
 
     expect(webcam).toMatchObject({ city: '', thumbnail: 'https://example.com/full.jpg', panorama: false });
+  });
+
+  test('gives every webcam a unique slug', async () => {
+    valuesGet.mockResolvedValue({
+      data: { values: [header, row({ 0: 'Säntis', 1: 'Schwägalp' }), row(), row()] },
+    });
+
+    const data = await getWebcamData();
+
+    expect(data.map((webcam) => webcam.slug)).toEqual(['saentis-schwaegalp', 'cam-zurich', 'cam-zurich-2']);
   });
 
   test('throws when a required column is missing', async () => {

@@ -1,10 +1,13 @@
 import { auth, sheets } from '@googleapis/sheets';
 import { unstable_cache } from 'next/cache';
 import { FETCH_TIMEOUT_MS } from '@/config';
+import { uniqueSlugs } from '@/utils/slugify';
 
 export type WebcamData = Webcam[];
 
 export type Webcam = {
+  // URL segment of the webcam's own page, derived from name and city
+  slug: string;
   name: string;
   city: string;
   latitude: number;
@@ -71,7 +74,7 @@ async function loadWebcamData(): Promise<WebcamData> {
   const [header = [], ...rows] = (response.data.values ?? []) as string[][];
   const column = resolveColumns(header);
 
-  return rows
+  const webcams = rows
     .filter((row) => row[column.active] === 'TRUE') // only active webcams
     .flatMap((row) => {
       const cell = (index: number | undefined) => (index === undefined ? '' : (row[index] ?? ''));
@@ -94,6 +97,10 @@ async function loadWebcamData(): Promise<WebcamData> {
         panorama: cell(column.panorama) === 'TRUE',
       };
     });
+
+  const slugs = uniqueSlugs(webcams.map((webcam) => `${webcam.name} ${webcam.city}`));
+
+  return webcams.map((webcam, index) => ({ slug: slugs[index], ...webcam }));
 }
 
 export const getWebcamData = unstable_cache(loadWebcamData, ['webcam-data'], {
