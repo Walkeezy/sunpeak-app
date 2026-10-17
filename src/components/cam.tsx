@@ -37,6 +37,8 @@ export const Cam: FC<Props> = ({ webcam, refreshQuery, onSelected }) => {
       eventHandlers={{
         click: () => onSelected(webcam),
       }}
+      // Webcams are what the map is for, so they stay above the weather markers they overlap
+      zIndexOffset={1000}
       riseOnHover
     />
   );

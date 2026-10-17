@@ -3,7 +3,7 @@
 import { Icon, type LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { type FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { AttributionControl, LayerGroup, MapContainer, Marker } from 'react-leaflet';
+import { AttributionControl, LayerGroup, MapContainer, Marker, Popup } from 'react-leaflet';
 import {
   INITIAL_CENTER,
   INITIAL_ZOOM,
@@ -15,6 +15,7 @@ import {
   MIN_ZOOM,
 } from '@/config';
 import { useLocale } from '@/i18n/messages-provider';
+import { mergeStations } from '@/services/stationData';
 import type { TemperatureData } from '@/services/temperatureData';
 import type { Webcam, WebcamData } from '@/services/webcamData';
 import type { WindData } from '@/services/windData';
@@ -26,6 +27,7 @@ import { CamOverlay } from './cam-overlay';
 import { type LayerName, LayerToggles, type LayerVisibility } from './layer-toggles';
 import { LocationControl } from './location-control';
 import { MapEvents } from './map-events';
+import { StationDetails } from './station-details';
 import { Temperature } from './temperature';
 import { VectorTileLayer } from './vector-tile-layer';
 import { Wind } from './wind';
@@ -71,6 +73,8 @@ const WebcamMapComponent: FC<Props> = ({
   const locale = useLocale();
   const [activeCam, setActiveCam] = useState<Webcam | undefined>(initialCam);
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
+  // By id, so an open popup shows the new values after a refresh
+  const [activeStationId, setActiveStationId] = useState<string | undefined>(undefined);
   const [visibility, setVisibility] = useState<LayerVisibility>({
     Webcams: isWebcamsVisible,
     Temperature: isTemperatureVisible,
@@ -124,12 +128,24 @@ const WebcamMapComponent: FC<Props> = ({
     [webcamData, refreshQuery, openCam],
   );
 
+  const stations = useMemo(() => mergeStations(temperatureData, windData), [temperatureData, windData]);
+  const activeStation = activeStationId ? stations.get(activeStationId) : undefined;
+  const closeStation = useCallback(() => setActiveStationId(undefined), []);
+  // Leaflet closes the popup itself on a map click; keep the state in step
+  const stationPopupEvents = useMemo(() => ({ remove: closeStation }), [closeStation]);
+
   const allTemperatures = useMemo(
-    () => temperatureData.map((temperature) => <Temperature key={temperature.id} temperature={temperature} />),
+    () =>
+      temperatureData.map((temperature) => (
+        <Temperature key={temperature.id} temperature={temperature} onSelect={setActiveStationId} />
+      )),
     [temperatureData],
   );
 
-  const allWinds = useMemo(() => windData.map((wind) => <Wind key={wind.id} wind={wind} />), [windData]);
+  const allWinds = useMemo(
+    () => windData.map((wind) => <Wind key={wind.id} wind={wind} onSelect={setActiveStationId} />),
+    [windData],
+  );
 
   // A webcam from the URL wins over the remembered view, so a shared link always shows its webcam
   const initialCenter: LatLngTuple = initialCam
@@ -157,6 +173,18 @@ const WebcamMapComponent: FC<Props> = ({
         {visibility.Temperature && <LayerGroup>{allTemperatures}</LayerGroup>}
         {visibility.Wind && <LayerGroup>{allWinds}</LayerGroup>}
         {visibility.Webcams && <LayerGroup>{allWebcams}</LayerGroup>}
+        {activeStation && (
+          <Popup
+            key={activeStation.id}
+            position={[activeStation.latitude, activeStation.longitude]}
+            offset={[0, -12]}
+            closeButton={false}
+            className="station-popup"
+            eventHandlers={stationPopupEvents}
+          >
+            <StationDetails station={activeStation} onClose={closeStation} />
+          </Popup>
+        )}
         <MapEvents />
         <LocationControl onLocationFound={setLocation} onLocationError={onLocationError} />
         {location && <Marker position={location} icon={locationIcon} />}

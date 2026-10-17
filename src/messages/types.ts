@@ -1,4 +1,5 @@
 import type { LayerName } from '@/components/layer-toggles';
+import type { CompassPoint } from '@/utils/compassDirection';
 import type { DataLoadError } from '@/utils/dataLoadErrorMessage';
 
 // Every user-facing string. Values are plain strings so they can cross into client components;
@@ -37,6 +38,18 @@ export type Messages = {
     closeWebcam: string;
     imageUnavailable: string;
     openWebcamSite: string;
+  };
+  // The popup of a weather station on the map
+  station: {
+    fallbackName: string;
+    altitude: string;
+    temperature: string;
+    gusts: string;
+    gustFrom: string;
+    gustSpeed: string;
+    measuredAt: string;
+    close: string;
+    compass: Record<CompassPoint, string>;
   };
   info: {
     heading: string;
@@ -86,4 +99,4 @@ export type Messages = {
 };
 
 // The part of the messages client components read through MessagesProvider
-export type ClientMessages = Pick<Messages, 'nav' | 'app'>;
+export type ClientMessages = Pick<Messages, 'nav' | 'app' | 'station'>;

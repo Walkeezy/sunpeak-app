@@ -49,6 +49,25 @@ describe('fetchMeasurementData', () => {
     expect(measurement.measuredAt).toBe('2026-10-09T14:10:00Z');
   });
 
+  test('parses altitude and wind direction and leaves out missing ones', async () => {
+    mockFetchResponse({
+      features: [
+        {
+          id: 'ARO',
+          geometry: { coordinates: bernLV95 },
+          properties: { value: 14.4, altitude: '1888.00', wind_direction: 105 },
+        },
+        { id: 'BER', geometry: { coordinates: bernLV95 }, properties: { value: 3, altitude: '-', wind_direction: null } },
+      ],
+    });
+
+    const [arosa, bern] = await fetchMeasurementData('https://example.com/data.json');
+
+    expect(arosa).toMatchObject({ altitude: 1888, direction: 105 });
+    expect(bern).not.toHaveProperty('altitude');
+    expect(bern).not.toHaveProperty('direction');
+  });
+
   test('returns empty array when response has no features', async () => {
     mockFetchResponse({});
 

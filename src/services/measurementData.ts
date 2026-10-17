@@ -8,12 +8,28 @@ export type Measurement = {
   value: number;
   stationName?: string;
   measuredAt?: string;
+  // Metres above sea level
+  altitude?: number;
+  // Where the wind comes from, in degrees (wind datasets only)
+  direction?: number;
 };
 
 type GeoAdminFeature = {
   id: string;
   geometry: { coordinates: [number, number] };
-  properties: { value: number; station_name?: string; reference_ts?: string };
+  properties: {
+    value: number;
+    station_name?: string;
+    reference_ts?: string;
+    altitude?: string | number;
+    wind_direction?: number | null;
+  };
+};
+
+const finiteOrUndefined = (value: string | number | null | undefined): number | undefined => {
+  const number = typeof value === 'string' ? Number.parseFloat(value) : value;
+
+  return typeof number === 'number' && Number.isFinite(number) ? number : undefined;
 };
 
 type GeoAdminResponse = {
@@ -41,16 +57,21 @@ export async function fetchMeasurementData(url: string): Promise<Measurement[]> 
 
   const data = (await response.json()) as GeoAdminResponse;
 
-  return (data.features ?? []).map((feature) => {
-    const [longitude, latitude] = lv95ToWgs84.forward(feature.geometry.coordinates);
+  return (data.features ?? []).map(({ id, geometry, properties }) => {
+    const [longitude, latitude] = lv95ToWgs84.forward(geometry.coordinates);
+    const altitude = finiteOrUndefined(properties.altitude);
+    const direction = finiteOrUndefined(properties.wind_direction);
 
     return {
-      id: feature.id,
+      id,
       latitude,
       longitude,
-      value: feature.properties.value,
-      stationName: feature.properties.station_name,
-      measuredAt: feature.properties.reference_ts,
+      value: properties.value,
+      stationName: properties.station_name,
+      measuredAt: properties.reference_ts,
+      // Left out rather than undefined, so the client payload stays small
+      ...(altitude === undefined ? {} : { altitude }),
+      ...(direction === undefined ? {} : { direction }),
     };
   });
 }
