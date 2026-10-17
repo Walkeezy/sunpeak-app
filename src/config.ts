@@ -1,5 +1,7 @@
 import type { LatLngTuple } from 'leaflet';
 
+export const SITE_URL = 'https://sunpeak.app';
+
 export const FETCH_TIMEOUT_MS = 8_000;
 
 // ZOOM

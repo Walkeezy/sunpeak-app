@@ -7,6 +7,7 @@ import { AppFallback } from '@/components/app-fallback';
 import { loadSourceData } from '@/services/sourceData';
 import { parseMapCenter } from '@/utils/parseMapCenter';
 import { layerCookieName, MAP_CENTER_LAT_COOKIE, MAP_CENTER_LON_COOKIE, MAP_ZOOM_COOKIE } from '@/utils/preferenceCookie';
+import { CAM_SEARCH_PARAM } from '@/utils/webcamUrls';
 import { splashScreens } from './splash-screens';
 
 export const viewport: Viewport = {
@@ -25,6 +26,8 @@ export const metadata: Metadata = {
     images: ['/sunpeak-open-graph.jpg'],
     url: 'https://sunpeak.app',
   },
+  // /?cam=… opens a webcam on the map; its indexable page lives under /webcams, so the map stays one URL for search engines
+  alternates: { canonical: '/' },
   referrer: 'origin-when-cross-origin',
   creator: 'Kevin Walker',
   applicationName: 'Sunpeak',
@@ -42,11 +45,11 @@ export const metadata: Metadata = {
   ],
 };
 
-export default async function Page() {
+export default async function Page({ searchParams }: PageProps<'/'>) {
   // Not awaited: the app unwraps the promise with use() inside the Suspense boundary, so the
   // header and loading map stream right away while the sources load
   const sources = loadSourceData();
-  const cookieStore = await cookies();
+  const [cookieStore, { [CAM_SEARCH_PARAM]: cam }] = await Promise.all([cookies(), searchParams]);
   const center = parseMapCenter(
     cookieStore.get(MAP_CENTER_LAT_COOKIE)?.value,
     cookieStore.get(MAP_CENTER_LON_COOKIE)?.value,
@@ -67,6 +70,7 @@ export default async function Page() {
         isWindVisible={cookieStore.get(layerCookieName('Wind'))?.value === 'true'}
         isTemperatureVisible={cookieStore.get(layerCookieName('Temperature'))?.value !== 'false'}
         isWebcamsVisible={cookieStore.get(layerCookieName('Webcams'))?.value !== 'false'}
+        initialCamSlug={typeof cam === 'string' ? cam : undefined}
       />
     </Suspense>
   );

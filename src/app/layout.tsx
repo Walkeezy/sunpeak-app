@@ -1,11 +1,12 @@
 import { Analytics } from '@vercel/analytics/react';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import { SITE_URL } from '@/config';
 import { archivo } from './fonts';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://sunpeak.app'),
+  metadataBase: new URL(SITE_URL),
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

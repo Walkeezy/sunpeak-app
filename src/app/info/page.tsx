@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ExternalLink } from '@/components/externalLink';
+import { ExternalLink, textLinkClasses } from '@/components/externalLink';
 import { Header } from '@/components/header';
 import { iconButtonClasses } from '@/components/icon-button';
 import { BackIcon } from '@/components/icons/back';
@@ -15,8 +15,16 @@ export const metadata: Metadata = {
 const facts = [
   {
     term: 'Webcams',
-    detail:
-      "Collected by hand and loaded straight from their public addresses. Tap one on the map for the full picture and a link to the webcam's own site.",
+    detail: (
+      <>
+        Collected by hand and loaded straight from their public addresses. Tap one on the map for the full picture and a link
+        to the webcam's own site, or{' '}
+        <Link href="/webcams" className={textLinkClasses}>
+          browse all webcams
+        </Link>
+        .
+      </>
+    ),
   },
   {
     term: 'Weather data',

@@ -21,6 +21,8 @@ type Props = {
   isWindVisible: boolean;
   isTemperatureVisible: boolean;
   isWebcamsVisible: boolean;
+  // Slug from /?cam=…: the map opens with this webcam's overlay
+  initialCamSlug?: string;
 };
 
 const DynamicMap = dynamic(() => import('@/components/map').then((module) => module.WebcamMap), {
@@ -28,9 +30,21 @@ const DynamicMap = dynamic(() => import('@/components/map').then((module) => mod
   ssr: false,
 });
 
-export const App: FC<Props> = ({ sources, mapboxUrl, center, isWindVisible, isTemperatureVisible, isWebcamsVisible }) => {
+export const App: FC<Props> = ({
+  sources,
+  mapboxUrl,
+  center,
+  isWindVisible,
+  isTemperatureVisible,
+  isWebcamsVisible,
+  initialCamSlug,
+}) => {
   // Suspends until the sources are loaded; page.tsx shows the shell with a loading map meanwhile
   const { webcamData, temperatureData, windData, webcamOk, temperatureOk, windOk } = use(sources);
+  // Resolved once from the URL the page was opened with; later opens and closes are handled by the map itself
+  const [initialCam] = useState(() =>
+    initialCamSlug ? webcamData.find((webcam) => webcam.slug === initialCamSlug) : undefined,
+  );
   const [isRefreshing, startRefresh] = useTransition();
   const [webcams, setWebcams] = useState(webcamData);
   const [temperatures, setTemperatures] = useState(temperatureData);
@@ -100,6 +114,7 @@ export const App: FC<Props> = ({ sources, mapboxUrl, center, isWindVisible, isTe
         windData={winds}
         mapboxUrl={mapboxUrl}
         center={center}
+        initialCam={initialCam}
         refreshQuery={refreshQuery}
         isWindVisible={isWindVisible}
         isTemperatureVisible={isTemperatureVisible}
