@@ -1,8 +1,10 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { FETCH_TIMEOUT_MS } from '@/config';
 import { getWebcamData } from './webcamData';
 
-const { valuesGet } = vi.hoisted(() => ({ valuesGet: vi.fn() }));
+const { valuesGet, getHeight } = vi.hoisted(() => ({ valuesGet: vi.fn(), getHeight: vi.fn() }));
+
+vi.mock('./heightData', () => ({ getHeight }));
 
 vi.mock('next/cache', () => ({
   unstable_cache: (fn: () => unknown) => fn,
@@ -33,9 +35,14 @@ const row = (overrides: Partial<Record<number, string>> = {}) => {
 };
 
 describe('getWebcamData', () => {
+  beforeEach(() => {
+    getHeight.mockResolvedValue(408);
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
     valuesGet.mockReset();
+    getHeight.mockReset();
   });
 
   test('maps active rows and skips the header row', async () => {
@@ -54,8 +61,10 @@ describe('getWebcamData', () => {
         fullsize: 'https://example.com/full.jpg',
         link: 'https://example.com/link',
         panorama: false,
+        altitude: 408,
       },
     ]);
+    expect(getHeight).toHaveBeenCalledWith(47.37, 8.54);
     expect(valuesGet).toHaveBeenCalledWith(
       {
         spreadsheetId: process.env.SPREADSHEET_ID,
@@ -122,6 +131,17 @@ describe('getWebcamData', () => {
     const data = await getWebcamData();
 
     expect(data.map((webcam) => webcam.slug)).toEqual(['saentis-schwaegalp', 'cam-zurich', 'cam-zurich-2']);
+  });
+
+  test('keeps a webcam without altitude when the height lookup fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    getHeight.mockRejectedValue(new Error('outside Switzerland'));
+    valuesGet.mockResolvedValue({ data: { values: [header, row()] } });
+
+    const [webcam] = await getWebcamData();
+
+    expect(webcam.name).toBe('Cam');
+    expect(webcam).not.toHaveProperty('altitude');
   });
 
   test('throws when a required column is missing', async () => {

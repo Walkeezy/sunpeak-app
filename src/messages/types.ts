@@ -38,6 +38,15 @@ export type Messages = {
     closeWebcam: string;
     imageUnavailable: string;
     openWebcamSite: string;
+    webcamAltitude: string;
+    altitudeLegend: string;
+    altitudeAll: string;
+    altitudeAllLabel: string;
+    altitudeStep: string;
+    altitudeFrom: string;
+    fogSun: string;
+    fogInversion: string;
+    fogAction: string;
   };
   // The popup of a weather station on the map
   station: {
@@ -63,6 +72,8 @@ export type Messages = {
     weatherDetail: string;
     meteoswissName: string;
     meteoswissUrl: string;
+    altitudeTerm: string;
+    altitudeDetail: string;
     sourceTerm: string;
     sourceDetail: string;
     sourceLink: string;

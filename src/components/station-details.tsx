@@ -5,6 +5,7 @@ import { fill } from '@/i18n/format';
 import { useLocale, useMessages } from '@/i18n/messages-provider';
 import type { Station } from '@/services/stationData';
 import { compassDirection } from '@/utils/compassDirection';
+import { formatAltitude } from '@/utils/formatAltitude';
 import { formatMeasurementTime } from '@/utils/temperatureLabel';
 import { CloseIcon } from './icons/close';
 
@@ -29,7 +30,7 @@ export const StationDetails: FC<Props> = ({ station, onClose }) => {
         <div>
           <p className="signage text-base leading-tight">{station.name ?? t.fallbackName}</p>
           {altitude !== undefined && (
-            <p className="text-tinte/70 text-sm">{fill(t.altitude, { altitude: integer.format(altitude) })}</p>
+            <p className="text-tinte/70 text-sm">{fill(t.altitude, { altitude: formatAltitude(altitude, locale) })}</p>
           )}
         </div>
         <button

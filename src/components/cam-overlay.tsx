@@ -162,7 +162,7 @@ export const CamOverlay: FC<Props> = ({ webcam, refreshQuery, onClose }) => {
             />
           </div>
         </div>
-        <Caption name={webcam.name} city={webcam.city} link={webcam.link} />
+        <Caption name={webcam.name} city={webcam.city} link={webcam.link} altitude={webcam.altitude} />
       </div>
     </div>
   );

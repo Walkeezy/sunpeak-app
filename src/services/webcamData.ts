@@ -1,7 +1,9 @@
 import { auth, sheets } from '@googleapis/sheets';
 import { unstable_cache } from 'next/cache';
 import { FETCH_TIMEOUT_MS } from '@/config';
+import { mapWithConcurrency } from '@/utils/mapWithConcurrency';
 import { uniqueSlugs } from '@/utils/slugify';
+import { getHeight } from './heightData';
 
 export type WebcamData = Webcam[];
 
@@ -16,6 +18,21 @@ export type Webcam = {
   fullsize: string;
   link: string;
   panorama: boolean;
+  // Metres above sea level from swisstopo's terrain model; missing outside Switzerland or when the lookup failed
+  altitude?: number;
+};
+
+// Polite to swisstopo on the first load; afterwards every height comes from the cache
+const HEIGHT_REQUESTS_AT_ONCE = 6;
+
+const lookUpAltitude = async (latitude: number, longitude: number): Promise<number | undefined> => {
+  try {
+    return await getHeight(latitude, longitude);
+  } catch (error) {
+    console.warn(error);
+
+    return undefined;
+  }
 };
 
 // Columns are looked up by header name so reordering or adding columns in the Sheet is safe
@@ -99,8 +116,15 @@ async function loadWebcamData(): Promise<WebcamData> {
     });
 
   const slugs = uniqueSlugs(webcams.map((webcam) => `${webcam.name} ${webcam.city}`));
+  const altitudes = await mapWithConcurrency(webcams, HEIGHT_REQUESTS_AT_ONCE, ({ latitude, longitude }) =>
+    lookUpAltitude(latitude, longitude),
+  );
 
-  return webcams.map((webcam, index) => ({ slug: slugs[index], ...webcam }));
+  return webcams.map((webcam, index) => {
+    const altitude = altitudes[index];
+
+    return { slug: slugs[index], ...webcam, ...(altitude === undefined ? {} : { altitude }) };
+  });
 }
 
 export const getWebcamData = unstable_cache(loadWebcamData, ['webcam-data'], {

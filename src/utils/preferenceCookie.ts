@@ -1,3 +1,4 @@
+import { ALTITUDE_STEPS } from '@/config';
 import { hasLocale, LOCALE_COOKIE, type Locale } from '@/i18n/config';
 import { DEFAULT_LAYER_VISIBILITY, isLayerName, LAYERS, type LayerVisibility } from '@/layers';
 import { parseMapCenter } from '@/utils/parseMapCenter';
@@ -8,6 +9,7 @@ const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
 export const MAP_CENTER_LAT_COOKIE = 'mapCenterLat';
 export const MAP_CENTER_LON_COOKIE = 'mapCenterLon';
 export const MAP_ZOOM_COOKIE = 'mapZoom';
+export const MIN_ALTITUDE_COOKIE = 'minAltitude';
 const layerCookieName = (layer: string) => `layer${layer}`;
 
 // Written on the client so map interactions don't trigger a Server Action and a server re-render;
@@ -55,4 +57,19 @@ export const saveLocaleToCookie = (locale: Locale) => {
   }
 
   setPreferenceCookie(LOCALE_COOKIE, locale);
+};
+
+// Only the filter's own steps count; anything else shows every altitude
+export const parseMinAltitude = (value: string | undefined): number => {
+  const altitude = Number(value);
+
+  return ALTITUDE_STEPS.includes(altitude) ? altitude : 0;
+};
+
+export const saveMinAltitudeToCookie = (altitude: number) => {
+  if (!ALTITUDE_STEPS.includes(altitude)) {
+    return;
+  }
+
+  setPreferenceCookie(MIN_ALTITUDE_COOKIE, String(altitude));
 };

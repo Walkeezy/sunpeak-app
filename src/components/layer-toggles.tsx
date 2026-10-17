@@ -44,7 +44,7 @@ export const LayerToggles: FC<Props> = ({ visibility, onToggle }) => {
   const { app } = useMessages();
 
   return (
-    <fieldset className="on-light bg-firn text-tinte absolute bottom-[calc(env(safe-area-inset-bottom)+0.625rem)] left-[0.625rem] z-[1000] flex gap-1 rounded-lg p-1 shadow-md">
+    <fieldset className="on-light bg-firn text-tinte flex gap-1 rounded-lg p-1 shadow-md">
       <legend className="sr-only">{app.layersLegend}</legend>
       {LAYERS.map((layer) => {
         const Glyph = glyphs[layer];

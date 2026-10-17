@@ -15,6 +15,8 @@ import {
   MAP_CENTER_LAT_COOKIE,
   MAP_CENTER_LON_COOKIE,
   MAP_ZOOM_COOKIE,
+  MIN_ALTITUDE_COOKIE,
+  parseMinAltitude,
 } from '@/utils/preferenceCookie';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]'>): Promise<Metadata> {
@@ -52,6 +54,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
         sources={sources}
         center={center}
         layers={layerVisibilityFromCookies((name) => cookieStore.get(name)?.value)}
+        minAltitude={parseMinAltitude(cookieStore.get(MIN_ALTITUDE_COOKIE)?.value)}
         initialCamSlug={typeof cam === 'string' ? cam : undefined}
       />
     </Suspense>

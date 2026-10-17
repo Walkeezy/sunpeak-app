@@ -23,6 +23,7 @@ import { generateRefreshQuery, withRefreshQuery } from '@/utils/generateRefreshQ
 import { type NearestMeasurement, nearestMeasurement } from '@/utils/nearestMeasurement';
 import { mapWithWebcamPath, webcamsPath } from '@/utils/paths';
 import { formatMeasurementTime } from '@/utils/temperatureLabel';
+import { webcamSubtitle } from '@/utils/webcamSubtitle';
 
 // Static and regenerated in the background. This is the ceiling: the ten-minute temperature fetch sets the actual
 // pace, and every regeneration also rotates the image cache-buster
@@ -97,11 +98,12 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/webcams/
 export default async function WebcamPage({ params }: PageProps<'/[locale]/webcams/[slug]'>) {
   const [locale, slug] = await localeAndSlug(params);
   const messages = getMessages(locale);
-  const { nav, webcam: t } = messages;
+  const { nav, app, webcam: t } = messages;
   const [webcam, temperatures] = await Promise.all([findWebcam(slug), settle(getTemperatureData(), [])]);
   const refreshQuery = generateRefreshQuery();
   const nearest = nearestMeasurement(temperatures.data, webcam.latitude, webcam.longitude);
   const title = webcamTitle(messages, webcam);
+  const subtitle = webcamSubtitle(webcam, app.webcamAltitude, locale);
 
   return (
     <div className="bg-nacht text-firn flex min-h-dvh flex-col">
@@ -115,7 +117,7 @@ export default async function WebcamPage({ params }: PageProps<'/[locale]/webcam
 
       <main data-test-id="webcam-page" className="mx-auto w-full max-w-6xl px-4 pt-8 pb-16 sm:px-6">
         <h1 className="signage text-4xl leading-none">{webcam.name}</h1>
-        {webcam.city && <p className="text-firn/70 signage mt-2 text-xl">{webcam.city}</p>}
+        {subtitle && <p className="text-firn/70 signage mt-2 text-xl">{subtitle}</p>}
 
         <figure className="mt-6">
           <WebcamImage

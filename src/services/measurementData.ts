@@ -45,6 +45,13 @@ proj4.defs(
 // Built once: proj4(from, to, coordinates) would parse both definitions again for every feature
 const lv95ToWgs84 = proj4('LV95', 'WGS84');
 
+// For swisstopo services that only take Swiss coordinates; returns [easting, northing] in metres
+export const wgs84ToLv95 = (latitude: number, longitude: number): [number, number] => {
+  const [easting, northing] = lv95ToWgs84.inverse([longitude, latitude]);
+
+  return [easting, northing];
+};
+
 export async function fetchMeasurementData(url: string): Promise<Measurement[]> {
   const response = await fetch(url, {
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),

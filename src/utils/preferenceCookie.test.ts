@@ -1,6 +1,13 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { Locale } from '@/i18n/config';
-import { layerVisibilityFromCookies, saveCenterToCookie, saveLayerToCookie, saveLocaleToCookie } from './preferenceCookie';
+import {
+  layerVisibilityFromCookies,
+  parseMinAltitude,
+  saveCenterToCookie,
+  saveLayerToCookie,
+  saveLocaleToCookie,
+  saveMinAltitudeToCookie,
+} from './preferenceCookie';
 
 const cookieWrites = () => {
   const writes: string[] = [];
@@ -65,6 +72,18 @@ describe('preferenceCookie', () => {
       Sunshine: false,
       Wind: true,
     });
+  });
+
+  test('saves and reads the altitude filter steps only', () => {
+    const writes = cookieWrites();
+
+    saveMinAltitudeToCookie(1500);
+    saveMinAltitudeToCookie(1234);
+
+    expect(writes).toEqual(['minAltitude=1500; Path=/; Max-Age=31536000; SameSite=Lax']);
+    expect(parseMinAltitude('1500')).toBe(1500);
+    expect(parseMinAltitude('1234')).toBe(0);
+    expect(parseMinAltitude(undefined)).toBe(0);
   });
 
   test('adds the Secure attribute on https', () => {

@@ -20,6 +20,7 @@ type Props = {
   sources: Promise<SourceData>;
   center?: MapCenter;
   layers: LayerVisibility;
+  minAltitude: number;
   // Slug from /?cam=…: the map opens with this webcam's overlay
   initialCamSlug?: string;
 };
@@ -29,7 +30,7 @@ const DynamicMap = dynamic(() => import('@/components/map').then((module) => mod
   ssr: false,
 });
 
-export const App: FC<Props> = ({ sources, center, layers, initialCamSlug }) => {
+export const App: FC<Props> = ({ sources, center, layers, minAltitude, initialCamSlug }) => {
   // Suspends until the sources are loaded; page.tsx shows the shell with a loading map meanwhile
   const { webcamData, temperatureData, windData, sunshineData, webcamOk, temperatureOk, windOk, sunshineOk } = use(sources);
   const { app: t } = useMessages();
@@ -111,6 +112,7 @@ export const App: FC<Props> = ({ sources, center, layers, initialCamSlug }) => {
         initialCam={initialCam}
         refreshQuery={refreshQuery}
         layers={layers}
+        minAltitude={minAltitude}
         onLocationError={showLocationError}
       />
     </Shell>

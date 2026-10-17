@@ -32,6 +32,9 @@ export const camIconSize = (zoom: number): number => {
   return 72;
 };
 
+// The altitude filter's steps in metres; 0 shows everything
+export const ALTITUDE_STEPS: readonly number[] = [0, 1000, 1500, 2000];
+
 // COORDINATES
 export const INITIAL_CENTER = [46.85, 9.533333] as LatLngTuple;
 const CORNER_1 = [45.6, 5.7] as LatLngTuple;
