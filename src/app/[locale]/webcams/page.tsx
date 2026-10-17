@@ -6,15 +6,17 @@ import { iconButtonClasses } from '@/components/icon-button';
 import { BackIcon } from '@/components/icons/back';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { Logo } from '@/components/logo';
-import { WebcamThumbnail } from '@/components/webcam-image';
-import { fill, rich } from '@/i18n/format';
+import { WebcamCard, webcamGridClasses } from '@/components/webcam-card';
+import { collator, fill, rich } from '@/i18n/format';
 import { getMessages } from '@/i18n/messages';
 import { localizedAlternates, localizedOpenGraph } from '@/i18n/metadata';
 import { requireLocale } from '@/i18n/server';
 import { settle } from '@/services/sourceResult';
 import { getWebcamData } from '@/services/webcamData';
+import { formatWebcamCount } from '@/utils/formatWebcamCount';
 import { generateRefreshQuery, withRefreshQuery } from '@/utils/generateRefreshQuery';
-import { mapPath, webcamPagePath } from '@/utils/paths';
+import { mapPath, placePagePath, webcamPagePath } from '@/utils/paths';
+import { groupByPlace } from '@/utils/places';
 import { webcamSubtitle } from '@/utils/webcamSubtitle';
 
 // Static, regenerated hourly like the webcam list itself
@@ -38,11 +40,23 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/webcams'
 
 export default async function WebcamsPage({ params }: PageProps<'/[locale]/webcams'>) {
   const locale = requireLocale((await params).locale);
-  const { nav, app, webcams: t } = getMessages(locale);
+  const { nav, app, place, webcams: t } = getMessages(locale);
   const { data: webcams, ok } = await settle(getWebcamData(), []);
   const refreshQuery = generateRefreshQuery();
-  const collator = new Intl.Collator(locale === 'de' ? 'de-CH' : locale);
-  const sorted = webcams.toSorted((a, b) => collator.compare(a.name, b.name));
+  const compare = collator(locale);
+  const byName = (a: { name: string }, b: { name: string }) => compare.compare(a.name, b.name);
+  // Sorting the webcams first keeps every place's webcams sorted too
+  const { places, elsewhere } = groupByPlace(webcams.toSorted(byName));
+  // One section per place, linking to the place's page, and one for webcams without a town
+  const sections = [
+    ...places.toSorted(byName).map(({ slug, name, webcams: members }) => ({
+      key: slug,
+      heading: name,
+      href: placePagePath(locale, slug),
+      webcams: members,
+    })),
+    ...(elsewhere.length > 0 ? [{ key: 'elsewhere', heading: t.elsewhere, href: undefined, webcams: elsewhere }] : []),
+  ];
 
   return (
     <div className="bg-nacht text-firn flex min-h-dvh flex-col">
@@ -67,26 +81,36 @@ export default async function WebcamsPage({ params }: PageProps<'/[locale]/webca
         </p>
 
         {ok ? (
-          <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4">
-            {sorted.map((webcam) => {
-              const subtitle = webcamSubtitle(webcam, app.webcamAltitude, locale);
-
-              return (
-                <li key={webcam.slug}>
-                  <Link href={webcamPagePath(locale, webcam.slug)} className="group block rounded-lg">
-                    <WebcamThumbnail
+          sections.map(({ key, heading, href, webcams: members }) => (
+            <section key={key} className="mt-10">
+              <div className="flex items-baseline gap-3">
+                <h2 className="signage text-2xl leading-none">
+                  {href ? (
+                    <Link href={href} className="hover:text-sonne transition-colors">
+                      {heading}
+                    </Link>
+                  ) : (
+                    heading
+                  )}
+                </h2>
+                <span className="text-firn/70 text-sm">{formatWebcamCount(place, members.length)}</span>
+              </div>
+              <ul className={`mt-4 ${webcamGridClasses}`}>
+                {members.map((webcam) => (
+                  <li key={webcam.slug}>
+                    <WebcamCard
+                      href={webcamPagePath(locale, webcam.slug)}
                       src={withRefreshQuery(webcam.thumbnail, refreshQuery)}
                       alt={fill(webcam.city ? t.webcamAltWithCity : t.webcamAlt, { name: webcam.name, city: webcam.city })}
+                      name={webcam.name}
+                      // The town is the section's heading, so the card only adds the altitude
+                      detail={webcamSubtitle({ city: '', altitude: webcam.altitude }, app.webcamAltitude, locale)}
                     />
-                    <span className="signage group-hover:text-sonne mt-2 block truncate text-base leading-tight transition-colors">
-                      {webcam.name}
-                    </span>
-                    {subtitle && <span className="text-firn/70 block truncate text-sm">{subtitle}</span>}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
         ) : (
           <p role="alert" className="bg-sonne text-tinte signage mt-8 rounded-lg px-4 py-3 text-sm">
             {t.loadFailed}

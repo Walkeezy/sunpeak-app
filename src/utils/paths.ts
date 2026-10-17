@@ -20,6 +20,10 @@ export const webcamsPath = (locale: Locale): string => localizedPath(locale, '/w
 export const webcamPagePath = (locale: Locale, slug: string): string =>
   localizedPath(locale, `/webcams/${encodeURIComponent(slug)}`);
 
+// All webcams of a town, e.g. /de/webcams/in/lenzerheide
+export const placePagePath = (locale: Locale, slug: string): string =>
+  localizedPath(locale, `/webcams/in/${encodeURIComponent(slug)}`);
+
 // The same page in another language: swaps or adds the locale prefix
 export const switchLocalePath = (pathname: string, locale: Locale): string => {
   const segments = pathname.split('/').filter(Boolean);

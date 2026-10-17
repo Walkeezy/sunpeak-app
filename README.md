@@ -16,6 +16,10 @@ Available here: [sunpeak.app](https://sunpeak.app)
 
 The app is available in German (default) and English under `/de` and `/en`. A proxy (`src/proxy.ts`) sends unprefixed URLs such as `/` to the language picked with the switcher, then to the browser language. All texts live in `src/messages/` as typed dictionaries; a unit test checks that both languages have the same keys and placeholders.
 
+## Pages
+
+Besides the map (`/de`, `/en`), every webcam has its own indexable page under `/webcams/<slug>`, and every town from the sheet's `Ort` column gets a page listing its webcams under `/webcams/in/<town>` (e.g. `/de/webcams/in/lenzerheide`), which is what a search for "Webcam Lenzerheide" should land on. `/webcams` lists all webcams grouped by town. All of them carry hreflang links, Open Graph tags and schema.org data and are listed in `/sitemap.xml`.
+
 ## Data sources
 
 | Data               | Source                                                                                                                      |

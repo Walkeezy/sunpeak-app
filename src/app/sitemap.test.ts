@@ -31,4 +31,29 @@ describe('sitemap', () => {
     expect(document.querySelector('parsererror')).toBeNull();
     expect(document.getElementsByTagName('image:loc')[0]?.textContent).toBe('https://example.com/cam.jpg?a=1&b=2');
   });
+
+  test('lists a page per place in every language, with the webcams as images', async () => {
+    getWebcamData.mockResolvedValue([
+      webcam({ slug: 'saentis', fullsize: 'https://example.com/saentis.jpg' }),
+      webcam({ slug: 'kronberg', name: 'Kronberg', fullsize: 'https://example.com/kronberg.jpg' }),
+      webcam({ slug: 'rothorn', name: 'Rothorn', city: 'Lenzerheide' }),
+      webcam({ slug: 'nowhere', name: 'Nowhere', city: '' }),
+    ]);
+
+    const entries = await sitemap();
+    const places = entries.filter(({ url }) => url.includes('/webcams/in/'));
+
+    expect(places.map(({ url }) => url)).toEqual([
+      'https://sunpeak.app/de/webcams/in/schwaegalp',
+      'https://sunpeak.app/en/webcams/in/schwaegalp',
+      'https://sunpeak.app/de/webcams/in/lenzerheide',
+      'https://sunpeak.app/en/webcams/in/lenzerheide',
+    ]);
+    expect(places[0].alternates?.languages).toEqual({
+      de: 'https://sunpeak.app/de/webcams/in/schwaegalp',
+      en: 'https://sunpeak.app/en/webcams/in/schwaegalp',
+      'x-default': 'https://sunpeak.app/de/webcams/in/schwaegalp',
+    });
+    expect(places[0].images).toEqual(['https://example.com/saentis.jpg', 'https://example.com/kronberg.jpg']);
+  });
 });

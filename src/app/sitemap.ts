@@ -5,6 +5,7 @@ import { settle } from '@/services/sourceResult';
 import { getWebcamData } from '@/services/webcamData';
 import { escapeHtml } from '@/utils/escapeHtml';
 import { localizedPath } from '@/utils/paths';
+import { groupByPlace } from '@/utils/places';
 
 // Regenerated hourly like the webcam list; falls back to the static pages when the list can't be loaded
 export const revalidate = 3600;
@@ -25,11 +26,20 @@ const localizedEntries = (path: string, entry: Omit<Entry, 'url' | 'alternates'>
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { data: webcams } = await settle(getWebcamData(), []);
+  const { places } = groupByPlace(webcams);
 
   return [
     ...localizedEntries('/', { changeFrequency: 'always', priority: 1 }),
     ...localizedEntries('/webcams', { changeFrequency: 'daily', priority: 0.8 }),
     ...localizedEntries('/info', { changeFrequency: 'yearly', priority: 0.3 }),
+    // A place's page answers "webcam <town>" searches, so it ranks above the single webcams
+    ...places.flatMap(({ slug, webcams: members }) =>
+      localizedEntries(`/webcams/in/${encodeURIComponent(slug)}`, {
+        changeFrequency: 'hourly',
+        priority: 0.8,
+        images: members.map(({ fullsize }) => escapeHtml(fullsize)),
+      }),
+    ),
     ...webcams.flatMap(({ slug, fullsize }) =>
       localizedEntries(`/webcams/${encodeURIComponent(slug)}`, {
         changeFrequency: 'hourly',

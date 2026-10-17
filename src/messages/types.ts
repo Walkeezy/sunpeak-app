@@ -14,6 +14,9 @@ export type Messages = {
     webcamsDescription: string;
     webcamTitle: string;
     webcamTitleWithCity: string;
+    placeTitle: string;
+    placeDescription: string;
+    placeDescriptionOne: string;
     notFoundTitle: string;
   };
   // Header links, shared by every page
@@ -80,14 +83,31 @@ export type Messages = {
     sourceLink: string;
     feedback: string;
   };
+  // The index of all webcams, grouped by place
   webcams: {
     heading: string;
     intro: string;
     mapLink: string;
     loadFailed: string;
+    elsewhere: string;
     webcamAlt: string;
     webcamAltWithCity: string;
   };
+  // A place's page with all its webcams
+  place: {
+    heading: string;
+    introOne: string;
+    intro: string;
+    altitudeOne: string;
+    altitudeRange: string;
+    cta: string;
+    mapLink: string;
+    openOnMap: string;
+    nearby: string;
+    webcamCountOne: string;
+    webcamCount: string;
+  };
+  // A single webcam's page
   webcam: {
     description: string;
     descriptionWithCity: string;
@@ -100,6 +120,8 @@ export type Messages = {
     distanceKm: string;
     openOnMap: string;
     website: string;
+    nearby: string;
+    allInPlace: string;
     about: string;
     allWebcamsLink: string;
   };

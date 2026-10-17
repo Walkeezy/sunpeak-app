@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import type { Webcam } from '@/services/webcamData';
-import { serializeJsonLd, webcamJsonLd } from './webcamJsonLd';
+import { groupByPlace } from './places';
+import { placeJsonLd, serializeJsonLd, webcamJsonLd } from './webcamJsonLd';
 
 const webcam: Webcam = {
   slug: 'saentis-schwaegalp',
@@ -60,6 +61,58 @@ describe('webcamJsonLd', () => {
 
     expect(image).not.toHaveProperty('contentLocation.address');
     expect(image).not.toHaveProperty('contentLocation.geo.elevation');
+  });
+});
+
+describe('placeJsonLd', () => {
+  test('lists the webcams of the place, each pointing at its own page', () => {
+    const other: Webcam = { ...webcam, slug: 'kronberg-schwaegalp', name: 'Kronberg', latitude: 47.2846, longitude: 9.3567 };
+    const [place] = groupByPlace([webcam, other]).places;
+    const data = placeJsonLd({
+      place,
+      title: 'Webcams Schwägalp',
+      description: 'Live',
+      locale: 'de',
+      breadcrumbs: [
+        { name: 'Sunpeak', url: 'https://sunpeak.app/de' },
+        { name: 'Alle Webcams', url: 'https://sunpeak.app/de/webcams' },
+        { name: 'Schwägalp', url: 'https://sunpeak.app/de/webcams/in/schwaegalp' },
+      ],
+      webcamUrl: ({ slug }) => `https://sunpeak.app/de/webcams/${slug}`,
+    });
+    const [page, trail] = data['@graph'];
+
+    expect(page).toMatchObject({
+      '@type': 'CollectionPage',
+      url: 'https://sunpeak.app/de/webcams/in/schwaegalp',
+      about: {
+        '@type': 'Place',
+        name: 'Schwägalp',
+        address: { addressLocality: 'Schwägalp', addressCountry: 'CH' },
+        geo: { latitude: 47.267, longitude: 9.35005 },
+      },
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: 2,
+        itemListElement: [
+          {
+            position: 1,
+            item: {
+              '@type': 'ImageObject',
+              '@id': 'https://sunpeak.app/de/webcams/saentis-schwaegalp#webcam',
+              name: 'Säntis',
+              url: 'https://sunpeak.app/de/webcams/saentis-schwaegalp',
+              contentUrl: 'https://example.com/full.jpg',
+            },
+          },
+          { position: 2, item: { name: 'Kronberg' } },
+        ],
+      },
+    });
+    expect(trail).toMatchObject({
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ position: 1 }, { position: 2 }, { position: 3 }],
+    });
   });
 });
 
