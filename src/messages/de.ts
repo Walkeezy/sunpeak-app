@@ -97,6 +97,7 @@ export const de: Messages = {
       'Live-Bilder aus der ganzen Schweiz, nach Ort geordnet und alle paar Minuten aktualisiert. Öffne einen Ort für alle seine Webcams, oder eine Webcam für das ganze Bild, die Temperatur in der Nähe und ihren Standort auf der {map}.',
     mapLink: 'Karte',
     loadFailed: 'Die Webcam-Liste konnte nicht geladen werden. Bitte versuche es später noch einmal.',
+    letterNav: 'Zu einem Anfangsbuchstaben springen',
     elsewhere: 'Weitere Webcams',
     webcamAlt: 'Webcam {name}',
     webcamAltWithCity: 'Webcam {name}, {city}',
