@@ -15,6 +15,7 @@ import { settle } from '@/services/sourceResult';
 import { getWebcamData } from '@/services/webcamData';
 import { formatWebcamCount } from '@/utils/formatWebcamCount';
 import { generateRefreshQuery, withRefreshQuery } from '@/utils/generateRefreshQuery';
+import { ALPHABET, firstByLetter } from '@/utils/initialLetter';
 import { mapPath, placePagePath, webcamPagePath } from '@/utils/paths';
 import { groupByPlace } from '@/utils/places';
 import { webcamSubtitle } from '@/utils/webcamSubtitle';
@@ -47,9 +48,12 @@ export default async function WebcamsPage({ params }: PageProps<'/[locale]/webca
   const byName = (a: { name: string }, b: { name: string }) => compare.compare(a.name, b.name);
   // Sorting the webcams first keeps every place's webcams sorted too
   const { places, elsewhere } = groupByPlace(webcams.toSorted(byName));
+  const sortedPlaces = places.toSorted(byName);
+  // The A–Z rail jumps to the first place of each letter
+  const firstPlaces = firstByLetter(sortedPlaces, ({ name }) => name);
   // One section per place, linking to the place's page, and one for webcams without a town
   const sections = [
-    ...places.toSorted(byName).map(({ slug, name, webcams: members }) => ({
+    ...sortedPlaces.map(({ slug, name, webcams: members }) => ({
       key: slug,
       heading: name,
       href: placePagePath(locale, slug),
@@ -68,7 +72,31 @@ export default async function WebcamsPage({ params }: PageProps<'/[locale]/webca
         <LanguageSwitcher className="ms-auto" />
       </Header>
 
-      <main data-test-id="webcams-page" className="mx-auto w-full max-w-6xl px-4 pt-8 pb-16 sm:px-6">
+      {ok && sortedPlaces.length > 0 && (
+        <nav aria-label={t.letterNav} className="fixed top-1/2 right-0 z-10 -translate-y-1/2 pe-1 sm:pe-2">
+          <ol className="signage flex flex-col items-center text-[11px] leading-none sm:text-xs">
+            {ALPHABET.map((letter) => {
+              const place = firstPlaces.get(letter);
+
+              return (
+                <li key={letter}>
+                  {place ? (
+                    <a href={`#${place.slug}`} className="hover:text-sonne flex h-4 w-7 items-center justify-center sm:h-5">
+                      {letter}
+                    </a>
+                  ) : (
+                    <span aria-hidden="true" className="text-firn/30 flex h-4 w-7 items-center justify-center sm:h-5">
+                      {letter}
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      )}
+
+      <main data-test-id="webcams-page" className="mx-auto w-full max-w-6xl ps-4 pe-10 pt-8 pb-16 sm:ps-6 sm:pe-12">
         <h1 className="signage text-4xl leading-none">{t.heading}</h1>
         <p className="text-firn/70 mt-4 max-w-[65ch] text-[17px] leading-relaxed">
           {rich(t.intro, {
@@ -82,7 +110,8 @@ export default async function WebcamsPage({ params }: PageProps<'/[locale]/webca
 
         {ok ? (
           sections.map(({ key, heading, href, webcams: members }) => (
-            <section key={key} className="mt-10">
+            // scroll-mt clears the sticky header when the A–Z rail jumps here
+            <section key={key} id={key} className="mt-10 scroll-mt-20">
               <div className="flex items-baseline gap-3">
                 <h2 className="signage text-2xl leading-none">
                   {href ? (

@@ -89,6 +89,7 @@ export type Messages = {
     intro: string;
     mapLink: string;
     loadFailed: string;
+    letterNav: string;
     elsewhere: string;
     webcamAlt: string;
     webcamAltWithCity: string;
