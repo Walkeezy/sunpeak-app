@@ -1,4 +1,5 @@
 import { createElement, Fragment, type ReactNode } from 'react';
+import type { Locale } from './config';
 
 const PLACEHOLDER = /\{(\w+)\}/g;
 const PLACEHOLDER_PART = /(\{\w+\})/;
@@ -19,3 +20,8 @@ export const rich = (template: string, values: Record<string, ReactNode>): React
 // Placeholder names used in a message, to check that translations agree
 export const placeholders = (template: string): string[] =>
   [...template.matchAll(PLACEHOLDER)].map(([, name]) => name).toSorted();
+
+const COLLATOR_LOCALES: Record<Locale, string> = { de: 'de-CH', en: 'en-GB' };
+
+// For sorting names the way the language expects, e.g. ä next to a
+export const collator = (locale: Locale): Intl.Collator => new Intl.Collator(COLLATOR_LOCALES[locale]);

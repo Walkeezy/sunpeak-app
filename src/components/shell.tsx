@@ -3,10 +3,11 @@
 import NextLink from 'next/link';
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 import { useLocale, useMessages } from '@/i18n/messages-provider';
-import { infoPath } from '@/utils/paths';
+import { infoPath, webcamsPath } from '@/utils/paths';
 import { Header } from './header';
 import { iconButtonClasses } from './icon-button';
 import { InfoIcon } from './icons/info';
+import { WebcamsIcon } from './icons/webcams';
 import { LanguageSwitcher } from './language-switcher';
 import { Logo } from './logo';
 
@@ -27,6 +28,10 @@ export const Shell: FC<Props> = ({ actions, banner, children }) => {
         <Logo />
         <div className="ms-auto flex items-center">
           {actions}
+          {/* A plain link to the index, so search engines find the webcam pages from the map */}
+          <NextLink href={webcamsPath(locale)} title={nav.allWebcams} className={iconButtonClasses}>
+            <WebcamsIcon />
+          </NextLink>
           <LanguageSwitcher />
           <NextLink href={infoPath(locale)} title={nav.info} className={iconButtonClasses}>
             <InfoIcon />

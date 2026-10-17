@@ -1,5 +1,14 @@
 import { describe, expect, test } from 'vitest';
-import { infoPath, localizedPath, mapPath, mapWithWebcamPath, switchLocalePath, webcamPagePath, webcamsPath } from './paths';
+import {
+  infoPath,
+  localizedPath,
+  mapPath,
+  mapWithWebcamPath,
+  placePagePath,
+  switchLocalePath,
+  webcamPagePath,
+  webcamsPath,
+} from './paths';
 
 describe('paths', () => {
   test('prefixes every path with the locale', () => {
@@ -12,6 +21,10 @@ describe('paths', () => {
 
   test('builds the webcam page path', () => {
     expect(webcamPagePath('de', 'saentis-schwaegalp')).toBe('/de/webcams/saentis-schwaegalp');
+  });
+
+  test('builds the place page path', () => {
+    expect(placePagePath('en', 'lenzerheide')).toBe('/en/webcams/in/lenzerheide');
   });
 
   test('builds the map path with the cam search param', () => {

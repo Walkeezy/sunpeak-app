@@ -7,11 +7,16 @@ export const de: Messages = {
     siteDescription:
       'Diese interaktive Karte zeigt Webcams aus der ganzen Schweiz. Sieh live, wie das Wetter gerade ist, und plane dein nächstes Abenteuer draussen. Finde heraus, wo heute die Sonne scheint!',
     infoTitle: 'Info',
-    webcamsTitle: 'Alle Webcams',
+    webcamsTitle: 'Webcams Schweiz – alle Live-Webcams nach Ort',
     webcamsDescription:
       'Alle Live-Webcams der Sunpeak-Karte, von den Alpen bis in den Jura. Öffne eine Webcam für das ganze Bild, die aktuelle Temperatur in der Nähe und ihren Standort auf der Karte.',
     webcamTitle: 'Webcam {name}',
     webcamTitleWithCity: 'Webcam {name}, {city}',
+    placeTitle: 'Webcams {place} – Live-Bilder und Wetter',
+    placeDescription:
+      '{count} Live-Webcams in {place}, Schweiz: aktuelle Bilder, die Temperatur in der Nähe und jeder Standort auf der Karte. Sieh, wie das Wetter in {place} gerade ist.',
+    placeDescriptionOne:
+      'Live-Webcam in {place}, Schweiz: das aktuelle Bild, die Temperatur in der Nähe und der Standort auf der Karte. Sieh, wie das Wetter in {place} gerade ist.',
     notFoundTitle: 'Seite nicht gefunden',
   },
   nav: {
@@ -89,11 +94,25 @@ export const de: Messages = {
   webcams: {
     heading: 'Alle Webcams',
     intro:
-      'Live-Bilder aus der ganzen Schweiz, alle paar Minuten aktualisiert. Öffne eine Webcam für das ganze Bild, die Temperatur in der Nähe und ihren Standort auf der {map}.',
+      'Live-Bilder aus der ganzen Schweiz, nach Ort geordnet und alle paar Minuten aktualisiert. Öffne einen Ort für alle seine Webcams, oder eine Webcam für das ganze Bild, die Temperatur in der Nähe und ihren Standort auf der {map}.',
     mapLink: 'Karte',
     loadFailed: 'Die Webcam-Liste konnte nicht geladen werden. Bitte versuche es später noch einmal.',
+    elsewhere: 'Weitere Webcams',
     webcamAlt: 'Webcam {name}',
     webcamAltWithCity: 'Webcam {name}, {city}',
+  },
+  place: {
+    heading: 'Webcams {place}',
+    introOne: 'Eine Live-Webcam zeigt, wie das Wetter in {place} gerade ist.',
+    intro: '{count} Live-Webcams zeigen, wie das Wetter in {place} gerade ist.',
+    altitudeOne: 'Sie steht auf {altitude} m ü. M.',
+    altitudeRange: 'Sie stehen zwischen {min} und {max} m ü. M.',
+    cta: 'Öffne eine Webcam für das ganze Bild und ihren Standort auf der {map}.',
+    mapLink: 'Karte',
+    openOnMap: '{place} auf der Karte zeigen',
+    nearby: 'Webcams in der Nähe von {place}',
+    webcamCountOne: '1 Webcam',
+    webcamCount: '{count} Webcams',
   },
   webcam: {
     description:
@@ -109,6 +128,8 @@ export const de: Messages = {
     distanceKm: '{km} km',
     openOnMap: 'Auf der Karte zeigen',
     website: 'Website der Webcam',
+    nearby: 'Webcams in der Nähe',
+    allInPlace: 'Alle Webcams in {place}',
     about: 'Temperatur und Wind sind die neusten Zehn-Minuten-Messwerte von MeteoSchweiz. Stöbere in {webcams}.',
     allWebcamsLink: 'allen Webcams',
   },
