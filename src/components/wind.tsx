@@ -13,7 +13,8 @@ const CX = 60;
 const CY = 60;
 const BODY_Y = 30;
 
-// Plain markup rather than renderToString, which would ship React's server renderer to the browser
+// Plain markup rather than renderToString, which would ship React's server renderer to the browser.
+// The number alone is legible at this size; the unit is in the legend and the station popup
 const windIconHtml = (value: number, direction?: number) => {
   const bearing = direction == null ? 180 : direction + 180;
   const speed = Math.round(value);
@@ -22,7 +23,7 @@ const windIconHtml = (value: number, direction?: number) => {
       ? `<circle cx="${CX}" cy="${BODY_Y}" r="14" class="wind-hit fill-firn/90 stroke-nacht/30" stroke-width="1.5"></circle>`
       : `<path d="M60 7 L70 20 A14 14 0 1 1 50 20 Z" class="wind-hit fill-firn/90 stroke-nacht/30" stroke-width="1.5" stroke-linejoin="round"></path>`;
 
-  return `<div class="pointer-events-none relative h-full w-full select-none"><svg class="absolute inset-0 overflow-visible" viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(${bearing} ${CX} ${CY})">${body}<text x="${CX}" y="${BODY_Y}" class="fill-tinte signage font-sans" text-anchor="middle" transform="rotate(${-bearing} ${CX} ${BODY_Y})"><tspan x="${CX}" dy="-2" font-size="10">${speed}</tspan><tspan x="${CX}" dy="9" font-size="7">km/h</tspan></text></g></svg></div>`;
+  return `<div class="pointer-events-none relative h-full w-full select-none"><svg class="absolute inset-0 overflow-visible" viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(${bearing} ${CX} ${CY})">${body}<text x="${CX}" y="${BODY_Y}" dy="4" font-size="12" class="fill-tinte signage font-sans" text-anchor="middle" transform="rotate(${-bearing} ${CX} ${BODY_Y})">${speed}</text></g></svg></div>`;
 };
 
 // Only the arrow itself takes taps (.wind-hit), not the large square around it

@@ -1,8 +1,8 @@
 'use client';
 
-import { Icon, type LatLngTuple } from 'leaflet';
+import { Icon, type LatLngTuple, type Map as LeafletMap, latLngBounds } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { type FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { type FC, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AttributionControl, LayerGroup, MapContainer, Marker, Popup } from 'react-leaflet';
 import {
   INITIAL_CENTER,
@@ -22,8 +22,10 @@ import type { TemperatureData } from '@/services/temperatureData';
 import type { Webcam, WebcamData } from '@/services/webcamData';
 import type { WindData } from '@/services/windData';
 import { fogBoundary } from '@/utils/fogBoundary';
+import { nearestMeasurement } from '@/utils/nearestMeasurement';
 import type { MapCenter } from '@/utils/parseMapCenter';
 import { CAM_SEARCH_PARAM, mapPath, mapWithWebcamPath } from '@/utils/paths';
+import { groupByPlace, type Place } from '@/utils/places';
 import { saveLayerToCookie, saveMinAltitudeToCookie } from '@/utils/preferenceCookie';
 import { AltitudeFilter } from './altitude-filter';
 import { Cam } from './cam';
@@ -32,6 +34,7 @@ import { FogHint } from './fog-hint';
 import { LayerToggles } from './layer-toggles';
 import { LocationControl } from './location-control';
 import { MapEvents } from './map-events';
+import { MapSearch } from './map-search';
 import { StationDetails } from './station-details';
 import { StationMarker } from './station-marker';
 import { VectorTileLayer } from './vector-tile-layer';
@@ -44,16 +47,21 @@ type Props = {
   sunshineData: SunshineData;
   refreshQuery: string;
   center?: MapCenter;
-  // Opened on mount, with the map centred on it; set when the page was requested as /?cam=…
-  initialCam?: Webcam;
+  // Opened once the webcams are known, with the map centred on it; set when the page was requested as /?cam=…
+  initialCamSlug?: string;
   // From the cookies, read during the server render
   layers: LayerVisibility;
   minAltitude: number;
+  isSearchOpen: boolean;
+  onSearchClose: () => void;
   onLocationError: () => void;
 };
 
 // Marks history entries this component pushed, so closing can go back instead of piling up entries
 const CAM_HISTORY_KEY = 'sunpeakCam';
+
+// Around a place's webcams when the map is fitted to them, so none sits under the controls
+const PLACE_PADDING: [number, number] = [56, 56];
 
 const camSlugFromUrl = () => new URLSearchParams(window.location.search).get(CAM_SEARCH_PARAM);
 
@@ -70,14 +78,19 @@ const WebcamMapComponent: FC<Props> = ({
   windData,
   sunshineData,
   center,
-  initialCam,
+  initialCamSlug,
   refreshQuery,
   layers,
   minAltitude: initialMinAltitude,
+  isSearchOpen,
+  onSearchClose,
   onLocationError,
 }) => {
   const locale = useLocale();
-  const [activeCam, setActiveCam] = useState<Webcam | undefined>(initialCam);
+  // The Leaflet map, for flying to a search result; null until the container has mounted
+  const [map, setMap] = useState<LeafletMap | null>(null);
+  const [activeCam, setActiveCam] = useState<Webcam | undefined>(undefined);
+  const initialCamOpened = useRef(false);
   const [location, setLocation] = useState<[number, number] | undefined>(undefined);
   // By id, so an open popup shows the new values after a refresh
   const [activeStationId, setActiveStationId] = useState<string | undefined>(undefined);
@@ -124,6 +137,23 @@ const WebcamMapComponent: FC<Props> = ({
     }
   }, [locale]);
 
+  // The webcam from a shared link opens as soon as the webcam list is there, with the map on it. It wins over
+  // the remembered view, so a shared link always shows its webcam
+  useEffect(() => {
+    if (!map || !initialCamSlug || initialCamOpened.current || webcamData.length === 0) {
+      return;
+    }
+
+    initialCamOpened.current = true;
+
+    const webcam = webcamData.find((candidate) => candidate.slug === initialCamSlug);
+
+    if (webcam) {
+      map.setView([webcam.latitude, webcam.longitude], MAX_ZOOM, { animate: false });
+      setActiveCam(webcam);
+    }
+  }, [map, initialCamSlug, webcamData]);
+
   // Browser back and forward move between the plain map and an open webcam
   useEffect(() => {
     const syncWithUrl = () => {
@@ -135,6 +165,33 @@ const WebcamMapComponent: FC<Props> = ({
 
     return () => window.removeEventListener('popstate', syncWithUrl);
   }, [webcamData]);
+
+  // A search result: a webcam opens where it stands, a place fills the view with its webcams
+  const showWebcam = useCallback(
+    (webcam: Webcam) => {
+      map?.setView([webcam.latitude, webcam.longitude], MAX_ZOOM);
+      openCam(webcam);
+    },
+    [map, openCam],
+  );
+
+  const showPlace = useCallback(
+    (place: Place) => {
+      if (!map) {
+        return;
+      }
+
+      if (place.webcams.length === 1) {
+        map.setView([place.webcams[0].latitude, place.webcams[0].longitude], MAX_ZOOM);
+      } else {
+        const bounds = latLngBounds(place.webcams.map(({ latitude, longitude }): LatLngTuple => [latitude, longitude]));
+        map.fitBounds(bounds, { padding: PLACE_PADDING, maxZoom: MAX_ZOOM });
+      }
+    },
+    [map],
+  );
+
+  const places = useMemo(() => groupByPlace(webcamData).places, [webcamData]);
 
   const allWebcams = useMemo(
     () =>
@@ -149,6 +206,11 @@ const WebcamMapComponent: FC<Props> = ({
     [temperatureData, windData, sunshineData],
   );
   const activeStation = activeStationId ? stations.get(activeStationId) : undefined;
+  // The temperature nearest to the open webcam, for its caption
+  const activeCamNearest = useMemo(
+    () => (activeCam ? nearestMeasurement(temperatureData, activeCam.latitude, activeCam.longitude) : undefined),
+    [activeCam, temperatureData],
+  );
   const boundary = useMemo(() => fogBoundary([...stations.values()]), [stations]);
   const closeStation = useCallback(() => setActiveStationId(undefined), []);
   // Leaflet closes the popup itself on a map click; keep the state in step
@@ -178,18 +240,23 @@ const WebcamMapComponent: FC<Props> = ({
     [windData, isHighEnough],
   );
 
-  // A webcam from the URL wins over the remembered view, so a shared link always shows its webcam
-  const initialCenter: LatLngTuple = initialCam
-    ? [initialCam.latitude, initialCam.longitude]
-    : center
-      ? [parseFloat(center.centerLat), parseFloat(center.centerLon)]
-      : INITIAL_CENTER;
-  const initialZoom = initialCam ? MAX_ZOOM : center ? parseInt(center.zoom, 10) : INITIAL_ZOOM;
+  // The remembered view, or the default one on the first visit
+  const initialCenter: LatLngTuple = center ? [parseFloat(center.centerLat), parseFloat(center.centerLon)] : INITIAL_CENTER;
+  const initialZoom = center ? parseInt(center.zoom, 10) : INITIAL_ZOOM;
 
   return (
     <div className="relative h-full w-full">
-      {activeCam && <CamOverlay key={activeCam.slug} webcam={activeCam} refreshQuery={refreshQuery} onClose={closeCam} />}
+      {activeCam && (
+        <CamOverlay
+          key={activeCam.slug}
+          webcam={activeCam}
+          nearest={activeCamNearest}
+          refreshQuery={refreshQuery}
+          onClose={closeCam}
+        />
+      )}
       <MapContainer
+        ref={setMap}
         center={initialCenter}
         zoom={initialZoom}
         maxBounds={MAX_BOUNDS}
@@ -220,6 +287,17 @@ const WebcamMapComponent: FC<Props> = ({
         <LocationControl onLocationFound={setLocation} onLocationError={onLocationError} />
         {location && <Marker position={location} icon={locationIcon} />}
       </MapContainer>
+      {isSearchOpen && (
+        <div className="pointer-events-none absolute inset-x-3 top-3 z-[1060] flex justify-center">
+          <MapSearch
+            webcams={webcamData}
+            places={places}
+            onSelectWebcam={showWebcam}
+            onSelectPlace={showPlace}
+            onClose={onSearchClose}
+          />
+        </div>
+      )}
       <div className="absolute bottom-[calc(env(safe-area-inset-bottom)+0.625rem)] left-[0.625rem] z-[1000] flex flex-col items-start gap-1.5">
         {boundary && <FogHint boundary={boundary} minAltitude={minAltitude} onChange={changeMinAltitude} />}
         <AltitudeFilter value={minAltitude} onChange={changeMinAltitude} />
@@ -229,5 +307,5 @@ const WebcamMapComponent: FC<Props> = ({
   );
 };
 
-// Every prop is stable between the app's own state changes (banner, refresh), so skip those renders
+// Every prop is stable between the app's own state changes (toast, refresh), so skip those renders
 export const WebcamMap = memo(WebcamMapComponent);

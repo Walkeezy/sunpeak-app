@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { type FC, use, useCallback, useState, useTransition } from 'react';
+import { type FC, Suspense, useCallback, useEffect, useState, useTransition } from 'react';
 import { type RefreshTrigger, useAutoRefresh } from '@/hooks/useAutoRefresh';
 import { fill } from '@/i18n/format';
 import { useMessages } from '@/i18n/messages-provider';
@@ -14,6 +14,9 @@ import type { MapCenter } from '@/utils/parseMapCenter';
 import { latestMeasurement } from '@/utils/shouldRefresh';
 import { formatMeasurementTime } from '@/utils/temperatureLabel';
 import { DataStatusBanner } from './data-status-banner';
+import { iconButtonClasses } from './icon-button';
+import { SearchIcon } from './icons/search';
+import { InitialData } from './initial-data';
 import { LoadingMap } from './loading-map';
 import { Refresh } from './refresh';
 import { Shell } from './shell';
@@ -34,28 +37,44 @@ const DynamicMap = dynamic(() => import('@/components/map').then((module) => mod
   ssr: false,
 });
 
-export const App: FC<Props> = ({ sources, center, layers, minAltitude, initialCamSlug }) => {
-  // Suspends until the sources are loaded; page.tsx shows the shell with a loading map meanwhile
-  const { webcamData, temperatureData, windData, sunshineData, webcamOk, temperatureOk, windOk, sunshineOk } = use(sources);
-  const { app: t } = useMessages();
-  // Resolved once from the URL the page was opened with; later opens and closes are handled by the map itself
-  const [initialCam] = useState(() =>
-    initialCamSlug ? webcamData.find((webcam) => webcam.slug === initialCamSlug) : undefined,
-  );
-  const [isRefreshing, startRefresh] = useTransition();
-  const [webcams, setWebcams] = useState(webcamData);
-  const [temperatures, setTemperatures] = useState(temperatureData);
-  const [winds, setWinds] = useState(windData);
-  const [sunshine, setSunshine] = useState(sunshineData);
-  const [refreshQuery, setRefreshQuery] = useState(generateRefreshQuery);
-  const [status, setStatus] = useState<Status | null>(() => {
-    const message = dataLoadErrorMessage({ webcamOk, temperatureOk, windOk, sunshineOk }, t.loadErrors);
+const NO_DATA: Pick<SourceData, 'webcamData' | 'temperatureData' | 'windData' | 'sunshineData'> = {
+  webcamData: [],
+  temperatureData: [],
+  windData: [],
+  sunshineData: [],
+};
 
-    return message ? { kind: 'error', message } : null;
-  });
+// Typing into a field must not open the search, and neither should a key pressed in an open webcam
+const isTypingTarget = (target: EventTarget | null) =>
+  target instanceof HTMLElement && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
+
+const isModalOpen = () => document.querySelector('[aria-modal="true"]') !== null;
+
+export const App: FC<Props> = ({ sources, center, layers, minAltitude, initialCamSlug }) => {
+  const { app: t } = useMessages();
+  // Undefined until the sources have loaded; the map shows its tiles meanwhile
+  const [data, setData] = useState<SourceData | undefined>(undefined);
+  const [isRefreshing, startRefresh] = useTransition();
+  const [refreshQuery, setRefreshQuery] = useState(generateRefreshQuery);
+  const [status, setStatus] = useState<Status | null>(null);
+  const [isSearchOpen, setSearchOpen] = useState(false);
 
   const dismissStatus = useCallback(() => setStatus(null), []);
   const showLocationError = useCallback(() => setStatus({ kind: 'error', message: t.locationFailed }), [t.locationFailed]);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
+
+  const receiveInitialData = useCallback(
+    (initial: SourceData) => {
+      setData(initial);
+
+      const message = dataLoadErrorMessage(initial, t.loadErrors);
+
+      if (message) {
+        setStatus({ kind: 'error', message });
+      }
+    },
+    [t.loadErrors],
+  );
 
   // A manual refresh or coming back to the app confirms with the measurement time; the ten-minute refresh
   // happens quietly unless something fails
@@ -66,28 +85,21 @@ export const App: FC<Props> = ({ sources, center, layers, minAltitude, initialCa
         setRefreshQuery(Date.now().toString());
 
         try {
-          const data = await getData();
+          const fresh = await getData();
 
           // Updates after an await need their own startTransition to join the pending one
           startRefresh(() => {
-            if (data.webcamOk) {
-              setWebcams(data.webcamData);
-            }
+            // A source that failed keeps its previous values
+            setData((previous) => ({
+              ...fresh,
+              webcamData: fresh.webcamOk ? fresh.webcamData : (previous?.webcamData ?? []),
+              temperatureData: fresh.temperatureOk ? fresh.temperatureData : (previous?.temperatureData ?? []),
+              windData: fresh.windOk ? fresh.windData : (previous?.windData ?? []),
+              sunshineData: fresh.sunshineOk ? fresh.sunshineData : (previous?.sunshineData ?? []),
+            }));
 
-            if (data.temperatureOk) {
-              setTemperatures(data.temperatureData);
-            }
-
-            if (data.windOk) {
-              setWinds(data.windData);
-            }
-
-            if (data.sunshineOk) {
-              setSunshine(data.sunshineData);
-            }
-
-            const message = dataLoadErrorMessage(data, t.loadErrors);
-            const time = formatMeasurementTime(latestMeasurement(data.temperatureData));
+            const message = dataLoadErrorMessage(fresh, t.loadErrors);
+            const time = formatMeasurementTime(latestMeasurement(fresh.temperatureData));
 
             if (message) {
               setStatus({ kind: 'error', message });
@@ -107,30 +119,85 @@ export const App: FC<Props> = ({ sources, center, layers, minAltitude, initialCa
   const refreshNow = useAutoRefresh(handleReloadData, isRefreshing);
   const refreshManually = useCallback(() => refreshNow('manual'), [refreshNow]);
 
+  const hasData = data !== undefined;
+
+  // "/" opens the search, as on many sites with a map or a list
+  useEffect(() => {
+    if (!hasData) {
+      return;
+    }
+
+    const openSearchOnSlash = (event: KeyboardEvent) => {
+      if (
+        event.key !== '/' ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        isTypingTarget(event.target) ||
+        isModalOpen()
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      setSearchOpen(true);
+    };
+
+    window.addEventListener('keydown', openSearchOnSlash);
+
+    return () => window.removeEventListener('keydown', openSearchOnSlash);
+  }, [hasData]);
+
+  const measurementTime = formatMeasurementTime(latestMeasurement(data?.temperatureData ?? []));
+
   return (
     <Shell
-      actions={<Refresh reloadData={refreshManually} isRefreshing={isRefreshing} />}
+      actions={
+        <>
+          <Refresh reloadData={refreshManually} isRefreshing={isRefreshing || !hasData} time={measurementTime} />
+          {/* The search panel leaves this button out of its "tap outside closes" rule, so it can toggle */}
+          <button
+            type="button"
+            data-test-id="search-button"
+            data-search-toggle
+            className={iconButtonClasses}
+            onClick={() => setSearchOpen((open) => !open)}
+            disabled={!hasData}
+            aria-expanded={isSearchOpen}
+            aria-keyshortcuts="/"
+            title={t.search}
+            aria-label={t.search}
+          >
+            <SearchIcon />
+          </button>
+        </>
+      }
       banner={
-        status && (
-          <DataStatusBanner
-            key={`${status.kind}-${status.message}`}
-            kind={status.kind}
-            message={status.message}
-            onDismiss={dismissStatus}
-          />
-        )
+        hasData
+          ? status && (
+              <DataStatusBanner
+                key={`${status.kind}-${status.message}`}
+                kind={status.kind}
+                message={status.message}
+                onDismiss={dismissStatus}
+              />
+            )
+          : // Only while the first data is on its way; an error replaces it
+            !status && <DataStatusBanner kind="loading" message={t.loading} />
       }
     >
+      <Suspense fallback={null}>
+        <InitialData sources={sources} onLoaded={receiveInitialData} />
+      </Suspense>
       <DynamicMap
-        webcamData={webcams}
-        temperatureData={temperatures}
-        windData={winds}
-        sunshineData={sunshine}
+        {...(data ?? NO_DATA)}
         center={center}
-        initialCam={initialCam}
+        initialCamSlug={initialCamSlug}
         refreshQuery={refreshQuery}
         layers={layers}
         minAltitude={minAltitude}
+        isSearchOpen={isSearchOpen}
+        onSearchClose={closeSearch}
         onLocationError={showLocationError}
       />
     </Shell>

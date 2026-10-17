@@ -141,7 +141,7 @@ export default async function WebcamsPage({ params }: PageProps<'/[locale]/webca
             </section>
           ))
         ) : (
-          <p role="alert" className="bg-sonne text-tinte signage mt-8 rounded-lg px-4 py-3 text-sm">
+          <p role="alert" className="bg-glut text-firn signage mt-8 rounded-lg px-4 py-3 text-sm">
             {t.loadFailed}
           </p>
         )}

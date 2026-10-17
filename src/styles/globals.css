@@ -4,7 +4,7 @@
   --font-*: initial;
   --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
 
-  /* Alpine palette: slate roofs, night, mist, firn snow, the sun, ink */
+  /* Alpine palette: slate roofs, night, mist, firn snow, the sun, ink, and alpenglow for what went wrong */
   --color-*: initial;
   --color-transparent: transparent;
   --color-current: currentColor;
@@ -15,6 +15,7 @@
   --color-firn: #f2f4f1;
   --color-sonne: #fbb829;
   --color-tinte: #15202b;
+  --color-glut: #a8402f;
 
   --font-weight-*: initial;
   --font-weight-normal: 400;
@@ -65,6 +66,13 @@
 /* swisstopo's grey raster map, turned to night tones to match the vector style */
 .raster-fallback {
   filter: invert(0.88) hue-rotate(180deg) saturate(0.5) brightness(0.85);
+}
+
+/* Touch screens pinch to zoom; the +/- buttons only take space from the map */
+@media (pointer: coarse) {
+  .leaflet-container .leaflet-control-zoom {
+    display: none;
+  }
 }
 
 /* Clear the home indicator like the layer toggles do, so the locate button stays level with them */

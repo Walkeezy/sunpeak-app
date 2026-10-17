@@ -60,7 +60,7 @@ export const LayerToggles: FC<Props> = ({ visibility, onToggle }) => {
             onClick={() => onToggle(layer)}
             className={joinClasses([
               'signage flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm transition-colors',
-              isOn ? 'bg-tinte text-firn' : 'text-tinte/55 hover:bg-tinte/10',
+              isOn ? 'bg-tinte text-firn' : 'text-tinte/70 hover:bg-tinte/10',
             ])}
           >
             <Glyph />
