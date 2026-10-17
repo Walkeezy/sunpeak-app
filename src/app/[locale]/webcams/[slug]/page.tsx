@@ -9,6 +9,7 @@ import { LinkIcon } from '@/components/icons/link';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { Logo } from '@/components/logo';
 import { WebcamImage } from '@/components/webcam-image';
+import { SITE_URL } from '@/config';
 import type { Locale } from '@/i18n/config';
 import { fill, rich } from '@/i18n/format';
 import { getMessages } from '@/i18n/messages';
@@ -21,8 +22,9 @@ import { getWebcamData, type Webcam } from '@/services/webcamData';
 import { convertToLargeRoundshotUrl } from '@/utils/convertToLargeRoundshotUrl';
 import { generateRefreshQuery, withRefreshQuery } from '@/utils/generateRefreshQuery';
 import { type NearestMeasurement, nearestMeasurement } from '@/utils/nearestMeasurement';
-import { mapWithWebcamPath, webcamsPath } from '@/utils/paths';
+import { mapPath, mapWithWebcamPath, webcamPagePath, webcamsPath } from '@/utils/paths';
 import { formatMeasurementTime } from '@/utils/temperatureLabel';
+import { serializeJsonLd, webcamJsonLd } from '@/utils/webcamJsonLd';
 import { webcamSubtitle } from '@/utils/webcamSubtitle';
 
 // Static and regenerated in the background. This is the ceiling: the ten-minute temperature fetch sets the actual
@@ -104,6 +106,17 @@ export default async function WebcamPage({ params }: PageProps<'/[locale]/webcam
   const nearest = nearestMeasurement(temperatures.data, webcam.latitude, webcam.longitude);
   const title = webcamTitle(messages, webcam);
   const subtitle = webcamSubtitle(webcam, app.webcamAltitude, locale);
+  const jsonLd = webcamJsonLd({
+    webcam,
+    title,
+    description: webcamDescription(messages, webcam),
+    locale,
+    breadcrumbs: [
+      { name: 'Sunpeak', url: `${SITE_URL}${mapPath(locale)}` },
+      { name: nav.allWebcams, url: `${SITE_URL}${webcamsPath(locale)}` },
+      { name: webcam.name, url: `${SITE_URL}${webcamPagePath(locale, slug)}` },
+    ],
+  });
 
   return (
     <div className="bg-nacht text-firn flex min-h-dvh flex-col">
@@ -116,6 +129,11 @@ export default async function WebcamPage({ params }: PageProps<'/[locale]/webcam
       </Header>
 
       <main data-test-id="webcam-page" className="mx-auto w-full max-w-6xl px-4 pt-8 pb-16 sm:px-6">
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: structured data has to be inline JSON; serializeJsonLd escapes "<" so values can't break out
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+        />
         <h1 className="signage text-4xl leading-none">{webcam.name}</h1>
         {subtitle && <p className="text-firn/70 signage mt-2 text-xl">{subtitle}</p>}
 
