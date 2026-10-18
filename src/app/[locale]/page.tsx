@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Suspense } from 'react';
 import { preconnect } from 'react-dom';
 import { App } from '@/components/app';
-import { AppFallback } from '@/components/app-fallback';
 import { getMessages } from '@/i18n/messages';
 import { localizedAlternates, localizedOpenGraph } from '@/i18n/metadata';
 import { requireLocale } from '@/i18n/server';
@@ -35,8 +33,8 @@ export async function generateMetadata({ params }: PageProps<'/[locale]'>): Prom
 export default async function Page({ params, searchParams }: PageProps<'/[locale]'>) {
   // Rejects unknown locales and stray single segments that skip the proxy, such as /foo.png
   requireLocale((await params).locale);
-  // Not awaited: the app unwraps the promise with use() inside the Suspense boundary, so the
-  // header and loading map stream right away while the sources load
+  // Not awaited: the app unwraps the promise with use() inside its own Suspense boundary, so the
+  // header and the map tiles stream right away while the sources load
   const sources = loadSourceData();
   const [cookieStore, { [CAM_SEARCH_PARAM]: cam }] = await Promise.all([cookies(), searchParams]);
   const center = parseMapCenter(
@@ -49,14 +47,12 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   preconnect('https://vectortiles.geo.admin.ch');
 
   return (
-    <Suspense fallback={<AppFallback />}>
-      <App
-        sources={sources}
-        center={center}
-        layers={layerVisibilityFromCookies((name) => cookieStore.get(name)?.value)}
-        minAltitude={parseMinAltitude(cookieStore.get(MIN_ALTITUDE_COOKIE)?.value)}
-        initialCamSlug={typeof cam === 'string' ? cam : undefined}
-      />
-    </Suspense>
+    <App
+      sources={sources}
+      center={center}
+      layers={layerVisibilityFromCookies((name) => cookieStore.get(name)?.value)}
+      minAltitude={parseMinAltitude(cookieStore.get(MIN_ALTITUDE_COOKIE)?.value)}
+      initialCamSlug={typeof cam === 'string' ? cam : undefined}
+    />
   );
 }

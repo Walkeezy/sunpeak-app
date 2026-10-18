@@ -51,6 +51,24 @@ export type Messages = {
     fogSun: string;
     fogInversion: string;
     fogAction: string;
+    // The status toast while the first data loads
+    loading: string;
+    // Title of the freshness chip in the header
+    measurementsFrom: string;
+    // The search for webcams and places
+    search: string;
+    searchPlaceholder: string;
+    searchNoResults: string;
+    closeSearch: string;
+    webcamCountOne: string;
+    webcamCount: string;
+    // The caption under an open webcam
+    nearestTemperature: string;
+    distanceUnderOneKm: string;
+    distanceKm: string;
+    share: string;
+    linkCopied: string;
+    webcamPage: string;
   };
   // The popup of a weather station on the map
   station: {
