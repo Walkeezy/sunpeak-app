@@ -22,12 +22,12 @@ Besides the map (`/de`, `/en`), every webcam has its own indexable page under `/
 
 ## Data sources
 
-| Data               | Source                                                                                                                      |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| Webcams            | A Google Sheet (read via the Sheets API), manually curated with name, location, coordinates, and image URLs                 |
-| Temperature, sunshine & wind | [MeteoSwiss](https://www.meteoschweiz.admin.ch/) 10-minute measurements via [data.geo.admin.ch](https://data.geo.admin.ch/) |
-| Webcam altitude    | [swisstopo height service](https://api3.geo.admin.ch/services/sdiservices.html#height), cached for good per position              |
-| Map tiles          | [swisstopo](https://www.swisstopo.admin.ch/) light base map (vector tiles) recoloured to night tones, grey pixel map as raster fallback without WebGL |
+| Data                         | Source                                                                                                                                                |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Webcams                      | A Google Sheet (read via the Sheets API), manually curated with name, location, coordinates, and image URLs                                           |
+| Temperature, sunshine & wind | [MeteoSwiss](https://www.meteoschweiz.admin.ch/) 10-minute measurements via [data.geo.admin.ch](https://data.geo.admin.ch/)                           |
+| Webcam altitude              | [swisstopo height service](https://api3.geo.admin.ch/services/sdiservices.html#height), cached for good per position                                  |
+| Map tiles                    | [swisstopo](https://www.swisstopo.admin.ch/) light base map (vector tiles) recoloured to night tones, grey pixel map as raster fallback without WebGL |
 
 The MeteoSwiss data is delivered in the Swiss LV95 coordinate system and converted to WGS84 with [proj4](https://github.com/proj4js/proj4js).
 
@@ -49,16 +49,16 @@ The MeteoSwiss data is delivered in the Swiss LV95 coordinate system and convert
 
 ## Scripts
 
-| Script                       | Description                                              |
-| ---------------------------- | -------------------------------------------------------- |
-| `npm run dev`                | Start the development server                             |
-| `npm run build`              | Create a production build                                |
-| `npm run start`              | Serve the production build                               |
-| `npm run lint`               | Typegen, Biome, type check, and unused-code check        |
-| `npm run format`             | Format all files with Biome                              |
-| `npm run test:unit`          | Run unit tests once                                      |
-| `npm run test:unit:watch`    | Run unit tests in watch mode                             |
-| `npm run test:unit:coverage` | Run unit tests with a coverage report                    |
+| Script                       | Description                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------------- |
+| `npm run dev`                | Start the development server                                                       |
+| `npm run build`              | Create a production build                                                          |
+| `npm run start`              | Serve the production build                                                         |
+| `npm run lint`               | Typegen, Biome, type check, and unused-code check                                  |
+| `npm run format`             | Format all files with Biome                                                        |
+| `npm run test:unit`          | Run unit tests once                                                                |
+| `npm run test:unit:watch`    | Run unit tests in watch mode                                                       |
+| `npm run test:unit:coverage` | Run unit tests with a coverage report                                              |
 | `npm run map:style`          | Rebuild `public/map-style-dark.json` from swisstopo's current light base map style |
 
 ## Continuous integration
