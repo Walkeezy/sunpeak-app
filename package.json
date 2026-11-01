@@ -32,7 +32,7 @@
     "react-leaflet": "^5.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.3",
+    "@biomejs/biome": "2.6.4",
     "@tailwindcss/postcss": "4.3.3",
     "@types/leaflet": "1.9.22",
     "@types/node": "26.6.6",
