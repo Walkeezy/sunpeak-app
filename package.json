@@ -41,7 +41,7 @@
     "@vitejs/plugin-react": "6.3.0",
     "@vitest/coverage-v8": "5.1.1",
     "jsdom": "31.0.1",
-    "knip": "6.46.0",
+    "knip": "6.46.1",
     "postcss": "8.5.33",
     "tailwindcss": "4.3.5",
     "typescript": "7.0.2",
